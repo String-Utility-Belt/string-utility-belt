@@ -58,8 +58,8 @@ export const TARGETS: readonly Target[] = [
       'src/**', 'public/**', 'worker/**', 'scripts/**',
       'index.html', 'vite.config.ts', 'postcss.config.js', 'wrangler.jsonc', 'CHANGELOG.md',
     ],
-    // release tooling and CI-only checks don't change the deployed site
-    exclude: [...NOT_SHIPPED, 'scripts/release.ts', 'scripts/release/**', 'scripts/check-*.ts'],
+    // release tooling, CI-only checks and the README's demo recorder don't change the deployed site
+    exclude: [...NOT_SHIPPED, 'scripts/release.ts', 'scripts/release/**', 'scripts/check-*.ts', 'scripts/readme-demo.ts'],
     rootManifest: 'all',
     entries: [],
     versionFiles: [

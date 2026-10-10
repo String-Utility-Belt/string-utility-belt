@@ -34,6 +34,7 @@ npm run test:e2e     # Playwright against a production build
 npm run deploy       # build:site (build + build:seo) + wrangler deploy (manual; releases deploy from CI)
 npm run release -- plan   # what a release from HEAD would ship, at which versions (read-only; RELEASING.md)
 npm run events            # counted clicks from Analytics Engine (-- --days N | --month YYYY-MM; needs a CF token)
+npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after npm run build; needs ffmpeg)
 ```
 
 ## Architecture
@@ -158,6 +159,9 @@ npm run events            # counted clicks from Analytics Engine (-- --days N | 
   title/description, guide markdown syntax, own `#` heading), rendered by `SitePage` and pre-rendered by
   `build.ts`. The privacy policy says what leaves the browser (Cloudflare Web Analytics, Google Fonts, the server features) — keep it accurate when data flows change.
   `advertise.md` is the sponsors' media kit: keep its promises (formats, rules) in step with what the site does.
+- GitHub Sponsors (`GITHUB_SPONSORS_URL`, `src/app/support.ts`) is for people supporting the project; `/advertise/` is for
+  companies buying a sponsor slot. The footer (app and pre-render), the about page, the README and `.github/FUNDING.yml`
+  link the same account (`support.test.ts`).
 - Usage guide: `src/components/Docs.tsx` (`/docs/`), pre-rendered by `build.ts` with `renderToStaticMarkup` of the
   component itself — keep its render free of browser APIs (effects are fine).
 - No ad network: sponsorship is sold directly (`/advertise/`) and must render as part of the page — no

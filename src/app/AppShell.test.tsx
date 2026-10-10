@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import AppShell, { Footer, Header } from './AppShell'
+import { GITHUB_SPONSORS_URL } from '@/app/support'
 
 describe('Header nav', () => {
   it('marks the link for the current route with aria-current="page"', () => {
@@ -29,10 +30,15 @@ const LAZY = { timeout: 10_000 }
 describe('site links', () => {
   afterEach(() => { location.hash = ''; history.replaceState(null, '', '/') })
 
-  it('has a footer linking the about, privacy and contact pages by their paths', () => {
+  it('has a footer linking the about, privacy and contact pages by their paths, and GitHub Sponsors in a new tab', () => {
     render(<Footer />)
-    const hrefs = within(screen.getByRole('navigation', { name: 'site' })).getAllByRole('link').map(a => a.getAttribute('href'))
-    expect(hrefs).toEqual(['/utilities/', '/presets/', '/blog/', '/changelog/', '/integrations/', '/about/', '/privacy/', '/contact/', '/advertise/'])
+    const links = within(screen.getByRole('navigation', { name: 'site' })).getAllByRole('link')
+    expect(links.map(a => a.getAttribute('href'))).toEqual([
+      '/utilities/', '/presets/', '/blog/', '/changelog/', '/integrations/', '/about/', '/privacy/', '/contact/', '/advertise/',
+      GITHUB_SPONSORS_URL,
+    ])
+    const sponsor = screen.getByRole('link', { name: 'Sponsor on GitHub (opens in a new tab)' })
+    expect([sponsor.getAttribute('target'), sponsor.getAttribute('rel')]).toEqual(['_blank', 'noopener'])
   })
 
   it('follows a plain click on a path link in place, leaving modified clicks to the browser', async () => {
