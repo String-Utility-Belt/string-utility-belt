@@ -1,6 +1,6 @@
 {
     "name": "string-utility-belt",
-    "version": "1.12.3",
+    "version": "1.13.0",
     "description": "Chain string transformations into visual pipelines with live previews — web app, CLI, HTTP API, MCP server and editor/browser extensions.",
     "license": "MIT",
     "homepage": "https://stringutilitybelt.com",
