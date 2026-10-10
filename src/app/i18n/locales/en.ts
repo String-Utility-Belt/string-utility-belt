@@ -40,6 +40,8 @@ export const en = {
     privacy: 'Privacy policy',
     contact: 'Contact',
     advertise: 'Advertise',
+    sponsor: 'Sponsor on GitHub',
+    newTab: '(opens in a new tab)',
   },
   blog: {
     title: 'Blog',

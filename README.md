@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![npm: subelt](https://img.shields.io/npm/v/subelt?label=subelt)](https://www.npmjs.com/package/subelt)
 [![smithery badge](https://smithery.ai/badge/string-utility-belt/string-utility-belt)](https://smithery.ai/servers/string-utility-belt/string-utility-belt)
+[![Sponsor on GitHub](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/Murraylr)
 
 **[stringutilitybelt.com](https://stringutilitybelt.com)** · [Usage guide](https://stringutilitybelt.com/docs/) · [All utilities](https://stringutilitybelt.com/utilities/) · [Integrations](https://stringutilitybelt.com/integrations/)
 
@@ -12,6 +13,8 @@ encodings, hashes, ciphers, compression, data formats (JSON/YAML/TOML/CSV/XML), 
 operations, analysis, generators, web/dev helpers, numbers, dates and colours — all running
 client-side, with the same engine available as a CLI, an HTTP API, an MCP server, a browser
 extension and a VS Code extension.
+
+[![A Base64 token is pasted into String Utility Belt, then three steps are added: Base64 decode, JSON pretty-print and JSON to YAML. Each step shows its own output as soon as it is added, and the result panel ends on the YAML.](.github/readme/demo.gif)](https://stringutilitybelt.com)
 
 ## Use it from your agent, terminal or editor
 
@@ -97,6 +100,7 @@ npm run typecheck
 | `npm run bench` | Large-input benchmarks (`vitest bench`) |
 | `npm run deploy` | `build:site`, then `wrangler deploy` (Cloudflare Workers: static assets + `/api/*`) — releases normally deploy from CI |
 | `npm run release -- plan` | What a release from `HEAD` would ship, and at which versions ([RELEASING.md](RELEASING.md)) |
+| `npm run readme:demo` | Re-record this README's demo GIF from the production build (after `npm run build`; needs ffmpeg) |
 
 ## Other surfaces
 
@@ -108,6 +112,12 @@ npm run typecheck
 | HTTP API | [`worker/`](worker/api.ts) | `POST /api/run`, `GET /api/utilities[/:id]` (CORS, rate-limited) |
 | Browser extension | [`packages/extension`](packages/extension/README.md) | MV3; context menu "run on selection" |
 | VS Code extension | [`packages/vscode`](packages/vscode/README.md) | Transform selection, run a share link |
+
+## Support the project
+
+String Utility Belt is free, open source and has no paid tier. If it saves you time, you can support its
+development through [GitHub Sponsors](https://github.com/sponsors/Murraylr): it pays for hosting and keeps new
+utilities, presets and fixes coming. Companies can also [sponsor a page on the site](https://stringutilitybelt.com/advertise/).
 
 ## Contributing
 

@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Sponsor on GitHub.** The site's footer and the about page link to the project's GitHub Sponsors page, for anyone who
+  wants to support its development.
+
 ## [1.12.3] - 2026-10-09
 
 ### Fixed

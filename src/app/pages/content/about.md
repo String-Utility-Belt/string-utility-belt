@@ -38,6 +38,8 @@ Every worked example on this site, on each utility's page and in its guide, is r
 
 String Utility Belt is free to use and has no paid tier. It accepts sponsorship on its own terms: a sponsor's message is clearly labelled and sits beside a page's content. It never appears inside the tool, the extensions, the command-line tool or the MCP server, and it never comes with a tracking script. Sponsors never see what you type, and never change how the tools work or what they do with your data. See [advertising](/advertise/) to sponsor the site.
 
+If String Utility Belt saves you time, you can also support its development directly through [GitHub Sponsors](https://github.com/sponsors/Murraylr). It pays for hosting and keeps new utilities, presets and fixes coming.
+
 ## Get in touch
 
 Found a bug, want a new utility, or have a question? See the [contact page](/contact/).

@@ -44,6 +44,7 @@
         "check:presets": "vite-node scripts/check-presets.ts",
         "build:site": "npm run build && npm run build:seo",
         "events": "vite-node scripts/events.ts",
+        "readme:demo": "vite-node scripts/readme-demo.ts",
         "release": "vite-node scripts/release.ts"
     },
     "dependencies": {

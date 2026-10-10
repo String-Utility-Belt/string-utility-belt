@@ -19,6 +19,7 @@ import { pageTitle } from './pages/seo'
 import { PresetPage, PresetsIndexPage } from './pages/presets/routes'
 import PagePromo from './sponsors/PagePromo'
 import type { PromoPage } from './sponsors/promos'
+import { GITHUB_SPONSORS_URL } from '@/app/support'
 
 // Only the tool ships in the entry chunk; every other route is fetched on first visit.
 const BlogIndex = lazy(() => import('@/components/BlogIndex'))
@@ -58,7 +59,7 @@ const FOOTER_LINKS = [
   { href: '/advertise/', key: 'footer.advertise' },
 ] as const
 
-/** Site links on every page: the about, privacy and contact pages ad networks and visitors look for. */
+/** Site links on every page: the about, privacy and contact pages visitors look for, and the GitHub Sponsors page. */
 export function Footer() {
   const { t } = useT()
   return (
@@ -66,6 +67,8 @@ export function Footer() {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-5 flex flex-wrap items-center justify-between gap-3 text-[12.5px] text-muted">
         <nav aria-label={t('footer.label')} className="flex flex-wrap gap-x-[18px] gap-y-1.5">
           {FOOTER_LINKS.map(l => <a key={l.href} href={l.href} className="text-muted hover:text-fg">{t(l.key)}</a>)}
+          <a href={GITHUB_SPONSORS_URL} target="_blank" rel="noopener" className="text-muted hover:text-fg"
+            aria-label={`${t('footer.sponsor')} ${t('footer.newTab')}`}>{t('footer.sponsor')}</a>
         </nav>
         <p className="m-0 font-mono text-[11px]">© {new Date().getFullYear()} String Utility Belt · MIT</p>
       </div>
