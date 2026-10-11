@@ -174,7 +174,8 @@ export function parseExampleBlock(lines: string[]): UtilityExample {
  * ("Base64 Encode Online: Convert Text to Base64" → "Base64 Encode").
  */
 export function pageHeading(title: string): string {
-  return title.split(/: | — /)[0].replace(/\s+online\b/gi, '').trim()
+  // drop the word rather than replace text: nothing can re-form around a removed token
+  return title.split(/: | — /)[0].split(/\s+/).filter(word => word && word.toLowerCase() !== 'online').join(' ')
 }
 
 /** Splits a guide into frontmatter and render blocks. Never throws: bad examples are reported in `errors`. */
