@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.13.2] - 2026-10-11
+
 ### Changed
 
 - **Fonts are served by the site itself.** Instrument Sans and JetBrains Mono now load from stringutilitybelt.com
