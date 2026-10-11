@@ -35,7 +35,10 @@ export interface Target {
   changelog?: string
 }
 
-/** Every package bundles the framework-free engine and every utility (but not their guides). */
+/**
+ * Every package bundles the framework-free engine and every utility, but not their guides
+ * or what only the site makes of them: the doc pages' headings and the guide checker.
+ */
 const ENGINE = ['src/core/**', 'src/types/**', 'src/utilities/**']
 
 /** Never part of anything shipped, wherever they sit. */
@@ -47,7 +50,9 @@ const NOT_SHIPPED = [
   '**/tests/**',
 ]
 
-const PACKAGE_EXCLUDE = [...NOT_SHIPPED, 'src/utilities/*/guide.md']
+const PACKAGE_EXCLUDE = [
+  ...NOT_SHIPPED, 'src/utilities/*/guide.md', 'src/utilities/_generated/headings.ts', 'src/utilities/guideCheck.ts',
+]
 
 export const TARGETS: readonly Target[] = [
   {
