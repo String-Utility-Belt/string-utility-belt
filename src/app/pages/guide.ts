@@ -1,5 +1,6 @@
 import { mdToHtml, parseFrontmatter, escapeHtml } from '@/lib/markdown'
 import type { UtilityExample } from '@/types/utility'
+import { fromControlPictures, showControlChars } from '@/core/coerce'
 
 /**
  * Utility guides: the long-form "how it works" write-up behind each doc page's
@@ -29,13 +30,18 @@ import type { UtilityExample } from '@/types/utility'
  * output the utility does not produce. Header lines (all optional) come first:
  * `title:`, `params:` (a JSON object), `input-encoding:` (`hex` | `base64` |
  * `json`), `output-matches:` (a regex, for output that varies between runs or that
- * markdown cannot hold, such as control bytes or CRLF —
+ * markdown cannot hold, such as CRLF —
  * any `output` is then a sample that must match it). Then `input:` and
  * `output:`. A value may start on its marker line (`input: Man`) or on the
  * next one, and runs over any further lines: the input up to `output:` (or a
  * `params:` / `input-encoding:` / `output-matches:` line, which may also sit
  * between input and output), the output to the closing fence. Use a longer
  * fence (````example) when a value itself contains ```.
+ *
+ * Control characters other than tab and line breaks are written in a value as
+ * their Unicode Control Pictures (`␛[31mred␛[0m`, `␀`, DEL as `␡`): the parser
+ * reads them back as the characters, and the page shows them that way. The file
+ * itself never holds a raw one (it is served as text and pre-rendered into HTML).
  */
 
 export interface Guide {
@@ -156,13 +162,13 @@ export function parseExampleBlock(lines: string[]): UtilityExample {
   if (i === lines.length) throw new Error('missing input:')
 
   const input = takeValue(lines, i, 'input', line => !!marker(line, 'output') || !!lateField(line))
-  example.input = input.value
+  example.input = fromControlPictures(input.value)
   let j = input.next
   for (; j < lines.length && !marker(lines[j], 'output'); j++) {
     const field = lateField(lines[j])
     if (field) applyField(example, ...field)
   }
-  if (j < lines.length) example.output = takeValue(lines, j, 'output', () => false).value
+  if (j < lines.length) example.output = fromControlPictures(takeValue(lines, j, 'output', () => false).value)
 
   if (example.output === undefined && example.outputMatches === undefined) throw new Error('needs output: or output-matches:')
   return example as UtilityExample
@@ -276,7 +282,7 @@ function demoteHeadings(html: string): string {
 }
 
 const codeBlock = (text: string) =>
-  `<pre class="md-pre" tabindex="0"><code class="md-code-block">${escapeHtml(text)}</code></pre>`
+  `<pre class="md-pre" tabindex="0"><code class="md-code-block">${escapeHtml(showControlChars(text))}</code></pre>`
 
 function renderExample(ex: UtilityExample): string {
   const title = ex.title ? `<figcaption class="guide-example-title">${escapeHtml(ex.title)}</figcaption>` : ''
@@ -291,8 +297,8 @@ function renderExample(ex: UtilityExample): string {
   const varies = ex.outputMatches !== undefined
   const output = ex.output !== undefined
     ? `<div class="guide-example-label">${varies ? 'Sample output (varies between runs)' : 'Output'}</div>${codeBlock(ex.output)}`
-    // a pattern alone is also how an output that cannot be written in markdown (control bytes,
-    // CRLF) is checked, so this label must not claim the output varies
+    // a pattern alone is also how an output that cannot be written in markdown (CRLF) is
+    // checked, so this label must not claim the output varies
     : `<div class="guide-example-label">Output matches this pattern</div>${codeBlock(`/${ex.outputMatches}/`)}`
   return `<figure class="guide-example">${title}${params}${input}${output}</figure>`
 }

@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - The footer's DevHunt badge has alt text, so its link has a name for search engines as well as screen readers.
 - The about page's description fits a search result, and the changelog's is no longer too short to be useful.
+- Worked examples on utility pages show control characters as Control Pictures (`␀`, `␛`) instead of raw bytes, which
+  browsers showed as `�` or nothing: the get bytes, strip ANSI and MessagePack encode pages, and their guides.
 
 ## [1.13.1] - 2026-10-11
 

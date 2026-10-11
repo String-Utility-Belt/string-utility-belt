@@ -80,6 +80,8 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
   `description` (meta description, 80–160), then `##` sections with ```` ```example ```` blocks. Format and
   parser: `src/app/pages/guide.ts`. Rules: `src/utilities/guideCheck.ts`, enforced by `guides.test.ts`
   (every example is executed like a golden example; links must be `/util/<id>/` paths to real utilities).
+  A control character in an example value (other than tab and line breaks) is written as its Control Picture (`␛`, `␀`,
+  DEL `␡`), which the parser reads back as the character; a raw one fails the check.
 - Not bundled as JS: `scripts/vite-plugin-guides.ts` serves them at `/guides/<id>.md` in dev and emits
   them as assets in `vite build`. `UtilityDocPage` fetches its guide and shows it in a collapsed `<details>`
   (`UtilityGuide.tsx`); `scripts/seo/build.ts` pre-renders the same markup plus the guide's title/description
@@ -195,6 +197,13 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
   (none carries both), and never fills the `strip`. A slot the plan leaves empty renders nothing; `e2e/promos.e2e.ts`
   fails on a desktop page showing two. Hidden below `sm`; clicks count as `integration_click` from
   `promo_<slot>`. Never on `/advertise/` itself.
+
+### Control characters in built files
+- No text file under `dist/` may hold a raw C0 control character (other than tab, LF, CR) or DEL: HTML turns NUL into
+  U+FFFD and tools take the file as binary. Pages show them with `showControlChars` (`src/core/coerce.ts`, Control
+  Pictures; display only — `formatForDisplay` stays the golden/copy value), `scripts/vite-plugin-escape-controls.ts`
+  escapes the ones the Oxc minifier prints raw in JS chunks (app and worker builds alike), and `build-seo` fails on any
+  left (`scripts/distText.ts`).
 
 ### Content-Security-Policy (`public/_headers`)
 - Inline scripts are allowed by SHA-256 only (no `'unsafe-inline'`): `index.html`'s theme script and the

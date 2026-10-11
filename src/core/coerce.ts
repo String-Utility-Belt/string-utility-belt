@@ -77,6 +77,36 @@ export function formatForDisplay(v: Value): string {
   return String(v ?? '')
 }
 
+/**
+ * C0 control characters other than tab, LF and CR, plus DEL: invisible on a page, and a
+ * parse error in HTML (NUL becomes U+FFFD), so crawlers and tools may take the page as binary.
+ */
+// eslint-disable-next-line no-control-regex -- control characters are what this matches
+export const HIDDEN_CONTROL_CHAR = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/
+const HIDDEN_CONTROL_CHARS = new RegExp(HIDDEN_CONTROL_CHAR.source, 'g')
+const CONTROL_PICTURES = /[\u2400-\u2408\u240B\u240C\u240E-\u241F\u2421]/g
+const DEL = 0x7f
+const PICTURE_OF_DEL = 0x2421
+const PICTURES = 0x2400
+
+/**
+ * `text` with each of those characters as its Unicode Control Picture (U+2400 + code,
+ * DEL as U+2421: NUL → ␀, ESC → ␛), so a page shows it. Display only: never for a value that
+ * is copied, compared or run, which `formatForDisplay` gives as is.
+ */
+export const showControlChars = (text: string): string =>
+  text.replace(HIDDEN_CONTROL_CHARS, ch => {
+    const code = ch.charCodeAt(0)
+    return String.fromCharCode(code === DEL ? PICTURE_OF_DEL : PICTURES + code)
+  })
+
+/** The inverse of `showControlChars`: each Control Picture it writes back as its control character. */
+export const fromControlPictures = (text: string): string =>
+  text.replace(CONTROL_PICTURES, ch => {
+    const code = ch.charCodeAt(0)
+    return String.fromCharCode(code === PICTURE_OF_DEL ? DEL : code - PICTURES)
+  })
+
 export type Compatibility = { level: 'exact' | 'coerce' | 'lossy'; note?: string }
 
 /**

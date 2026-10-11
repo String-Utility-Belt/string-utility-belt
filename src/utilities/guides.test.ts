@@ -28,6 +28,12 @@ describe('utility guides', () => {
     })
   }
 
+  it('rejects a raw control character, naming its line and the Control Picture to write instead', async () => {
+    const source = readGuide('strip_ansi')!.replace('␛[31mred', '\u001b[31mred')
+    const problems = await checkGuide(UTILITIES.find(u => u.id === 'strip_ansi')!, source, ids)
+    expect(problems).toEqual([expect.stringMatching(/^raw control characters — write each as its Control Picture .*line 16: "input: ␛\[31mred/)])
+  })
+
   it('gives every guide a unique title and description (one search result per utility)', () => {
     const seen = { title: new Map<string, string>(), description: new Map<string, string>() }
     const dupes: string[] = []

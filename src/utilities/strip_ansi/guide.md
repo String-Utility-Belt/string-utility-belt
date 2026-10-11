@@ -13,7 +13,7 @@ Feed it captured terminal output, and it removes every recognized escape sequenc
 ```example
 title: strip SGR color codes
 params: {"mode": "strip"}
-input: [31mred[0m text
+input: ␛[31mred␛[0m text
 output: red text
 ```
 
@@ -26,14 +26,14 @@ Some ANSI sequences carry human-readable content inside their control bytes: a w
 ```example
 title: strip mode drops OSC payloads entirely
 params: {"mode": "strip"}
-input: ]0;my titlehello
+input: ␛]0;my title␇hello
 output: hello
 ```
 
 ```example
 title: keep-text mode preserves the readable text
 params: {"mode": "keep-text"}
-input: ]0;my titlehello
+input: ␛]0;my title␇hello
 output: my titlehello
 ```
 

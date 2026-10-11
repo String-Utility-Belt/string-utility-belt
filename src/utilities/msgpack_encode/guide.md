@@ -22,7 +22,7 @@ input-encoding: json
 input: {"id":1,"name":"Ada"}
 output: bytes[130, 162, 105, 100, 01, 164, 110, 97, 109, 101, 163, 65, 100, 97]
 hex: [82, a2, 69, 64, 01, a4, 6e, 61, 6d, 65, a3, 41, 64, 61]
-utf8: ��id�name�Ada
+utf8: ��id␁�name�Ada
 ```
 
 Here `82` is a fixmap header meaning "map with 2 pairs", `a2` means "string, 2 bytes" (the key `id`), `01` is the integer `1` packed as a single byte, `a4` means "string, 4 bytes" (`name`), and `a3` means "string, 3 bytes" (`Ada`). The `bytes[...]` line is the same data as plain decimal, and `hex:` as hexadecimal. The `utf8:` line decodes the same bytes as text, so header bytes that are not valid UTF-8 render as replacement characters.

@@ -2,6 +2,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import type { UtilityMeta } from '../../src/core/registry'
 import { defaultParams } from '../../src/core/params'
+import { showControlChars } from '../../src/core/coerce'
 import type { ParamSpec, UtilityExample } from '../../src/types/utility'
 import { escapeHtml } from './html'
 import type { BlogPostMeta } from './blog'
@@ -156,10 +157,10 @@ export function renderUtilityContent(meta: UtilityMeta, examples: UtilityExample
       <div>
         ${ex.title ? `<h3>${escapeHtml(ex.title)}</h3>` : ''}
         <p>input${ex.inputEncoding && ex.inputEncoding !== 'text' ? ` (${escapeHtml(ex.inputEncoding)})` : ''}</p>
-        <pre>${escapeHtml(ex.input)}</pre>
+        <pre>${escapeHtml(showControlChars(ex.input))}</pre>
         ${ex.params && Object.keys(ex.params).length > 0 ? `<p>params</p><pre>${escapeHtml(JSON.stringify(ex.params))}</pre>` : ''}
         <p>output</p>
-        <pre>${escapeHtml(ex.output ?? '(non-deterministic)')}</pre>
+        <pre>${escapeHtml(showControlChars(ex.output ?? '(non-deterministic)'))}</pre>
       </div>`).join('')}
     </section>`
 
