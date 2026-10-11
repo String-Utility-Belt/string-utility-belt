@@ -19,6 +19,7 @@ import { readSourceDates, type SourceDates } from './lastmod'
 import type { Sponsorship } from '../../src/app/sponsors/sponsors'
 import { promoPlan } from '../../src/app/sponsors/promos'
 import { GITHUB_SPONSORS_URL } from '../../src/app/support'
+import { DEVHUNT } from '../../src/app/listings'
 
 const ROOT = process.cwd()
 const NOW = new Date('2026-01-02T03:04:05Z')
@@ -215,7 +216,7 @@ describe('buildSeo over a built dist/', () => {
       const doc = html(read(dist, rel))
       const footer = [...doc.querySelectorAll('#root footer a')].map(a => a.getAttribute('href'))
       expect(footer, rel).toEqual(['/utilities/', '/presets/', '/blog/', '/changelog/', '/integrations/', '/about/', '/privacy/', '/contact/', '/advertise/',
-        GITHUB_SPONSORS_URL])
+        GITHUB_SPONSORS_URL, DEVHUNT.href])
       expect([...doc.querySelectorAll('#root > header nav[aria-label="main"] a')].map(a => a.getAttribute('href')), rel)
         .toEqual(['/', '/docs/', '/utilities/', '/presets/', '/blog/', '/changelog/'])
       expect([...doc.querySelectorAll('#root > header nav[aria-label="Integrations"] a')].map(a => a.getAttribute('href')), rel)

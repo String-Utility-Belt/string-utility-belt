@@ -22,6 +22,8 @@ import ExtraPromo from '../../src/app/sponsors/ExtraPromo'
 import { fixedPromo, promoPlan, type PromoPage } from '../../src/app/sponsors/promos'
 import type { SponsorPage, Sponsorship } from '../../src/app/sponsors/sponsors'
 import { GITHUB_SPONSORS_URL } from '../../src/app/support'
+import { DEVHUNT } from '../../src/app/listings'
+import DevHuntBadge from '../../src/app/DevHuntBadge'
 
 /** A page's sponsor at build time, rendered by the app's own `SponsorBlock`. */
 export interface PageSponsorSpec {
@@ -70,6 +72,7 @@ export function renderSiteChrome(contentHtml: string, year: number): string {
   <main>${contentHtml}</main>
   <footer>
     <nav aria-label="site">${FOOTER_LINKS.map(link).join(' ')} <a href="${escapeHtml(GITHUB_SPONSORS_URL)}" target="_blank" rel="noopener">${escapeHtml(en.footer.sponsor)}</a></nav>
+    ${renderToStaticMarkup(createElement(DevHuntBadge, { label: `${DEVHUNT.alt} ${en.footer.newTab}` }))}
     <p>© ${year} ${escapeHtml(SITE_NAME)}</p>
   </footer>`
 }

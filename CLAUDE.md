@@ -162,6 +162,9 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
 - GitHub Sponsors (`GITHUB_SPONSORS_URL`, `src/app/support.ts`) is for people supporting the project; `/advertise/` is for
   companies buying a sponsor slot. The footer (app and pre-render), the about page, the README and `.github/FUNDING.yml`
   link the same account (`support.test.ts`).
+- Directory badges (`src/app/listings.ts`, the footer's `DevHuntBadge`) are our own copies in `public/badges/`, checked
+  like a sponsor's SVG logo (`listings.test.ts`, `isUnsafeSvg`): never a directory's hotlinked image or launch-banner
+  script, so a page view sends it nothing and the CSP and privacy policy stay as they are.
 - Usage guide: `src/components/Docs.tsx` (`/docs/`), pre-rendered by `build.ts` with `renderToStaticMarkup` of the
   component itself — keep its render free of browser APIs (effects are fine).
 - No ad network: sponsorship is sold directly (`/advertise/`) and must render as part of the page — no

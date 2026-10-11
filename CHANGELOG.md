@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- A "Featured on DevHunt" badge in the site footer, light or dark with the theme. It is served by the site itself, so
+  showing it sends DevHunt nothing.
+
 ## [1.13.0] - 2026-10-10
 
 ### Added
