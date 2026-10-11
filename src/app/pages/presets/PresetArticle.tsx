@@ -14,6 +14,7 @@ import { itemNoun } from '@/core/split'
 import { PRESET_CATEGORIES, PRESETS_PATH, presetPath, type Preset, type PresetMeta, type PresetSample } from '@/presets/types'
 import type { Preview, SkipTrace, StepTrace } from '@/presets/trace'
 import { utilityPath } from '../related'
+import { PRESETS_HEADING } from '../seo'
 import { changedParams, describeString, nameOf, revealInvisible, stepCountText, stepTitle, stringPairs, type UtilityLookup } from './presetHelpers'
 
 
@@ -473,7 +474,7 @@ export function PresetsIndex({ presets, promo }: { presets: PresetMeta[]; promo?
   return (
     <div className="w-full grid gap-10 min-w-0">
       <header className="grid gap-2 max-w-[640px]">
-        <h1 className="page-title">Presets</h1>
+        <h1 className="page-title">{PRESETS_HEADING}</h1>
         <p className="page-lead">
           Ready-made pipelines for jobs one tool can’t do alone: layered formats, messy pasted text, data in the wrong
           shape. Every step shows its real output, and you can open the whole thing in the editor to change it.

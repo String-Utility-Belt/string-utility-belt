@@ -5,7 +5,7 @@ description: How String Utility Belt handles data: your text is processed in you
 
 # Privacy Policy
 
-*Last updated: 9 October 2026*
+*Last updated: 11 October 2026*
 
 String Utility Belt ("we", "us") runs the website at stringutilitybelt.com and publishes the String Utility Belt browser extension, VS Code extension, command-line tool (`subelt`), MCP server and code library. This policy explains what information is collected when you use the site or these tools, why, and the choices you have. Questions about it can be sent to [contact@stringutilitybelt.com](mailto:contact@stringutilitybelt.com).
 
@@ -68,9 +68,9 @@ Cloudflare, our host, counts page views and measures how fast pages load, using 
 
 When you follow a sponsor's link, follow a link to one of our own tools (the browser or VS Code extension, the command-line tool or the MCP server), or load a preset into the pipeline editor, the page tells our server, which adds one to a count. The count records only which link or preset it was and where on the site it was followed, for example "sponsor booking acme-2026-11, on the JWT decoder's page" or "the MCP server, from the site header". It never includes what you typed, and no cookie, identifier, IP address or browser details are stored with it. The counts are kept in Cloudflare Workers Analytics Engine for three months. We use them to see which of our pages and tools are useful, and to report to a sponsor how often their link was followed.
 
-### Google Fonts
+### Fonts
 
-The site's typefaces are loaded from Google Fonts. To download them, your browser sends your IP address and browser details to Google. Google Fonts does not set cookies.
+The site's typefaces are served from stringutilitybelt.com itself, so loading them sends nothing to anyone else. Until 11 October 2026 they were loaded from Google Fonts, which received your IP address and browser details when your browser downloaded them.
 
 ### Google Analytics (until October 2026)
 
@@ -82,7 +82,7 @@ The site sets no cookies, and the tools work the same whatever your browser bloc
 
 ## Your rights
 
-Depending on where you live (for example under the GDPR or the UK GDPR), you may have the right to access, correct or delete personal data about you, to restrict or object to its processing, and to withdraw consent at any time. Because the site has no accounts and keeps your tool data on your own device, we usually hold no personal data that identifies you. For data Google receives when it serves the site's fonts, see [Google's privacy policy](https://policies.google.com/privacy), which also explains how to exercise your rights with Google. You can contact us with any request, and you can complain to your local data protection authority.
+Depending on where you live (for example under the GDPR or the UK GDPR), you may have the right to access, correct or delete personal data about you, to restrict or object to its processing, and to withdraw consent at any time. Because the site has no accounts and keeps your tool data on your own device, we usually hold no personal data that identifies you. For data Google received through Google Fonts or Google Analytics before October 2026, see [Google's privacy policy](https://policies.google.com/privacy), which also explains how to exercise your rights with Google. You can contact us with any request, and you can complain to your local data protection authority.
 
 We process data on the basis of our legitimate interest in understanding how the site is used (cookieless page and click counts) and in running a secure and reliable service (rate limiting and operational logs).
 

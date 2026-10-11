@@ -68,7 +68,7 @@ export async function checkGuide(u: Utility, source: string | null, utilityIds: 
   if (controls.length) problems.push(`raw control characters — write each as its Control Picture (␛ for ESC, ␀ for NUL, ␡ for DEL), which an example reads back as the character: ${controls.join(', ')}`)
 
   const lines = proseLines(source)
-  // the page already has the utility name as its <h1>
+  // the page already has its <h1> (`pageHeading` of the guide title)
   if (lines.some(l => /^#\s/.test(l))) problems.push('no "# " headings — start sections at ##')
   const sections = lines.filter(l => /^##\s/.test(l)).length
   if (sections < R.minSections) problems.push(`needs ≥ ${R.minSections} "## " sections, has ${sections}`)

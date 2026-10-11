@@ -63,7 +63,7 @@ describe('site links', () => {
       expect(location.pathname).toBe('/')
       fireEvent.click(utilities)
       expect(location.pathname).toBe('/utilities/')
-      expect(await screen.findByRole('heading', { level: 1, name: 'All utilities' }, LAZY)).toBeTruthy()
+      expect(await screen.findByRole('heading', { level: 1, name: 'All text and string tools' }, LAZY)).toBeTruthy()
       fireEvent.click(within(screen.getByRole('navigation', { name: 'site' })).getByRole('link', { name: 'Privacy policy' }))
       expect(await screen.findByRole('heading', { level: 1, name: 'Privacy Policy' }, LAZY)).toBeTruthy()
       expect(location.pathname).toBe('/privacy/')

@@ -6,7 +6,10 @@ import type { UtilityMeta } from '../../src/core/registry'
 import { MANIFEST } from '../../src/utilities/_generated/manifest'
 import { buildRssItems, buildSeo, SITE } from './build'
 import { parseGuide } from '../../src/app/pages/guide'
-import { POPULAR_UTILITY_IDS, DOCS_DESCRIPTION, DOCS_TITLE, displayName, homeDescription, pageTitle } from '../../src/app/pages/seo'
+import {
+  POPULAR_UTILITY_IDS, DOCS_DESCRIPTION, DOCS_TITLE, HOME_HEADING, PRESETS_HEADING, displayName, homeDescription, pageTitle,
+} from '../../src/app/pages/seo'
+import { utilityHeading } from '../../src/app/pages/utilityHeading'
 import { SITE_PAGES } from '../../src/lib/router'
 import { INTEGRATION_LINKS } from '../../src/app/integrations/links'
 import { resolveOg, resolveOutDir } from '../build-seo'
@@ -173,7 +176,7 @@ describe('buildSeo over a built dist/', () => {
       const ld = [...doc.querySelectorAll('script[type="application/ld+json"]')].map(s => JSON.parse(s.textContent!))
       expect(ld.map(d => d['@type'])).toEqual(['WebApplication', 'BreadcrumbList'])
       expect(ld[0].name).toBe(displayName(meta.name))
-      expect(doc.querySelector('#root h1')?.textContent).toBe(displayName(meta.name))
+      expect(doc.querySelector('#root h1')?.textContent).toBe(utilityHeading(meta.id, meta.name))
     }
   })
 
@@ -205,7 +208,7 @@ describe('buildSeo over a built dist/', () => {
 
   it('pre-renders the home page with crawlable links to the popular utilities', () => {
     const doc = html(read(dist, 'index.html'))
-    expect(doc.querySelector('#root h1')?.textContent).toBe('String Utility Belt')
+    expect(doc.querySelector('#root h1')?.textContent).toBe(HOME_HEADING)
     const hrefs = [...doc.querySelectorAll('#root main a')].map(a => a.getAttribute('href'))
     expect(hrefs).toEqual(expect.arrayContaining(POPULAR_UTILITY_IDS.map(id => `/util/${id}/`)))
     expect(hrefs).toContain('/utilities/')
@@ -537,7 +540,7 @@ describe('buildSeo presets', () => {
 
   it('lists presets on their index, links them from the utilities they use and the sitemap', () => {
     const index = html(read(dist, 'presets/index.html'))
-    expect(index.querySelector('#root main h1')?.textContent).toBe('Presets')
+    expect(index.querySelector('#root main h1')?.textContent).toBe(PRESETS_HEADING)
     expect(index.querySelector('#root main a[href="/presets/shout-slugs/"]')?.textContent).toContain(preset.name)
     expect(html(read(dist, 'util/case/index.html')).querySelector('#root main a[href="/presets/shout-slugs/"]')).toBeTruthy()
     expect(html(read(dist, 'util/trim/index.html')).querySelector('#root main a[href^="/presets/"]')).toBeNull()

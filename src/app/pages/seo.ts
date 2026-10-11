@@ -26,6 +26,15 @@ export const displayName = (name: string): string => name.replace(/_/g, ' ')
 
 export const HOME_TITLE = `Free Online String & Text Tools | ${SITE_NAME}`
 
+/**
+ * Index pages' `<h1>`s, shared by the app and the pre-render: the term each page ranks
+ * for rather than a bare label ("Presets"). The home page's is visually hidden: the
+ * editor's own pipeline name is the visible title there.
+ */
+export const HOME_HEADING = `${SITE_NAME}: free online string and text tools`
+export const UTILITIES_HEADING = 'All text and string tools'
+export const PRESETS_HEADING = 'Text pipeline presets'
+
 export const homeDescription = (count: number): string =>
   `${count} free string and text tools that run in your browser: encode, decode, hash, format and convert text: Base64, URL, JSON, SHA-256 and more.`
 
@@ -38,7 +47,8 @@ export const BLOG_TITLE = pageTitle('Blog')
 export const BLOG_DESCRIPTION = `Practical guides to encoding, hashing and text processing, with examples you can run in ${SITE_NAME}.`
 
 export const CHANGELOG_TITLE = pageTitle('Changelog')
-export const CHANGELOG_DESCRIPTION = `Release history for ${SITE_NAME}: new utilities, features and fixes.`
+export const CHANGELOG_DESCRIPTION =
+  `Release history for ${SITE_NAME}: each version of the site, the date it shipped, and the new utilities, presets, features and fixes in it.`
 
 /** The usage guide (`Docs`, pre-rendered at `/docs/`). */
 export const DOCS_TITLE = pageTitle('How to use')
