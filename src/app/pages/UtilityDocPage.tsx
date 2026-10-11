@@ -19,6 +19,7 @@ import { presetsUsing } from './presets/presetHelpers'
 import { presetPath } from '@/presets/types'
 import { SITE_NAME, displayName, pageTitle } from './seo'
 import { utilityHeading } from './utilityHeading'
+import { postPath, postsAbout } from './utilityPosts'
 import PageSponsor from '@/app/sponsors/PageSponsor'
 import PagePromo from '@/app/sponsors/PagePromo'
 import RunElsewhere from '@/app/integrations/RunElsewhere'
@@ -163,6 +164,7 @@ function UtilityDocPageBody({ id, meta }: { id: string; meta: UtilityMeta }) {
   }, [id, playInput, playParams])
 
   const related = useMemo(() => relatedUtilities(meta, registry.list()), [meta])
+  const posts = postsAbout(meta.id)
   const presets = useMemo(() => presetsUsing(id, PRESET_INDEX), [id])
 
   const tryExample = (ex: UtilityExample) => {
@@ -385,6 +387,16 @@ function UtilityDocPageBody({ id, meta }: { id: string; meta: UtilityMeta }) {
                 <a key={r.slug} className="link-row hover:[&>:first-child]:text-acc" href={presetPath(r.slug)}>
                   <span>{r.name}</span>
                   <span>{r.category}</span>
+                </a>
+              ))}
+            </section>
+          )}
+          {posts.length > 0 && (
+            <section className="grid" aria-labelledby={`${playgroundId}-blog`}>
+              <h2 id={`${playgroundId}-blog`} className="text-[13px] font-semibold mb-2.5">From the blog</h2>
+              {posts.map(p => (
+                <a key={p.slug} className="link-row hover:[&>:first-child]:text-acc" href={postPath(p.slug)}>
+                  <span>{p.title}</span>
                 </a>
               ))}
             </section>

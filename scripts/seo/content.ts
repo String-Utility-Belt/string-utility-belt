@@ -9,6 +9,7 @@ import { guideHeading } from '../../src/app/pages/guide'
 import { utilityPath } from '../../src/app/pages/related'
 import { HOME_HEADING, POPULAR_UTILITY_IDS, SITE_NAME, UTILITIES_HEADING, displayName } from '../../src/app/pages/seo'
 import { utilityHeading } from '../../src/app/pages/utilityHeading'
+import { postPath, postsAbout } from '../../src/app/pages/utilityPosts'
 import Docs from '../../src/components/Docs'
 import { en } from '../../src/app/i18n/locales/en'
 import { INTEGRATION_LINKS } from '../../src/app/integrations/links'
@@ -171,6 +172,15 @@ export function renderUtilityContent(meta: UtilityMeta, examples: UtilityExample
       </ul>
     </section>`
 
+  const posts = postsAbout(meta.id)
+  const postsHtml = posts.length === 0 ? '' : `
+    <section>
+      <h2>From the blog</h2>
+      <ul>
+        ${posts.map(p => `<li><a href="${escapeHtml(postPath(p.slug))}">${escapeHtml(p.title)}</a></li>`).join('')}
+      </ul>
+    </section>`
+
   const related = extras.related ?? []
   const relatedHtml = related.length === 0 ? '' : `
     <section>
@@ -194,6 +204,7 @@ export function renderUtilityContent(meta: UtilityMeta, examples: UtilityExample
     ${paramsHtml}
     ${examplesHtml}
     ${presetsHtml}
+    ${postsHtml}
     ${relatedHtml}
     <p><a href="/utilities/">Browse all utilities</a></p>
   </article>`

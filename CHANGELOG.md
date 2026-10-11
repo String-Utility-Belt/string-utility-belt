@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Utility pages are headed by the tool's name as people search for it ("Base64 Encode", "SHA-256 Hash Generator")
   instead of its short id-style name, and the utilities and presets indexes say what they list ("All text and string
   tools", "Text pipeline presets").
+- Every utility page is now linked from other utility pages: "Related utilities" also lists, up to three, the
+  tools that pick a page but that few others link to (the ranking breaks ties by name, so tools late in the
+  alphabet were linked from none). Utility pages also link the blog posts about them, under "From the blog".
 
 ### Fixed
 

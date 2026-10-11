@@ -212,6 +212,13 @@ describe('renderUtilityContent names', () => {
     expect(html).toContain('<a href="/util/base64_decode/">base64 decode</a>')
   })
 
+  it('links the blog posts about the utility', () => {
+    const html = renderUtilityContent(meta({ id: 'md5', name: 'md5 hash' }), [])
+    expect(html).toContain('<h2>From the blog</h2>')
+    expect(html).toContain('<a href="/blog/md5-insecure-but-useful/">')
+    expect(renderUtilityContent(meta({ id: 'atbash', name: 'atbash' }), [])).not.toContain('From the blog')
+  })
+
   it("heads a utility page with its guide title's search term", () => {
     expect(renderUtilityContent(meta({ id: 'base64_encode', name: 'base64_encode' }), [])).toContain('<h1>Base64 Encode</h1>')
   })

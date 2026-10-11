@@ -65,6 +65,17 @@ describe('UtilityDocPage', () => {
     expect(screen.queryByRole('heading', { name: /^Presets that use/ })).toBeNull()
   })
 
+  it('links the blog posts about the utility, and has no blog section otherwise', () => {
+    render(<UtilityDocPage id="md5" />)
+    const section = screen.getByRole('heading', { name: 'From the blog' }).closest('section')!
+    expect(within(section).getAllByRole('link').map(a => a.getAttribute('href'))).toEqual(['/blog/md5-insecure-but-useful/'])
+  })
+
+  it('has no blog section for a utility no post is about', () => {
+    render(<UtilityDocPage id="atbash" />)
+    expect(screen.queryByRole('heading', { name: 'From the blog' })).toBeNull()
+  })
+
   it('renders a params table with kind, default, bounds and a description', () => {
     render(<UtilityDocPage id="pad" />)
     const table = within(screen.getByRole('table'))

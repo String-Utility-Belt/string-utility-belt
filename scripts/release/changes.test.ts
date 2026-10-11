@@ -26,6 +26,7 @@ describe('shipsPath', () => {
     expect(shipsPath(app, 'src/utilities/_generated/headings.ts')).toBe(true)
     expect(shipsPath(cli, 'src/utilities/_generated/headings.ts')).toBe(false)
     expect(shipsPath(cli, 'src/utilities/guideCheck.ts')).toBe(false)
+    expect(shipsPath(cli, 'src/utilities/_generated/posts.ts')).toBe(false)
   })
 
   it('keeps each package to its own directory', () => {

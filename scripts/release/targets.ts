@@ -37,7 +37,7 @@ export interface Target {
 
 /**
  * Every package bundles the framework-free engine and every utility, but not their guides
- * or what only the site makes of them: the doc pages' headings and the guide checker.
+ * or what only the site makes of them: the doc pages' headings and blog links, and the guide checker.
  */
 const ENGINE = ['src/core/**', 'src/types/**', 'src/utilities/**']
 
@@ -51,7 +51,8 @@ const NOT_SHIPPED = [
 ]
 
 const PACKAGE_EXCLUDE = [
-  ...NOT_SHIPPED, 'src/utilities/*/guide.md', 'src/utilities/_generated/headings.ts', 'src/utilities/guideCheck.ts',
+  ...NOT_SHIPPED, 'src/utilities/*/guide.md', 'src/utilities/guideCheck.ts',
+  'src/utilities/_generated/headings.ts', 'src/utilities/_generated/posts.ts',
 ]
 
 export const TARGETS: readonly Target[] = [

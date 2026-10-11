@@ -1,5 +1,9 @@
 /** One entry of `/blog/_manifest.json`, the list the blog index and a post's footer read. */
-export type PostMeta = { slug: string; title: string; date?: string; description?: string; tags?: string[] }
+export type PostMeta = {
+  slug: string; title: string; date?: string; description?: string; tags?: string[]
+  /** Utilities the post is about: their doc pages link to it (`src/utilities/_generated/posts.ts`). */
+  utilities?: string[]
+}
 
 /** Keeps only well-formed manifest entries (and string tags), so a bad manifest can't crash a page. */
 export function toPosts(data: unknown): PostMeta[] {
