@@ -6,6 +6,8 @@
  * Outputs (src/utilities/_generated/, committed; `npm test` fails if stale):
  *   manifest.ts  — metadata for every utility, no code (ships in the initial bundle)
  *   examples.ts  — worked examples (loaded lazily by doc pages)
+ *   headings.ts  — each doc page's <h1>, from its guide's title (doc pages and the pre-render)
+ *   posts.ts     — blog posts each doc page links to, from `utilities` in public/blog/_manifest.json
  *   loaders.ts   — `id → () => import(...)`: one lazy chunk per utility (browser)
  *   static.ts    — static imports of every utility (Node, Cloudflare Worker, CLI, MCP)
  *
@@ -15,6 +17,8 @@ import { readFileSync, readdirSync, existsSync, writeFileSync, mkdirSync } from 
 import path from 'node:path'
 import type { Utility, UtilityEnv, UtilityExample } from '../src/types/utility'
 import { metaOf, type UtilityMeta } from '../src/core/registry'
+import { pageHeading, parseGuide } from '../src/app/pages/guide'
+import { readBlogManifest } from './seo/blog'
 
 const ROOT = process.cwd()
 const UTIL_DIR = path.join(ROOT, 'src', 'utilities')
@@ -79,11 +83,15 @@ function writeIfChanged(file: string, content: string): boolean {
 
 const ident = (i: number) => `u${i}`
 
+const sortKeys = <T>(o: Record<string, T>): Record<string, T> =>
+  Object.fromEntries(Object.entries(o).sort(([a], [b]) => a.localeCompare(b)))
+
 /** Build every generated file's content in memory (no writes). */
 export async function build(): Promise<{ count: number; files: Record<string, string> }> {
   const found = discover()
   const metas: UtilityMeta[] = []
   const examples: Record<string, UtilityExample[]> = {}
+  const headings: Record<string, string> = {}
   const problems: string[] = []
   const seen = new Set<string>()
 
@@ -97,6 +105,16 @@ export async function build(): Promise<{ count: number; files: Record<string, st
     seen.add(util.id)
     metas.push(metaOf(util, detectEnv(d.source)))
     if (util.examples?.length) examples[util.id] = util.examples
+    const guide = path.join(UTIL_DIR, d.dir, 'guide.md')
+    const title = existsSync(guide) ? parseGuide(readFileSync(guide, 'utf8')).title : undefined
+    if (title) headings[util.id] = pageHeading(title)
+  }
+  const posts: Record<string, { slug: string; title: string }[]> = {}
+  for (const post of readBlogManifest(path.join(ROOT, 'public', 'blog'))) {
+    for (const id of post.utilities ?? []) {
+      if (!seen.has(id)) problems.push(`blog post ${post.slug}: lists unknown utility "${id}"`)
+      else (posts[id] ??= []).push({ slug: post.slug, title: post.title })
+    }
   }
   if (problems.length) throw new Error('utility manifest problems:\n  ' + problems.join('\n  '))
 
@@ -110,6 +128,13 @@ export async function build(): Promise<{ count: number; files: Record<string, st
       HEADER +
       "import type { UtilityExample } from '../../types/utility'\n\n" +
       `export const EXAMPLES: Record<string, UtilityExample[]> = ${JSON.stringify(examples, null, 2)}\n`,
+    'headings.ts':
+      HEADER +
+      '// A utility without a guide has no entry: its page falls back to the utility name.\n' +
+      `export const HEADINGS: Record<string, string> = ${JSON.stringify(headings, null, 2)}\n`,
+    'posts.ts':
+      HEADER +
+      `export const POSTS: Record<string, { slug: string; title: string }[]> = ${JSON.stringify(sortKeys(posts), null, 2)}\n`,
     'loaders.ts':
       HEADER +
       "import type { Utility } from '../../types/utility'\n\n" +

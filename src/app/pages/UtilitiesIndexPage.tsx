@@ -3,7 +3,7 @@ import { Search } from 'lucide-react'
 import { registry } from '@/app/registry'
 import PagePromo from '@/app/sponsors/PagePromo'
 import { utilityPath } from './related'
-import { displayName, utilitiesDescription, utilitiesTitle } from './seo'
+import { UTILITIES_HEADING, displayName, utilitiesDescription, utilitiesTitle } from './seo'
 import { useDocumentMeta } from './useDocumentMeta'
 
 type Meta = ReturnType<typeof registry.list>[number]
@@ -52,7 +52,7 @@ export default function UtilitiesIndexPage() {
     <div className="grid gap-7 min-w-0">
       <header className="flex flex-wrap items-end justify-between gap-5 pb-6 border-b">
         <div className="grid gap-2 max-w-[560px]">
-          <h1 className="page-title">All utilities</h1>
+          <h1 className="page-title">{UTILITIES_HEADING}</h1>
           <p className="page-lead text-pretty">
             Each one has its own page with a guide, worked examples and a playground. Add any of them to a pipeline from there.
           </p>

@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { ToolProvider } from '@/app/ToolContext'
 import ToolPage from './ToolPage'
+import { HOME_HEADING } from '@/app/pages/seo'
 
 // CodeMirror and its language packs are dynamically imported by the I/O panels;
 // mock them the same way IOSection.test.tsx does so this test doesn't pull in a
@@ -73,7 +74,7 @@ describe('ToolPage utility picker layout', () => {
 describe('ToolPage title row', () => {
   it('keeps a page heading for assistive tech', () => {
     render(<Harness />)
-    expect(screen.getByRole('heading', { level: 1, name: 'String Utility Belt' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: HOME_HEADING })).toBeInTheDocument()
   })
 
   it('names the pipeline from its editable title', () => {

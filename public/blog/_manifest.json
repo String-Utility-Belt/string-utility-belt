@@ -10,6 +10,12 @@
       "javascript",
       "python",
       "cli"
+    ],
+    "utilities": [
+      "base64_encode",
+      "base64_decode",
+      "base64url_encode",
+      "base64url_decode"
     ]
   },
   {
@@ -22,6 +28,11 @@
       "hashing",
       "security",
       "checksums"
+    ],
+    "utilities": [
+      "md5",
+      "hash",
+      "checksum"
     ]
   }
 ]

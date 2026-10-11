@@ -44,7 +44,7 @@ describe('<App />', () => {
       expect(await screen.findByRole('heading', { name: /how to use string utility belt/i })).toBeTruthy()
       fireEvent.click(screen.getByRole('link', { name: /utilities index/i }))
       expect(location.pathname).toBe('/utilities/')
-      expect(await screen.findByRole('heading', { level: 1, name: 'All utilities' })).toBeTruthy()
+      expect(await screen.findByRole('heading', { level: 1, name: 'All text and string tools' })).toBeTruthy()
     } finally {
       scroll.mockRestore()
     }

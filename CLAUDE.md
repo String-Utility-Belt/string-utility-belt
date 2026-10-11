@@ -9,7 +9,8 @@ same engine shipped as a CLI, HTTP API, MCP server, browser extension and VS Cod
 - **Design system:** tokens and component classes in `src/index.css` (`canvas`/`surface`/`surface-2`/`strip`, `line`/`line-2`,
   `fg`/`muted`, `acc*`, `inv*`, `danger*`, `add-*`/`del-*`; `.btn`, `.btn-ghost`, `.cta`, `.btn-inv`, `.field`, `.pill`,
   `.segmented`, `.popover`, `.menu-item`, `.page-title`, `.link-row`, `.md`). Flat hairline surfaces, one accent; a
-  shadow only on things that float. Instrument Sans + JetBrains Mono (Google Fonts, disclosed in the privacy policy)
+  shadow only on things that float. Instrument Sans + JetBrains Mono, self-hosted (`@fontsource-variable/*`,
+  imported in `main.tsx`; the CSP's `font-src` is `'self'`, checked on every build by `scripts/csp.ts`)
 - **Build:** Vite 7 with `@vitejs/plugin-react`; custom plugins in `scripts/` (utility manifest, PWA service worker)
 - **Deploy:** Cloudflare Workers via Wrangler — static assets + the `/api/*` Worker. Released by the Release workflow
   (see "Releases" below); `npm run deploy` is the manual fallback
@@ -157,7 +158,7 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
   gives every git-dated page HEAD's date, so the deploy job checks out full history.
 - Site pages: `src/app/pages/content/{about,privacy,contact,integrations,advertise}.md` (frontmatter
   title/description, guide markdown syntax, own `#` heading), rendered by `SitePage` and pre-rendered by
-  `build.ts`. The privacy policy says what leaves the browser (Cloudflare Web Analytics, Google Fonts, the server features) — keep it accurate when data flows change.
+  `build.ts`. The privacy policy says what leaves the browser (Cloudflare Web Analytics, the server features) — keep it accurate when data flows change.
   `advertise.md` is the sponsors' media kit: keep its promises (formats, rules) in step with what the site does.
 - GitHub Sponsors (`GITHUB_SPONSORS_URL`, `src/app/support.ts`) is for people supporting the project; `/advertise/` is for
   companies buying a sponsor slot. The footer (app and pre-render), the about page, the README and `.github/FUNDING.yml`

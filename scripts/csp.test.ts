@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { SANDBOX_BOOTSTRAP_SCRIPT } from '../src/app/sandbox/frame'
-import { hashSource, inlineScripts, pageViolations, parseCsp } from './csp'
+import { hashSource, inlineScripts, pageViolations, parseCsp, stylesheetViolations } from './csp'
 import { headersOf, parseHeadersFile, siteHeaders } from './headers'
 
 const root = path.resolve(__dirname, '..')
@@ -36,6 +36,12 @@ describe('the site CSP (public/_headers)', () => {
     expect(csp.get('object-src')).toEqual(["'none'"])
     expect(csp.get('base-uri')).toEqual(["'self'"])
     expect(csp.get('worker-src')).toEqual(["'self'", 'blob:'])
+  })
+
+  it('loads fonts and stylesheets from this site only (the fonts are self-hosted)', () => {
+    expect(csp.get('font-src')).toEqual(["'self'"])
+    expect(csp.get('style-src')?.filter(s => /^https?:|^\*/.test(s))).toEqual([])
+    expect(indexHtml).not.toMatch(/<link[^>]+href="(?:https?:)?\/\//)
   })
 
   it('leaves the page frameable, for the #/embed widget', () => {
@@ -80,6 +86,28 @@ describe('pageViolations', () => {
     expect(problems).toHaveLength(2)
     expect(problems[0]).toMatch(/onerror=/)
     expect(problems[1]).toMatch(/javascript:/)
+  })
+})
+
+describe('stylesheetViolations', () => {
+  const face = (src: string) => `@font-face{font-family:X;src:${src} format("woff2")}`
+
+  it("passes same-origin font files under font-src 'self'", () => {
+    expect(stylesheetViolations(face('url(/assets/x-AbC.woff2)') + face("url('./y.woff2')"), "font-src 'self'")).toEqual([])
+  })
+
+  it('reports a data: font or a third-party font the policy does not list', () => {
+    const css = face('url(data:font/woff2;base64,AAAA)') + face('url("https://fonts.gstatic.com/s/x.woff2")')
+    const problems = stylesheetViolations(css, "font-src 'self'")
+    expect(problems).toHaveLength(2)
+    expect(problems[0]).toMatch(/data:font/)
+    expect(problems[1]).toMatch(/fonts\.gstatic\.com/)
+    expect(stylesheetViolations(css, "font-src 'self' data: https://fonts.gstatic.com")).toEqual([])
+  })
+
+  it('ignores url()s outside @font-face and falls back to default-src', () => {
+    expect(stylesheetViolations('a{background:url(data:image/png;base64,AA)}', "font-src 'self'")).toEqual([])
+    expect(stylesheetViolations(face('url(data:font/woff2;base64,AA)'), "default-src 'self'")).toHaveLength(1)
   })
 })
 

@@ -174,7 +174,8 @@ export function parseExampleBlock(lines: string[]): UtilityExample {
  * ("Base64 Encode Online: Convert Text to Base64" → "Base64 Encode").
  */
 export function pageHeading(title: string): string {
-  return title.split(/: | — /)[0].split(/\s+/).filter(word => word.toLowerCase() !== 'online').join(' ').trim()
+  // drop the word rather than replace text: nothing can re-form around a removed token
+  return title.split(/: | — /)[0].split(/\s+/).filter(word => word && word.toLowerCase() !== 'online').join(' ')
 }
 
 /** Splits a guide into frontmatter and render blocks. Never throws: bad examples are reported in `errors`. */
@@ -264,7 +265,7 @@ function inlineHtml(text: string): string {
 }
 
 /**
- * The page's `<h1>` is the utility name and the guide's `<summary>` is an
+ * The page's `<h1>` is the guide title's search term (`pageHeading`) and the guide's `<summary>` is an
  * `<h2>`, so the guide's own `##` / `###` sections drop one level.
  */
 function demoteHeadings(html: string): string {

@@ -10,7 +10,7 @@ import PresetsIndexPage from './PresetsIndexPage'
 describe('PresetsIndexPage', () => {
   it('lists every preset by category, in category order, linking its pre-rendered page', () => {
     render(<PresetsIndexPage />)
-    expect(screen.getByRole('heading', { level: 1, name: 'Presets' })).toBeTruthy()
+    expect(screen.getByRole('heading', { level: 1, name: 'Text pipeline presets' })).toBeTruthy()
     const headings = screen.getAllByRole('heading', { level: 2 }).map(h => h.textContent)
     expect(headings).toEqual(PRESET_CATEGORIES.filter(c => PRESET_INDEX.some(r => r.category === c)))
     for (const r of PRESET_INDEX) {

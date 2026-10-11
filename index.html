@@ -14,11 +14,8 @@
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
-    rel="stylesheet">
+  <!-- the body font's Latin file, which src/index.css also loads: Vite gives both the same hashed /assets URL -->
+  <link rel="preload" href="./node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <script>
     // apply the saved theme before first paint so dark mode never flashes light
     // (its SHA-256 is in the CSP, public/_headers: `npm test` names the new hash after an edit)

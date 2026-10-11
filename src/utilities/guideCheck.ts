@@ -64,7 +64,7 @@ export async function checkGuide(u: Utility, source: string | null, utilityIds: 
   }
 
   const lines = proseLines(source)
-  // the page already has the utility name as its <h1>
+  // the page already has its <h1> (`pageHeading` of the guide title)
   if (lines.some(l => /^#\s/.test(l))) problems.push('no "# " headings — start sections at ##')
   const sections = lines.filter(l => /^##\s/.test(l)).length
   if (sections < R.minSections) problems.push(`needs ≥ ${R.minSections} "## " sections, has ${sections}`)

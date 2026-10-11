@@ -6,6 +6,8 @@ export interface BlogPostMeta {
   title: string
   description?: string
   date?: string
+  /** Utilities the post is about: their pages link to it ("From the blog", via `npm run gen`). */
+  utilities?: string[]
 }
 
 const SAFE_SLUG = /^[A-Za-z0-9][A-Za-z0-9_-]*$/
