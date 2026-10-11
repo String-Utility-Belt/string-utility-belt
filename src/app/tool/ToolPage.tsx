@@ -7,6 +7,7 @@ import PresetsButton from '@/app/library/PresetsButton'
 import SaveToExtensionButton from '@/app/extension/SaveToExtensionButton'
 import IOSection from './IOSection'
 import StepsSection from './steps/StepsSection'
+import { HOME_HEADING } from '@/app/pages/seo'
 
 /** Longest pipeline name kept, as the library keeps it. */
 const MAX_NAME = 120
@@ -18,7 +19,7 @@ export default function ToolPage({ banner }: { banner?: React.ReactNode }) {
   const titleRow = (
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div className="grid gap-1 min-w-[240px] flex-1">
-        <h1 className="sr-only">String Utility Belt</h1>
+        <h1 className="sr-only">{HOME_HEADING}</h1>
         <input
           className="w-full min-w-0 p-0 bg-transparent border-0 border-b border-transparent outline-hidden focus:border-line-2 text-2xl leading-[30px] font-semibold tracking-[-0.02em]"
           aria-label="Pipeline name"

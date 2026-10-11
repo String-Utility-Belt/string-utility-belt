@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { parseGuide, parseExampleBlock, renderGuideHtml, renderMarkdownDocument, guideExamples, guideHeading, guideUrl } from './guide'
+import { parseGuide, parseExampleBlock, renderGuideHtml, renderMarkdownDocument, guideExamples, guideHeading, guideUrl, pageHeading } from './guide'
+import { HEADINGS } from '@/utilities/_generated/headings'
+import { MANIFEST } from '@/utilities/_generated/manifest'
+import { utilityHeading } from './utilityHeading'
 
 const FENCE = '```'
 const html = (source: string) => renderGuideHtml(parseGuide(source))
@@ -178,6 +181,26 @@ describe('helpers', () => {
     expect(guideHeading('aes decrypt')).toBe('How aes decrypt works')
     expect(guideUrl('trim')).toBe('/guides/trim.md')
     expect(guideUrl('trim', '/app/')).toBe('/app/guides/trim.md')
+  })
+})
+
+describe('pageHeading', () => {
+  it('takes the search term before the first ": " or " — ", without "Online"', () => {
+    expect(pageHeading('Base64 Encode Online: Convert Text to Base64')).toBe('Base64 Encode')
+    expect(pageHeading('Slug Generator Online — URL-Safe Slugs')).toBe('Slug Generator')
+    expect(pageHeading('CSV to HTML Table Converter Online')).toBe('CSV to HTML Table Converter')
+    expect(pageHeading('Tabs to Spaces Converter Online (and Back)')).toBe('Tabs to Spaces Converter (and Back)')
+    expect(pageHeading('Escape HTML Online: Encode &, <, > and quotes')).toBe('Escape HTML')
+  })
+
+  it('gives every utility page a heading, falling back to the utility name', () => {
+    expect(utilityHeading('base64_encode', 'base64 encode')).toBe('Base64 Encode')
+    expect(utilityHeading('no_guide', 'no_guide')).toBe('no guide')
+    for (const m of MANIFEST) {
+      const heading = HEADINGS[m.id]
+      expect(heading, m.id).toBeTruthy()
+      expect(heading.length, m.id).toBeLessThanOrEqual(60)
+    }
   })
 })
 

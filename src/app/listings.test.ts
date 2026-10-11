@@ -3,13 +3,22 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { isUnsafeSvg } from './sponsors/check'
 import { MAX_LOGO_BYTES } from './sponsors/sponsors'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { DEVHUNT } from './listings'
+import DevHuntBadge from './DevHuntBadge'
 
 const publicFile = (url: string) => readFileSync(path.resolve(__dirname, '../../public', `.${url}`))
 
 describe('the DevHunt badge', () => {
   it('links to the listing over https', () => {
     expect(DEVHUNT.href).toMatch(/^https:\/\/devhunt\.org\//)
+  })
+
+  it('gives both images alt text, which crawlers use as the link text', () => {
+    const html = renderToStaticMarkup(createElement(DevHuntBadge, { label: 'label' }))
+    const alts = [...html.matchAll(/<img\b[^>]*\balt="([^"]*)"/g)].map(m => m[1])
+    expect(alts).toEqual([DEVHUNT.alt, DEVHUNT.alt])
   })
 
   it.each([DEVHUNT.light, DEVHUNT.dark])('%s is our own copy: small, and with no script or external reference', url => {

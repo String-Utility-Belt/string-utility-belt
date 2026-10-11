@@ -9,7 +9,9 @@
  *   failure names the hash to add or remove.
  * - `scripts/build-seo.ts` (every `npm run build`, so every deploy): every built page —
  *   the SPA shell and each pre-rendered page — runs only allowed inline scripts and
- *   carries no inline event handler or `javascript:` URL, which no hash can allow.
+ *   carries no inline event handler or `javascript:` URL, which no hash can allow; and
+ *   every built stylesheet loads its `@font-face` files only from sources `font-src` allows
+ *   (the fonts are self-hosted: a `data:` URI or a CDN would be blocked in production).
  */
 import { createHash } from 'node:crypto'
 import fs from 'node:fs'
@@ -77,14 +79,44 @@ export function pageViolations(html: string, policy: string): string[] {
   return problems
 }
 
-function htmlFiles(dir: string): string[] {
+const FONT_FACE = /@font-face\s*\{([^}]*)\}/gi
+const CSS_URL = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]*))\s*\)/gi
+
+/** Every `@font-face` file in `css` that the policy's `font-src` would block. */
+export function stylesheetViolations(css: string, policy: string): string[] {
+  const sources = parseCsp(policy).get('font-src') ?? parseCsp(policy).get('default-src') ?? []
+  const allows = (url: string): boolean => {
+    const scheme = /^([a-z][a-z0-9+.-]*):/i.exec(url)?.[1]?.toLowerCase()
+    if (scheme === 'data' || scheme === 'blob') return sources.includes(`${scheme}:`)
+    if (scheme === 'http' || scheme === 'https' || url.startsWith('//')) {
+      const origin = new URL(url, 'https://self.invalid').origin
+      return sources.some(s => s.replace(/\/+$/, '') === origin) || sources.includes(`${scheme ?? 'https'}:`)
+    }
+    return sources.includes("'self'") // relative or root-relative: the site's own origin
+  }
+  const problems: string[] = []
+  for (const [, body] of css.matchAll(FONT_FACE)) {
+    for (const m of body.matchAll(CSS_URL)) {
+      const url = (m[1] ?? m[2] ?? m[3]).trim()
+      if (!allows(url)) problems.push(`@font-face source is blocked by the CSP's font-src: ${url.slice(0, 80)}`)
+    }
+  }
+  return problems
+}
+
+function filesEndingWith(dir: string, ext: string): string[] {
   return fs.readdirSync(dir, { withFileTypes: true, recursive: true })
-    .filter(e => e.isFile() && e.name.endsWith('.html'))
+    .filter(e => e.isFile() && e.name.endsWith(ext))
     .map(e => path.join(e.parentPath, e.name))
 }
 
-/** Checks every `.html` file under `outDir` against `policy`; problems are prefixed with the file. */
+/**
+ * Checks every `.html` file under `outDir` (inline scripts, handlers, `javascript:` URLs) and
+ * every `.css` file (`@font-face` sources) against `policy`; problems are prefixed with the file.
+ */
 export function checkBuiltPages(outDir: string, policy: string): string[] {
-  return htmlFiles(outDir).flatMap(file =>
-    pageViolations(fs.readFileSync(file, 'utf8'), policy).map(p => `${path.relative(outDir, file)}: ${p}`))
+  const check = (ext: string, violations: (text: string, policy: string) => string[]) =>
+    filesEndingWith(outDir, ext).flatMap(file =>
+      violations(fs.readFileSync(file, 'utf8'), policy).map(p => `${path.relative(outDir, file)}: ${p}`))
+  return [...check('.html', pageViolations), ...check('.css', stylesheetViolations)]
 }

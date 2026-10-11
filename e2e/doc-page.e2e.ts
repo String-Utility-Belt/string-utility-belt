@@ -14,7 +14,7 @@ import { isSameDocument, markDocument, quickAdd, stepCard } from './utils'
 test.describe('utility doc page', () => {
   test('the playground turns input into output live (#/util/base64_encode)', async ({ page }) => {
     await page.goto('/#/util/base64_encode')
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('base64')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Base64 Encode')
 
     const input = page.getByRole('textbox', { name: 'playground input' })
     const output = page.getByRole('status', { name: 'playground output' })
@@ -34,12 +34,12 @@ test.describe('utility doc page', () => {
     expect(body).toContain('sha3')
 
     await page.goto('/util/sha3/')
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('sha3')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('SHA-3')
   })
 
   test('the header nav "Tool" link works from a pre-rendered /util/<id>/ page', async ({ page }) => {
     await page.goto('/util/sha3/')
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('sha3')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('SHA-3')
 
     const tool = page.getByRole('navigation', { name: 'main' }).getByRole('link', { name: 'Tool' })
     // a crawlable path, followed in place by the app
@@ -59,7 +59,7 @@ test.describe('utility doc page', () => {
     await docs.click()
 
     await expect(page).toHaveURL(/\/util\/trim\/$/)
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('trim')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Trim Whitespace')
     expect(await isSameDocument(page)).toBe(true)
   })
 
@@ -71,7 +71,7 @@ test.describe('utility doc page', () => {
     await docs.click()
 
     await expect(page).toHaveURL(/\/util\/base64_encode\/$/)
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('base64')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Base64 Encode')
     expect(await isSameDocument(page)).toBe(true)
   })
 })

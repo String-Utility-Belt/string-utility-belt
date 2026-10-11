@@ -14,9 +14,9 @@ afterEach(() => {
 const playgroundOutput = () => screen.getByRole('status', { name: 'playground output' })
 
 describe('UtilityDocPage', () => {
-  it('renders name, description and category', () => {
+  it("renders its guide's heading, description and category", () => {
     render(<UtilityDocPage id="trim" />)
-    const heading = screen.getByRole('heading', { level: 1, name: 'trim' })
+    const heading = screen.getByRole('heading', { level: 1, name: 'Trim Whitespace' })
     expect(screen.getByText('Remove leading and trailing whitespace.')).toBeTruthy()
     const header = within(heading.closest('header')!)
     // the breadcrumb names it, and so does the category chip
@@ -63,6 +63,17 @@ describe('UtilityDocPage', () => {
   it('has no preset section for a utility no preset uses', () => {
     render(<UtilityDocPage id="atbash" />)
     expect(screen.queryByRole('heading', { name: /^Presets that use/ })).toBeNull()
+  })
+
+  it('links the blog posts about the utility, and has no blog section otherwise', () => {
+    render(<UtilityDocPage id="md5" />)
+    const section = screen.getByRole('heading', { name: 'From the blog' }).closest('section')!
+    expect(within(section).getAllByRole('link').map(a => a.getAttribute('href'))).toEqual(['/blog/md5-insecure-but-useful/'])
+  })
+
+  it('has no blog section for a utility no post is about', () => {
+    render(<UtilityDocPage id="atbash" />)
+    expect(screen.queryByRole('heading', { name: 'From the blog' })).toBeNull()
   })
 
   it('renders a params table with kind, default, bounds and a description', () => {

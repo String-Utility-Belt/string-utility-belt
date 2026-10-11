@@ -53,7 +53,7 @@ async function main() {
   // CSP blocks must never deploy (it would render, but without its theme script)
   const problems = checkBuiltPages(outDir, siteHeaders(outDir)['Content-Security-Policy'] ?? '')
   if (problems.length) throw new Error(`the CSP in _headers blocks scripts on built pages:\n  ${problems.join('\n  ')}`)
-  console.log('[build-seo] CSP: every built page runs only allowed scripts')
+  console.log('[build-seo] CSP: every built page runs only allowed scripts, every stylesheet loads only allowed fonts')
 }
 
 // only when executed as the script, not when a test imports `resolveOutDir`

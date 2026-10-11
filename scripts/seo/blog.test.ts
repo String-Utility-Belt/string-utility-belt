@@ -104,3 +104,18 @@ describe('dropRepeatedTitle', () => {
     }
   })
 })
+
+// a post only /blog/ links to is all but invisible to a crawler (SE Ranking's "one inbound internal link")
+describe('the blog manifest links every post from the utility pages it is about', () => {
+  const posts = readBlogManifest(PUBLIC_BLOG)
+
+  it.each(posts.map(p => [p.slug, p] as const))('%s names at least one utility', (_, post) => {
+    expect(post.utilities?.length ?? 0).toBeGreaterThan(0)
+  })
+
+  it.each(posts.map(p => [p.slug, p] as const))('%s links each utility it names', (slug, post) => {
+    const body = readBlogPostSource(PUBLIC_BLOG, slug) ?? ''
+    const unlinked = (post.utilities ?? []).filter(id => !body.includes(`](/util/${id}/)`))
+    expect(unlinked, 'a post names only the utilities it is about, and links them').toEqual([])
+  })
+})

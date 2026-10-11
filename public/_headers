@@ -21,7 +21,7 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-1vD0G2u6HxMsRuzeJrDja6uqhzcCB6+OZqSM7tcGIPw=' 'sha256-e3JLvqPIAXkjEg3QWQg3qfG5KAeariOwujRV06XHyn8=' 'unsafe-eval' 'wasm-unsafe-eval' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https:; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-1vD0G2u6HxMsRuzeJrDja6uqhzcCB6+OZqSM7tcGIPw=' 'sha256-e3JLvqPIAXkjEg3QWQg3qfG5KAeariOwujRV06XHyn8=' 'unsafe-eval' 'wasm-unsafe-eval' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https:; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'
 
 # Raw markdown the app fetches to render each guide and post. Crawlers must still be
 # able to fetch it (search engines render the pages with it), but the pre-rendered

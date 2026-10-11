@@ -5,6 +5,10 @@ import { installBrowserSandbox } from '@/app/sandbox/browserSandbox'
 import { registerSW } from '@/app/pwa/registerSW'
 import { getRoute } from '@/lib/router'
 import { preloadPresetRoute } from '@/app/pages/presets/routes'
+// self-hosted variable fonts (weight axis), bundled into /assets: no third-party font request.
+// Imported here, not from index.css: Tailwind's @import inlining would not rebase their url()s.
+import '@fontsource-variable/instrument-sans/wght.css'
+import '@fontsource-variable/jetbrains-mono/wght.css'
 import './index.css'
 
 // custom JavaScript steps run in a sandboxed iframe + worker; without this they refuse to run

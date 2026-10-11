@@ -1,6 +1,6 @@
 ---
 title: About String Utility Belt — Free Browser-Based Text Tools
-description: String Utility Belt is a free collection of text and string tools that run in your browser. Use one tool at a time, or chain them into pipelines with live previews.
+description: String Utility Belt is a free set of text and string tools that run in your browser. Use one at a time, or chain them into pipelines with live previews.
 ---
 
 # About String Utility Belt
