@@ -16,7 +16,7 @@ import { formatForDisplay } from '../core/coerce'
 import { validateParams } from '../core/params'
 import { sanitizeSteps } from '../core/serialize'
 import { isUtilityStep, stepTypeOf, walkSteps } from '../core/steps'
-import { parseGuide } from '../app/pages/guide'
+import { pageHeading, parseGuide } from '../app/pages/guide'
 import { proseLines, proseWords } from '../utilities/guideCheck'
 import { PRESET_CATEGORIES, toPipelineSteps, type Preset } from './types'
 import { firstError, without, type PipelineRunner } from './trace'
@@ -245,11 +245,11 @@ export interface GuideEntry {
 }
 
 /**
- * What a utility page ranks for: its guide title before " — ", without a trailing
- * "Online" ("Slug Generator Online — URL-Safe Slugs" → "slug generator").
+ * What a utility page ranks for: its `<h1>` (`pageHeading`), lowercased — the guide
+ * title before the first ": " or " — ", without "Online"
+ * ("Slug Generator Online: URL-Safe Slugs" → "slug generator").
  */
-export const headTerm = (title: string): string =>
-  title.split(' — ')[0].replace(/\s+online$/i, '').trim().toLowerCase()
+export const headTerm = (title: string): string => pageHeading(title).toLowerCase()
 
 /** A guide's prose (code spans and fenced blocks dropped) as a set of `shingleWords`-word runs. */
 export function shingles(source: string, size = PRESET_RULES.shingleWords): Set<string> {

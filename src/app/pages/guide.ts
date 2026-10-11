@@ -11,7 +11,7 @@ import { fromControlPictures, showControlChars } from '@/core/coerce'
  *
  * ```md
  * ---
- * title: Base64 Encode Online — Text to Base64 Converter     (<title>, ≤ 60 chars)
+ * title: Base64 Encode Online: Convert Text to Base64        (<title>, ≤ 60 chars)
  * description: Encode text or bytes to Base64 …               (meta description)
  * ---
  * ## What is Base64?                                          (sections: ## and ###)
