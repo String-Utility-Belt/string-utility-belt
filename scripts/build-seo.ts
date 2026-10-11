@@ -15,6 +15,7 @@
  */
 import path from 'node:path'
 import { checkBuiltPages } from './csp'
+import { checkDistText } from './distText'
 import { siteHeaders } from './headers'
 import { buildSeo } from './seo/build'
 
@@ -54,6 +55,9 @@ async function main() {
   const problems = checkBuiltPages(outDir, siteHeaders(outDir)['Content-Security-Policy'] ?? '')
   if (problems.length) throw new Error(`the CSP in _headers blocks scripts on built pages:\n  ${problems.join('\n  ')}`)
   console.log('[build-seo] CSP: every built page runs only allowed scripts')
+  const controls = checkDistText(outDir)
+  if (controls.length) throw new Error(`built files hold raw control characters (show them with showControlChars, write them as Control Pictures in a guide):\n  ${controls.join('\n  ')}`)
+  console.log('[build-seo] text: no built file holds a raw control character')
 }
 
 // only when executed as the script, not when a test imports `resolveOutDir`

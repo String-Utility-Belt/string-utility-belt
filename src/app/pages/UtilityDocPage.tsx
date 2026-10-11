@@ -3,7 +3,7 @@ import { ArrowRight, Info, ShieldAlert } from 'lucide-react'
 import { registry, loadExamples, type UtilityMeta } from '@/app/registry'
 import { runPipeline } from '@/core/runner'
 import { defaultParams } from '@/core/params'
-import { formatForDisplay } from '@/core/coerce'
+import { formatForDisplay, showControlChars } from '@/core/coerce'
 import { stepId } from '@/core/steps'
 import { loadState, saveState } from '@/lib/persist'
 import { isPlainLeftClick, navigateToPath } from '@/lib/router'
@@ -323,14 +323,14 @@ function UtilityDocPageBody({ id, meta }: { id: string; meta: UtilityMeta }) {
                       <span className="text-[11px] text-muted">
                         Input{ex.inputEncoding && ex.inputEncoding !== 'text' ? ` (${ex.inputEncoding})` : ''}
                       </span>
-                      <pre className="m-0 px-2.5 py-2 rounded-md bg-surface-2 font-mono text-xs leading-[19px] whitespace-pre-wrap wrap-anywhere max-h-40 overflow-auto">{ex.input || '(empty)'}</pre>
+                      <pre className="m-0 px-2.5 py-2 rounded-md bg-surface-2 font-mono text-xs leading-[19px] whitespace-pre-wrap wrap-anywhere max-h-40 overflow-auto">{ex.input ? showControlChars(ex.input) : '(empty)'}</pre>
                     </div>
                     <div className="grid gap-1 content-start min-w-0">
                       <span className="text-[11px] text-muted">
                         Output{ex.output === undefined && ex.outputMatches ? ' (varies between runs, matches this pattern)' : ''}
                       </span>
                       <pre className="m-0 px-2.5 py-2 rounded-md bg-surface-2 font-mono text-xs leading-[19px] whitespace-pre-wrap wrap-anywhere max-h-40 overflow-auto">
-                        {ex.output ?? (ex.outputMatches ? `/${ex.outputMatches}/` : '(varies between runs)')}
+                        {ex.output !== undefined ? showControlChars(ex.output) : ex.outputMatches ? `/${ex.outputMatches}/` : '(varies between runs)'}
                       </pre>
                     </div>
                   </div>

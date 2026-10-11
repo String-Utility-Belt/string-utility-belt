@@ -1,5 +1,5 @@
 import type { Utility } from '../types/utility'
-import { formatForDisplay, coerceInputFor, resolveAccepts } from '../core/coerce'
+import { formatForDisplay, coerceInputFor, resolveAccepts, HIDDEN_CONTROL_CHAR, showControlChars } from '../core/coerce'
 import { resolveParams, validateParams } from '../core/params'
 import { parseGuide, guideExamples, type Guide } from '../app/pages/guide'
 import { decodeExampleInput } from './exampleInput'
@@ -62,6 +62,10 @@ export async function checkGuide(u: Utility, source: string | null, utilityIds: 
   if (description.length < R.descriptionMin || description.length > R.descriptionMax) {
     problems.push(`description must be ${R.descriptionMin}–${R.descriptionMax} chars, is ${description.length}: ${show(description)}`)
   }
+
+  // the file is served as text and pre-rendered into HTML, where NUL becomes U+FFFD
+  const controls = source.split('\n').flatMap((l, i) => HIDDEN_CONTROL_CHAR.test(l) ? [`line ${i + 1}: ${show(showControlChars(l).slice(0, 60))}`] : [])
+  if (controls.length) problems.push(`raw control characters — write each as its Control Picture (␛ for ESC, ␀ for NUL, ␡ for DEL), which an example reads back as the character: ${controls.join(', ')}`)
 
   const lines = proseLines(source)
   // the page already has the utility name as its <h1>

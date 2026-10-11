@@ -7,10 +7,12 @@ import { pwaServiceWorker } from './scripts/vite-plugin-pwa'
 import { utilityGuides } from './scripts/vite-plugin-guides'
 import { siteHeaders } from './scripts/headers'
 import { previewRedirects } from './scripts/redirects'
+import { escapeControls } from './scripts/vite-plugin-escape-controls'
 
 export default defineConfig(async ({ mode }) => {
   // previewRedirects: the production redirects (public/_redirects), so E2E follows the same links
-  const plugins = [react(), utilityManifest(), utilityGuides(), pwaServiceWorker(), previewRedirects(path.resolve(__dirname, 'public'))];
+  // escapeControls: raw control characters the minifier leaves in chunks; also on the worker's, which share them
+  const plugins = [react(), utilityManifest(), utilityGuides(), escapeControls(), pwaServiceWorker(), previewRedirects(path.resolve(__dirname, 'public'))];
 
   // Enable CF plugin only when not testing, and only when you actually want Workers
   const enableCloudflare =
@@ -31,6 +33,7 @@ export default defineConfig(async ({ mode }) => {
     // Rollup can't code-split into the default 'iife' worker format, so builds fail without this.
     worker: {
       format: 'es' as const,
+      plugins: () => [escapeControls()],
       // The worker and the app lazy-load the same utility chunks. Vite gives the app's bundle these
       // output options but not the worker's, so the two minify the same module differently, the
       // content hashes differ and every utility ships twice (+~470 KB gzip, and fetched twice).

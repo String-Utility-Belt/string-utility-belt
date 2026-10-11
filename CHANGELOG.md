@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Worked examples on utility pages show control characters as Control Pictures (`␀`, `␛`) instead of raw bytes, which
+  browsers showed as `�` or nothing: the get bytes, strip ANSI and MessagePack encode pages, and their guides.
+
 ## [1.13.1] - 2026-10-11
 
 ### Added

@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { HIDDEN_CONTROL_CHAR } from '@/core/coerce'
 import { parseGuide, parseExampleBlock, renderGuideHtml, renderMarkdownDocument, guideExamples, guideHeading, guideUrl } from './guide'
 
 const FENCE = '```'
@@ -71,6 +72,10 @@ describe('parseGuide', () => {
 describe('parseExampleBlock', () => {
   it('keeps inline values exact, leading spaces included', () => {
     expect(parseExampleBlock(['input:   padded', 'output: padded'])).toEqual({ input: '  padded', output: 'padded' })
+  })
+
+  it('reads Control Pictures in a value back as the control characters', () => {
+    expect(parseExampleBlock(['input: ␛[31mred␛[0m', 'output: ␀x␡'])).toEqual({ input: '\u001b[31mred\u001b[0m', output: '\u0000x\u007f' })
   })
 
   it('takes an empty input (a generator) and output-matches without an output', () => {
@@ -152,9 +157,15 @@ describe('renderGuideHtml', () => {
     expect(sample).not.toContain('>Input<')
     const pattern = html(`${FENCE}example\noutput-matches: ^\\d+$\ninput: x\n${FENCE}`)
     expect(pattern).toContain('/^\\d+$/')
-    // a pattern also stands in for deterministic output markdown can't hold (control bytes, CRLF)
+    // a pattern also stands in for deterministic output markdown can't hold (CRLF)
     expect(pattern).toContain('Output matches this pattern')
     expect(pattern).not.toContain('varies')
+  })
+
+  it('shows control characters in an example as Control Pictures, never raw', () => {
+    const out = html(`${FENCE}example\ninput: ␛]0;t␇x\noutput: x\n${FENCE}`)
+    expect(out).toContain('␛]0;t␇x')
+    expect(out).not.toMatch(HIDDEN_CONTROL_CHAR)
   })
 
   it('never lets raw HTML in any part of a guide become markup', () => {
