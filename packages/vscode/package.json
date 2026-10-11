@@ -3,7 +3,7 @@
   "displayName": "String Utility Belt",
   "description": "Run 240+ string transforms — encoding, hashing, ciphers, formatting and more — on your selections, or a whole saved pipeline, without leaving the editor.",
   "publisher": "stringutilitybelt",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "private": true,
   "author": "String Utility Belt",
   "license": "MIT",
