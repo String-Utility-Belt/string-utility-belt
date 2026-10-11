@@ -2,6 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import AppShell, { Footer, Header } from './AppShell'
 import { GITHUB_SPONSORS_URL } from '@/app/support'
+import { DEVHUNT } from '@/app/listings'
 
 describe('Header nav', () => {
   it('marks the link for the current route with aria-current="page"', () => {
@@ -39,6 +40,17 @@ describe('site links', () => {
     ])
     const sponsor = screen.getByRole('link', { name: 'Sponsor on GitHub (opens in a new tab)' })
     expect([sponsor.getAttribute('target'), sponsor.getAttribute('rel')]).toEqual(['_blank', 'noopener'])
+  })
+
+  it('shows our own copy of the DevHunt badge, light or dark with the theme, linking to the listing in a new tab', () => {
+    render(<Footer />)
+    const badge = screen.getByRole('link', { name: 'String Utility Belt - Featured on DevHunt (opens in a new tab)' })
+    expect([badge.getAttribute('href'), badge.getAttribute('target'), badge.getAttribute('rel')]).toEqual([DEVHUNT.href, '_blank', 'noopener'])
+    const images = [...badge.querySelectorAll('img')]
+    expect(images.map(img => [img.getAttribute('src'), img.getAttribute('class')])).toEqual([
+      [DEVHUNT.light, 'block dark:hidden'],
+      [DEVHUNT.dark, 'hidden dark:block'],
+    ])
   })
 
   it('follows a plain click on a path link in place, leaving modified clicks to the browser', async () => {

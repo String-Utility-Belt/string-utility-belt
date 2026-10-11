@@ -11,6 +11,9 @@ const LOGO_FILE = /^[a-z0-9][a-z0-9-]*\.(svg|png|webp)$/
 /** An SVG logo is served from this origin: opened on its own it is a document, so it must hold no script or external reference. */
 const UNSAFE_SVG = /<script|<foreignObject|\bon[a-z]+\s*=|javascript:|(?:href|src)\s*=\s*["']?\s*(?:[a-z][a-z0-9+.-]*:|\/\/)/i
 
+/** Whether an SVG served from this origin could run code or load anything (sponsor logos, listing badges). */
+export const isUnsafeSvg = (svg: string): boolean => UNSAFE_SVG.test(svg)
+
 /**
  * Every problem with these bookings. `logo(file)` returns the file's bytes from
  * `public/sponsors/`, or undefined when it does not exist.
@@ -40,7 +43,7 @@ export function sponsorshipProblems(list: readonly Sponsorship[], logo: (file: s
       const bytes = logo(s.logo)
       if (!bytes) problems.push(`${at}: logo public${LOGO_DIR}${s.logo} does not exist`)
       else if (bytes.byteLength > MAX_LOGO_BYTES) problems.push(`${at}: logo is over ${MAX_LOGO_BYTES / 1024} KB`)
-      else if (s.logo.endsWith('.svg') && UNSAFE_SVG.test(new TextDecoder().decode(bytes))) {
+      else if (s.logo.endsWith('.svg') && isUnsafeSvg(new TextDecoder().decode(bytes))) {
         problems.push(`${at}: SVG logo contains a script, event handler or external reference`)
       }
     }
