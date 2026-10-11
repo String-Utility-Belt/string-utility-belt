@@ -7,7 +7,8 @@ import { escapeHtml } from './html'
 import type { BlogPostMeta } from './blog'
 import { guideHeading } from '../../src/app/pages/guide'
 import { utilityPath } from '../../src/app/pages/related'
-import { POPULAR_UTILITY_IDS, SITE_NAME, displayName } from '../../src/app/pages/seo'
+import { HOME_HEADING, POPULAR_UTILITY_IDS, SITE_NAME, UTILITIES_HEADING, displayName } from '../../src/app/pages/seo'
+import { utilityHeading } from '../../src/app/pages/utilityHeading'
 import Docs from '../../src/components/Docs'
 import { en } from '../../src/app/i18n/locales/en'
 import { INTEGRATION_LINKS } from '../../src/app/integrations/links'
@@ -182,7 +183,7 @@ export function renderUtilityContent(meta: UtilityMeta, examples: UtilityExample
   return `
   <article>
     <header>
-      <h1>${escapeHtml(displayName(meta.name))}</h1>
+      <h1>${escapeHtml(utilityHeading(meta.id, meta.name))}</h1>
       <p>${escapeHtml(meta.category)}</p>
       <p>${escapeHtml(meta.description)}</p>
       <p>accepts <code>${escapeHtml(typesOf(meta.accepts))}</code> → produces <code>${escapeHtml(typesOf(meta.produces))}</code></p>
@@ -213,7 +214,7 @@ export function renderUtilitiesIndexContent(manifest: UtilityMeta[]): string {
   }).join('')
   return `
   <div>
-    <h1>All utilities</h1>
+    <h1>${escapeHtml(UTILITIES_HEADING)}</h1>
     <p>${manifest.length} free text and string tools, grouped by category. Each one runs in your browser and has its own page with a guide, worked examples and a live playground.</p>
     ${groups}
   </div>`
@@ -238,7 +239,7 @@ export function renderHomeContent(manifest: UtilityMeta[], presets: PresetMeta[]
   return `
   <article>
     <header>
-      <h1>${escapeHtml(SITE_NAME)}</h1>
+      <h1>${escapeHtml(HOME_HEADING)}</h1>
       <p>Efficiently chain string utilities, preview every step, and export/share your pipeline.</p>
     </header>
     ${presetsHtml}

@@ -168,6 +168,15 @@ export function parseExampleBlock(lines: string[]): UtilityExample {
   return example as UtilityExample
 }
 
+/**
+ * A utility page's `<h1>`, from its guide's title: the search term before the first
+ * `: ` or ` — `, without "Online", which the `<title>` already carries
+ * ("Base64 Encode Online: Convert Text to Base64" → "Base64 Encode").
+ */
+export function pageHeading(title: string): string {
+  return title.split(/: | — /)[0].replace(/\s+online\b/gi, '').trim()
+}
+
 /** Splits a guide into frontmatter and render blocks. Never throws: bad examples are reported in `errors`. */
 export function parseGuide(source: string): Guide {
   const { frontmatter, body } = parseFrontmatter(String(source).replace(/\r\n?/g, '\n')) as {
@@ -255,7 +264,7 @@ function inlineHtml(text: string): string {
 }
 
 /**
- * The page's `<h1>` is the utility name and the guide's `<summary>` is an
+ * The page's `<h1>` is the guide title's search term (`pageHeading`) and the guide's `<summary>` is an
  * `<h2>`, so the guide's own `##` / `###` sections drop one level.
  */
 function demoteHeadings(html: string): string {

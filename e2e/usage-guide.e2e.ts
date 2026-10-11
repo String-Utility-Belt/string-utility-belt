@@ -48,7 +48,7 @@ test.describe('usage guide', () => {
 
     await page.getByRole('link', { name: 'utilities index' }).click()
     await expect(page).toHaveURL(/\/utilities\/$/)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('All utilities')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('All text and string tools')
     expect(await isSameDocument(page)).toBe(true)
   })
 })

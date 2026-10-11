@@ -48,7 +48,7 @@ test.describe('preset pages', () => {
   test('the preset index links each preset, and the header links the index', async ({ page }) => {
     await page.goto('/')
     await page.getByRole('navigation', { name: 'main' }).getByRole('link', { name: 'Presets' }).click()
-    await expect(page.getByRole('heading', { level: 1, name: 'Presets' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Text pipeline presets' })).toBeVisible()
     await page.getByRole('link', { name: /Turn an Excel column into a SQL IN clause/ }).click()
     await expect(page).toHaveURL(new RegExp(`/presets/${SLUG}/$`))
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Turn an Excel column into a SQL IN clause')
@@ -60,7 +60,7 @@ test.describe('preset pages', () => {
     expect(moved.headers()['location']).toBe(`/presets/${SLUG}/?utm_source=newsletter`)
     await page.goto('/recipes')
     await expect(page).toHaveURL(/\/presets\/$/)
-    await expect(page.getByRole('heading', { level: 1, name: 'Presets' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Text pipeline presets' })).toBeVisible()
   })
 
   test('an unknown preset is not found and kept out of search indexes', async ({ page }) => {

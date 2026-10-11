@@ -14,9 +14,9 @@ afterEach(() => {
 const playgroundOutput = () => screen.getByRole('status', { name: 'playground output' })
 
 describe('UtilityDocPage', () => {
-  it('renders name, description and category', () => {
+  it("renders its guide's heading, description and category", () => {
     render(<UtilityDocPage id="trim" />)
-    const heading = screen.getByRole('heading', { level: 1, name: 'trim' })
+    const heading = screen.getByRole('heading', { level: 1, name: 'Trim Whitespace' })
     expect(screen.getByText('Remove leading and trailing whitespace.')).toBeTruthy()
     const header = within(heading.closest('header')!)
     // the breadcrumb names it, and so does the category chip

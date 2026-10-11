@@ -7,8 +7,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: Instrument Sans, ui-sans-serif, system-ui, sans-serif;
-  --font-mono: JetBrains Mono, ui-monospace, SFMono-Regular, monospace;
+  --font-sans: 'Instrument Sans Variable', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
   --color-canvas: rgb(var(--c-canvas));
   --color-surface: rgb(var(--c-surface));

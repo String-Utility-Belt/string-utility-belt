@@ -43,6 +43,10 @@ export default defineConfig(async ({ mode }) => {
         },
       },
     },
+    build: {
+      // never inline a font as a data: URI: the CSP's font-src is 'self' only (public/_headers)
+      assetsInlineLimit: (file: string) => (file.endsWith('.woff2') ? false : undefined),
+    },
     // Vitest config (so it doesn't try to bring in the CF plugin)
     test: {
       environment: 'jsdom',

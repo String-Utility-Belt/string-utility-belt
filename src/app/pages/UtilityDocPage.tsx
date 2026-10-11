@@ -18,6 +18,7 @@ import { PRESET_INDEX } from '@/presets/_generated/index'
 import { presetsUsing } from './presets/presetHelpers'
 import { presetPath } from '@/presets/types'
 import { SITE_NAME, displayName, pageTitle } from './seo'
+import { utilityHeading } from './utilityHeading'
 import PageSponsor from '@/app/sponsors/PageSponsor'
 import PagePromo from '@/app/sponsors/PagePromo'
 import RunElsewhere from '@/app/integrations/RunElsewhere'
@@ -203,7 +204,7 @@ function UtilityDocPageBody({ id, meta }: { id: string; meta: UtilityMeta }) {
           <span aria-hidden="true">/</span>
           <span>{meta.category}</span>
         </nav>
-        <h1 className="page-title wrap-anywhere">{displayName(meta.name)}</h1>
+        <h1 className="page-title wrap-anywhere">{utilityHeading(meta.id, meta.name)}</h1>
         <p className="page-lead max-w-[640px] text-pretty">{meta.description}</p>
         <div className="flex flex-wrap gap-2 items-center font-mono text-[11.5px] text-muted">
           <span className="px-[7px] py-0.5 border rounded-[4px]">{meta.category}</span>

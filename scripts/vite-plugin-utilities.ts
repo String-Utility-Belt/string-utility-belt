@@ -13,12 +13,12 @@ function viteNodeCli(root: string): string {
 
 /**
  * Dev-server only: regenerate the utility manifest and the preset index when a
- * utility or a preset is added, removed or edited, so "create a folder and it
+ * utility (or its guide, whose title gives the page's heading) or a preset is added, removed or edited, so "create a folder and it
  * appears" keeps working without restarting `npm run dev`. The generators write
  * only files whose content changed, and Vite's HMR picks those up.
  */
 export function utilityManifest(): Plugin {
-  const UTILITY_FILE = /[\\/]src[\\/](?:utilities[\\/][^\\/_][^\\/]*[\\/]index\.tsx?|presets[\\/][^\\/_][^\\/]*[\\/]preset\.ts)$/
+  const UTILITY_FILE = /[\\/]src[\\/](?:utilities[\\/][^\\/_][^\\/]*[\\/](?:index\.tsx?|guide\.md)|presets[\\/][^\\/_][^\\/]*[\\/]preset\.ts)$/
   let timer: ReturnType<typeof setTimeout> | undefined
   let running = false
   let pending = false

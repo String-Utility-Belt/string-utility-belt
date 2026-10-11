@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Fonts are served by the site itself.** Instrument Sans and JetBrains Mono now load from stringutilitybelt.com
+  instead of Google Fonts, so a page view no longer contacts Google. The privacy policy says so, and the
+  Content-Security-Policy now allows fonts and stylesheets from the site only.
+- Utility pages are headed by the tool's name as people search for it ("Base64 Encode", "SHA-256 Hash Generator")
+  instead of its short id-style name, and the utilities and presets indexes say what they list ("All text and string
+  tools", "Text pipeline presets").
+
+### Fixed
+
+- The footer's DevHunt badge has alt text, so its link has a name for search engines as well as screen readers.
+- The about page's description fits a search result, and the changelog's is no longer too short to be useful.
+
 ## [1.13.1] - 2026-10-11
 
 ### Added

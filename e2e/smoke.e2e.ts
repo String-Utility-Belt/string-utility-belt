@@ -105,8 +105,8 @@ test.describe('smoke', () => {
     expect(await page.locator('a[href^="/util/"]').count()).toBeGreaterThan(200)
   })
 
-  test('#/util/base64_encode shows "base64"', async ({ page }) => {
+  test('#/util/base64_encode shows its heading', async ({ page }) => {
     await page.goto('/#/util/base64_encode')
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('base64')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Base64 Encode')
   })
 })
