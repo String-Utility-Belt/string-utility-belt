@@ -299,6 +299,14 @@ describe('checkPresetSet', () => {
     expect(check('slug list from titles')).toBe('')
   })
 
+  it('takes the head term of a ": " title too, as every current guide writes it', () => {
+    const utils = [utilGuide('base64_encode', 'Base64 Encode Online: Convert Text to Base64')]
+    const check = (primaryQuery: string) => checkPresetSet([{ preset: preset({ primaryQuery }), guide: guide() }], utils).join('\n')
+    expect(check('base64 encode a jwt payload')).toContain('contains "base64 encode", the head term of /util/base64_encode/')
+    expect(check('convert text to base64')).toContain('is the head term of /util/base64_encode/')
+    expect(check('jwt payload as base64')).toBe('')
+  })
+
   it('refuses near-copied prose, from another preset or a utility the preset uses', () => {
     const shared = filler('s', 300)
     const problems = checkPresetSet([
@@ -312,10 +320,12 @@ describe('checkPresetSet', () => {
 })
 
 describe('headTerm', () => {
-  it('is the title before " — ", without a trailing "Online", lowercased', () => {
+  it('is the title before the first ": " or " — ", without "Online", lowercased', () => {
+    expect(headTerm('Base64 Encode Online: Convert Text to Base64')).toBe('base64 encode')
+    expect(headTerm('Escape HTML Online: Encode &, <, > and quotes')).toBe('escape html')
     expect(headTerm('Slug Generator Online — URL-Safe Slugs From Any Text')).toBe('slug generator')
     expect(headTerm('CSV to SQL INSERT Generator Online')).toBe('csv to sql insert generator')
-    expect(headTerm('Tabs to Spaces Converter Online (and Back)')).toBe('tabs to spaces converter online (and back)')
+    expect(headTerm('Tabs to Spaces Converter Online (and Back)')).toBe('tabs to spaces converter (and back)')
   })
 })
 

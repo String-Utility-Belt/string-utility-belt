@@ -10,7 +10,7 @@ import type { UtilityExample } from '@/types/utility'
  *
  * ```md
  * ---
- * title: Base64 Encode Online — Text to Base64 Converter     (<title>, ≤ 60 chars)
+ * title: Base64 Encode Online: Convert Text to Base64        (<title>, ≤ 60 chars)
  * description: Encode text or bytes to Base64 …               (meta description)
  * ---
  * ## What is Base64?                                          (sections: ## and ###)
@@ -166,6 +166,15 @@ export function parseExampleBlock(lines: string[]): UtilityExample {
 
   if (example.output === undefined && example.outputMatches === undefined) throw new Error('needs output: or output-matches:')
   return example as UtilityExample
+}
+
+/**
+ * A utility page's `<h1>`, from its guide's title: the search term before the first
+ * `: ` or ` — `, without "Online", which the `<title>` already carries
+ * ("Base64 Encode Online: Convert Text to Base64" → "Base64 Encode").
+ */
+export function pageHeading(title: string): string {
+  return title.split(/: | — /)[0].replace(/\s+online\b/gi, '').trim()
 }
 
 /** Splits a guide into frontmatter and render blocks. Never throws: bad examples are reported in `errors`. */

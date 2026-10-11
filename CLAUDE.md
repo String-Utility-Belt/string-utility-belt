@@ -105,7 +105,7 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
   at any date, **every top-level step changes some sample's output when left out** (no padding), 2+ real utility steps
   counting nested ones (one utility wrapped in `each` is still one), title/description/primaryQuery unique across presets
   and utility guides, `primaryQuery` neither inside a utility guide title nor containing its head term (the title before
-  " — ", minus "Online": "bulk slug generator" competes with `/util/slug/`), ≥300 words of guide prose, no near-copied prose.
+  ": " or " — ", minus "Online" — `pageHeading`: "bulk slug generator" competes with `/util/slug/`), ≥300 words of guide prose, no near-copied prose.
 - `trace.ts` turns a run into what the page shows (each step's output, what leaving each step out does).
   `PresetArticle` renders nested steps recursively (params, conditions, failure policy, split and merge modes):
   the pre-rendered page is all a crawler sees, so a setting inside a lane must show there.
