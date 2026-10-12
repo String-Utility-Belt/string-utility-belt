@@ -6,6 +6,7 @@ export const PRESET_LOADERS: Record<string, () => Promise<{ preset: Preset; guid
   "bulk-utm-link-builder": () => Promise.all([import('../bulk-utm-link-builder/preset'), import('../bulk-utm-link-builder/guide.md?raw')]).then(([r, g]) => ({ preset: r.default, guide: g.default })),
   "clean-chatgpt-text": () => Promise.all([import('../clean-chatgpt-text/preset'), import('../clean-chatgpt-text/guide.md?raw')]).then(([r, g]) => ({ preset: r.default, guide: g.default })),
   "clean-text-pasted-from-word": () => Promise.all([import('../clean-text-pasted-from-word/preset'), import('../clean-text-pasted-from-word/guide.md?raw')]).then(([r, g]) => ({ preset: r.default, guide: g.default })),
+  "convert-curl-to-powershell": () => Promise.all([import('../convert-curl-to-powershell/preset'), import('../convert-curl-to-powershell/guide.md?raw')]).then(([r, g]) => ({ preset: r.default, guide: g.default })),
   "convert-unix-timestamps-in-json": () => Promise.all([import('../convert-unix-timestamps-in-json/preset'), import('../convert-unix-timestamps-in-json/guide.md?raw')]).then(([r, g]) => ({ preset: r.default, guide: g.default })),
   "decode-cloudwatch-logs-data": () => Promise.all([import('../decode-cloudwatch-logs-data/preset'), import('../decode-cloudwatch-logs-data/guide.md?raw')]).then(([r, g]) => ({ preset: r.default, guide: g.default })),
   "decode-flask-session-cookie": () => Promise.all([import('../decode-flask-session-cookie/preset'), import('../decode-flask-session-cookie/guide.md?raw')]).then(([r, g]) => ({ preset: r.default, guide: g.default })),

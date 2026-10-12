@@ -163,6 +163,7 @@ export const LOADERS: Record<string, () => Promise<{ default: Utility }>> = {
   "password_generator": () => import('../password_generator/index'),
   "pbkdf2": () => import('../pbkdf2/index'),
   "pluralize_words": () => import('../pluralize_words/index'),
+  "powershell_request_build": () => import('../powershell_request_build/index'),
   "protobuf_decode": () => import('../protobuf_decode/index'),
   "punycode_decode": () => import('../punycode_decode/index'),
   "punycode_encode": () => import('../punycode_encode/index'),

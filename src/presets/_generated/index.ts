@@ -73,6 +73,22 @@ export const PRESET_INDEX: PresetMeta[] = [
     "published": "2026-10-09"
   },
   {
+    "slug": "convert-curl-to-powershell",
+    "name": "Convert a curl command to PowerShell",
+    "summary": "Paste a curl command from API docs or Chrome's \"Copy as cURL\" and get the same request as a PowerShell Invoke-RestMethod command: headers, body, auth and flags carried over, every value quoted for PowerShell.",
+    "category": "Web & APIs",
+    "utilityIds": [
+      "curl_parse",
+      "powershell_request_build"
+    ],
+    "chain": [
+      "parse the curl command",
+      "write Invoke-RestMethod"
+    ],
+    "stepCount": 2,
+    "published": "2026-10-12"
+  },
+  {
     "slug": "convert-unix-timestamps-in-json",
     "name": "Convert Unix timestamps in a JSON response to dates",
     "summary": "Paste an API response and get the same JSON back with its epoch seconds and milliseconds turned into ISO 8601 dates at any depth, while small ids, prices and phone numbers stay as they are.",
