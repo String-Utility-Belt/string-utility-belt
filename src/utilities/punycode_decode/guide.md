@@ -1,10 +1,10 @@
 ---
-title: Punycode Decoder: Convert xn-- Domains to Unicode
-description: Decode Punycode (RFC 3492) back to Unicode text, from a full xn-- prefixed domain, a single label, or raw bootstring output.
+title: Punycode Decoder: See What an xn-- Domain Really Says
+description: Paste an xn-- domain to see the Unicode name it spells, like xn--mnchen-3ya.de → münchen.de, and spot look-alike phishing domains before you click.
 ---
 ## What is Punycode decoding?
 
-[Punycode](https://www.rfc-editor.org/rfc/rfc3492) (RFC 3492) is the ASCII-safe encoding behind internationalized domain names: it lets `münchen.de` travel through DNS as `xn--mnchen-3ya.de`. This tool reverses that, turning the ASCII form back into readable Unicode text. It is the conversion a browser performs when it chooses to show a domain in its native script rather than as `xn--`. [Punycode encode](/util/punycode_encode/) does the opposite direction.
+[Punycode](https://www.rfc-editor.org/rfc/rfc3492) (RFC 3492) is the ASCII-safe encoding behind internationalized domain names: it lets `münchen.de` travel through DNS as `xn--mnchen-3ya.de`. This tool reverses that, turning the ASCII form back into readable Unicode text. It is the conversion a browser performs when it chooses to show a domain in its native script rather than as `xn--`. If you found an `xn--` domain in a link, an email or a log and want to know what it says, paste the whole domain: every encoded label is decoded and the rest is left as it is. [Punycode encode](/util/punycode_encode/) does the opposite direction.
 
 ## How it works
 
