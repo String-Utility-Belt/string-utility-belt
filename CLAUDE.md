@@ -58,9 +58,9 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
   loads each utility once per each step, and records previews for one sample item (`RunResult.items`). Never
   chunked (`canChunk`).
 - A new step type goes through `steps.ts`: its guard, `childSequences` and `mapChildSequences` (where it
-  keeps nested steps). Tree walks and rebuilds (`walkSteps`, `updateStep`, `cloneWithNewIds`, quarantine,
-  bulk enable) use those, so they need no change; `sanitizeSteps` must parse it strictly (and drops any
-  unknown `type`).
+  keeps nested steps; both switch over every type, so the compiler names each one a new type misses). Tree
+  walks and rebuilds (`walkSteps`, `updateStep`, `cloneWithNewIds`, quarantine, bulk enable) use those, so they
+  need no change; `sanitizeSteps` must parse it strictly (and drops any unknown `type`).
 - Documents carry the oldest schema that can read them (`schemaVersionFor`): v3 only when an `each` step is
   present, else v2. Every reader refuses `v > SCHEMA_VERSION`, so an older build asks to reload rather than
   drop steps it cannot read. Write `schemaVersionFor(steps)`, never `SCHEMA_VERSION`, into stored documents.
@@ -209,10 +209,13 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
 - Inline scripts are allowed by SHA-256 only (no `'unsafe-inline'`): `index.html`'s theme script and the
   custom-code sandbox's bootstrap (`SANDBOX_BOOTSTRAP_SCRIPT`). Editing one changes its hash:
   `scripts/csp.test.ts` names the hash to add and the one to drop. Every `npm run build` checks all built pages
-  (`scripts/csp.ts`) and fails on an unlisted inline script, an inline `on*=` handler or a `javascript:` URL.
+  (`scripts/csp.ts`, which parses them with parse5) and fails on an unlisted inline script, an inline `on*=` handler
+  or a `javascript:` URL.
 - The sandbox's srcdoc frame and its Blob-URL Worker inherit the site policy on top of their own, so its per-run
   job travels in a JSON data block and the bootstrap stays constant; `'unsafe-eval'` is there because the
-  sandbox Worker compiles the user's code (engine.e2e.ts fails without it).
+  sandbox Worker compiles the user's code (engine.e2e.ts fails without it). The Worker runs no code unless a
+  request to this site (`PROBE_PATH`), which the site policy's `connect-src 'self'` allows, is blocked: only the
+  frame's own policy can block it, so keep `'self'` in `connect-src`.
 - `vite preview` serves the `/*` headers (`scripts/headers.ts`), so Playwright runs under the real policy
   (`e2e/csp.e2e.ts` fails on any violation report). A new third-party script needs a CSP entry, and a privacy
   policy update.
@@ -329,7 +332,8 @@ export default util
 ## CI
 
 GitHub Actions (`.github/workflows/ci.yml`): tests, typecheck (app, worker, e2e, packages), lint, build +
-`check:bundle` + `build:seo:fast`, `build:tools` + package tests, `wrangler deploy --dry-run`, and Playwright.
+`check:bundle` + `build:seo:fast`, `build:tools` + package tests, `wrangler deploy --dry-run`, and Playwright
+(Chromium, plus Firefox for the tests tagged `@sandbox`).
 
 ## Releases (`RELEASING.md`)
 

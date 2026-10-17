@@ -38,6 +38,11 @@ describe('the site CSP (public/_headers)', () => {
     expect(csp.get('worker-src')).toEqual(["'self'", 'blob:'])
   })
 
+  it("lets a request to this site through, so only the sandbox frame's own policy can block the Worker's probe", () => {
+    // src/app/sandbox/frame.ts: the Worker refuses to run code unless that request fails
+    expect(csp.get('connect-src')).toContain("'self'")
+  })
+
   it('loads fonts and stylesheets from this site only (the fonts are self-hosted)', () => {
     expect(csp.get('font-src')).toEqual(["'self'"])
     expect(csp.get('style-src')?.filter(s => /^https?:|^\*/.test(s))).toEqual([])
@@ -79,6 +84,23 @@ describe('pageViolations', () => {
     expect(pageViolations(page, allow('b()'))).toEqual([expect.stringMatching(/^inline script 'sha256-/)])
   })
 
+  it('reports inline event handlers however the markup spells them, in templates and SVG too', () => {
+    const page = '<img/onerror=go()><IMG ONLOAD="go()"><svg><rect onclick="go()"/></svg><template><b onmouseover=go()></b></template>' +
+      '<!-- <img onerror=go()> --><p>onerror=go()</p>'
+    expect(pageViolations(page, "script-src 'self'").map(p => p.split(' is ')[0])).toEqual([
+      'inline event handler onerror= on <img>', 'inline event handler onload= on <img>',
+      'inline event handler onclick= on <rect>', 'inline event handler onmouseover= on <b>',
+    ])
+  })
+
+  it('reports javascript: URLs however they are written, and nothing else', () => {
+    const page = '<a href="&#106;avascript:go()">a</a><a href=" java&#9;script:go()">b</a><button formaction="JavaScript:go()">c</button>' +
+      '<svg><a xlink:href="javascript:go()"><text>d</text></a></svg><a href="/javascript-guide/">e</a><a href="https://example.com/?javascript:">f</a>'
+    expect(pageViolations(page, "script-src 'self'").map(p => p.split(': <')[1])).toEqual([
+      'a href="javascript:go()">', 'a href="java\tscript:go()">', 'button formaction="JavaScript:go()">', 'a href="javascript:go()">',
+    ])
+  })
+
   it('reports inline event handlers and javascript: URLs, but not text inside script data blocks', () => {
     const problems = pageViolations(
       '<img src="x.png" onerror="go()"><a href="javascript:go()">x</a>' +
@@ -86,6 +108,33 @@ describe('pageViolations', () => {
     expect(problems).toHaveLength(2)
     expect(problems[0]).toMatch(/onerror=/)
     expect(problems[1]).toMatch(/javascript:/)
+  })
+})
+
+describe('inlineScripts', () => {
+  const scripts = (attrs: string[]) => attrs.map(a => `<script${a}>x()</script>`).join('')
+
+  it("runs exactly the types the HTML standard runs: an empty or missing type is JavaScript, a language stands in for a missing one", () => {
+    const runs = ['', ' type=""', ' type="text/javascript1.5"', ' type="application/x-javascript"', ' type=" TEXT/JavaScript "',
+      ' type="module"', ' type="importmap"', ' type="speculationrules"', ' language="JavaScript"', ' language=""', ' type="" language="vbscript"']
+    const inert = [' type="application/json"', ' type="application/ld+json"', ' type="text/template"', ' type=" "',
+      ' language="vbscript"', ' type="text/plain" language="javascript"']
+    expect(inlineScripts(scripts(runs))).toHaveLength(runs.length)
+    expect(inlineScripts(scripts(inert))).toEqual([])
+  })
+
+  it('skips a script with an external source: src in HTML, even empty, and href in SVG', () => {
+    expect(inlineScripts(scripts([' src="/a.js"', ' src=""']))).toEqual([])
+    expect(inlineScripts('<svg><script href="/a.js">x()</script><script xlink:href="/b.js">y()</script></svg>')).toEqual([])
+  })
+
+  it('finds scripts where a browser parses them: in templates and SVG, never in a comment or a noscript', () => {
+    expect(inlineScripts('<template><script>a()</script></template><svg><script>b()</script></svg>')).toEqual(['a()', 'b()'])
+    expect(inlineScripts('<!-- <script>a()</script> --><noscript><script>b()</script></noscript>')).toEqual([])
+  })
+
+  it('takes an SVG script\'s text as a browser does, character references and CDATA resolved', () => {
+    expect(inlineScripts('<svg><script>a(&quot;x&quot;)<![CDATA[ && b()]]></script></svg>')).toEqual(['a("x") && b()'])
   })
 })
 

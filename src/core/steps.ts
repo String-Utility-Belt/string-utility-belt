@@ -22,14 +22,34 @@ export function stepId(prefix = 'step'): string {
 }
 
 /**
+ * The default of a switch over every step type, where `step` is `never`: a type added to
+ * PipelineStep fails to compile until the switch handles it, so no tree walk can treat a
+ * new container as a leaf by omission. At run time a type this build does not know (a
+ * newer document, not yet sanitised) still lands here, and is handled as a leaf.
+ */
+function unknownStepType(step: never): PipelineStep {
+  return step
+}
+
+/**
  * Direct children of a step (branch lanes flattened, a macro's or an each step's
  * body). Tolerates a malformed container (a sequence that is not an array) by
  * reporting no children: callers include walkers over not-yet-sanitised trees.
  */
 export function childSequences(step: PipelineStep): PipelineStep[][] {
-  if (isBranchStep(step)) return Array.isArray(step.branches) ? step.branches.filter(Array.isArray) : []
-  if (isMacroStep(step) || isEachStep(step)) return Array.isArray(step.steps) ? [step.steps] : []
-  return []
+  switch (step.type) {
+    case undefined:
+    case 'utility':
+      return []
+    case 'branch':
+      return Array.isArray(step.branches) ? step.branches.filter(Array.isArray) : []
+    case 'macro':
+    case 'each':
+      return Array.isArray(step.steps) ? [step.steps] : []
+    default:
+      unknownStepType(step)
+      return []
+  }
 }
 
 /**
@@ -39,17 +59,24 @@ export function childSequences(step: PipelineStep): PipelineStep[][] {
  * type keeps its children: tree rebuilds go through here rather than switching on type.
  */
 export function mapChildSequences(step: PipelineStep, fn: (seq: PipelineStep[], index: number) => PipelineStep[]): PipelineStep {
-  if (isBranchStep(step)) {
-    if (!Array.isArray(step.branches)) return step
-    const branches = step.branches.map((b, i) => (Array.isArray(b) ? fn(b, i) : b))
-    return branches.some((b, i) => b !== step.branches[i]) ? { ...step, branches } : step
+  switch (step.type) {
+    case undefined:
+    case 'utility':
+      return step
+    case 'branch': {
+      if (!Array.isArray(step.branches)) return step
+      const branches = step.branches.map((b, i) => (Array.isArray(b) ? fn(b, i) : b))
+      return branches.some((b, i) => b !== step.branches[i]) ? { ...step, branches } : step
+    }
+    case 'macro':
+    case 'each': {
+      if (!Array.isArray(step.steps)) return step
+      const steps = fn(step.steps, 0)
+      return steps !== step.steps ? { ...step, steps } : step
+    }
+    default:
+      return unknownStepType(step)
   }
-  if (isMacroStep(step) || isEachStep(step)) {
-    if (!Array.isArray(step.steps)) return step
-    const steps = fn(step.steps, 0)
-    return steps !== step.steps ? { ...step, steps } : step
-  }
-  return step
 }
 
 /** Depth-first visit of every step, nested ones included. Return false to stop. */
