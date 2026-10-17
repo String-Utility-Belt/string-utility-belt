@@ -12,6 +12,8 @@ import { HOME_HEADING, POPULAR_UTILITY_IDS, SITE_NAME, UTILITIES_HEADING, displa
 import { utilityHeading } from '../../src/app/pages/utilityHeading'
 import { postPath, postsAbout } from '../../src/app/pages/utilityPosts'
 import Docs from '../../src/components/Docs'
+import PostDiscussion from '../../src/components/PostDiscussion'
+import type { DiscussLink } from '../../src/components/blogManifest'
 import { en } from '../../src/app/i18n/locales/en'
 import { INTEGRATION_LINKS } from '../../src/app/integrations/links'
 import RunElsewhere from '../../src/app/integrations/RunElsewhere'
@@ -305,8 +307,15 @@ export function renderBlogIndexContent(posts: BlogPostMeta[]): string {
   return `<div><h1>Blog</h1><ul>${items}</ul></div>`
 }
 
-/** Static snapshot of `BlogPost`: pre-rendered markdown body (already HTML-escaped by `renderMarkdownDocument`). */
-export function renderBlogPostContent(meta: { title?: string; date?: string; updated?: string }, bodyHtml: string, sponsor?: PageSponsorSpec): string {
+/**
+ * Static snapshot of `BlogPost`: pre-rendered markdown body (already HTML-escaped by
+ * `renderMarkdownDocument`), then the post's `PostDiscussion` (where it is discussed, feedback).
+ */
+export function renderBlogPostContent(
+  meta: { title?: string; date?: string; updated?: string; discuss?: readonly DiscussLink[] },
+  bodyHtml: string,
+  sponsor?: PageSponsorSpec,
+): string {
   const updated = meta.updated && meta.updated !== meta.date
     ? `<p>Updated <time datetime="${escapeHtml(meta.updated)}">${escapeHtml(meta.updated)}</time></p>`
     : ''
@@ -319,6 +328,7 @@ export function renderBlogPostContent(meta: { title?: string; date?: string; upd
       ${renderSponsor(sponsor, 'mt-3')}
     </header>
     <div>${bodyHtml}</div>
+    <footer>${renderToStaticMarkup(createElement(PostDiscussion, { links: meta.discuss ?? [] }))}</footer>
   </article>`
 }
 

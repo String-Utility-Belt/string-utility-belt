@@ -30,3 +30,37 @@ export function parseTags(raw: string | undefined): string[] {
     .map(t => t.trim().replace(/^(["'])(.*)\1$/, '$2'))
     .filter(Boolean)
 }
+
+/** A thread about a post on another site: its URL, and the site's name as the link's text. */
+export type DiscussLink = { href: string; label: string }
+
+/** The sites a post's `discuss` frontmatter may link to, by host. */
+const DISCUSSION_SITES = new Map([
+  ['dev.to', 'DEV'],
+  ['reddit.com', 'Reddit'],
+  ['www.reddit.com', 'Reddit'],
+  ['old.reddit.com', 'Reddit'],
+  ['news.ycombinator.com', 'Hacker News'],
+])
+
+/**
+ * Frontmatter `discuss: [https://dev.to/…, https://news.ycombinator.com/item?id=…]` (the list
+ * syntax of `tags`) → the threads a post's end links to. Only plain https links to one of
+ * `DISCUSSION_SITES` are kept, the first on each site: the link's text is the site's name,
+ * which would mislabel a link anywhere else, and two links on one site would read the same.
+ */
+export function discussLinks(raw: string | undefined): DiscussLink[] {
+  const links: DiscussLink[] = []
+  for (const item of parseTags(raw)) {
+    let url: URL
+    try {
+      url = new URL(item)
+    } catch {
+      continue
+    }
+    const label = DISCUSSION_SITES.get(url.hostname)
+    if (!label || url.protocol !== 'https:' || url.port || url.username || url.password) continue
+    if (!links.some(l => l.label === label)) links.push({ href: url.href, label })
+  }
+  return links
+}

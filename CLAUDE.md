@@ -157,6 +157,10 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
 - Link previews (`og:image`): every utility, preset and blog post gets a generated 1200×630 card (`scripts/seo/og.ts`,
   rendered in Workers Builds only); other pages use `og/default.png`. A post can bring its own 1200×630 PNG instead:
   frontmatter `image: /blog/<name>.png`, the file beside the post in `public/blog/` (`postImage`, checked by `blog.test.ts`).
+- A post ends with `PostDiscussion` (the app's `BlogPost` and the pre-render both render it): the threads its frontmatter
+  `discuss: [https://dev.to/…, https://news.ycombinator.com/item?id=…]` lists, also its BlogPosting `discussionUrl`
+  (`discussLinks`: https on DEV, Reddit or Hacker News, one per site; `blog.test.ts` fails on any other), then a
+  "Send feedback" link that opens the feedback dialog over the post as other feedback.
 - Sitemap `lastmod` is when the page's content last changed, never the build time: a utility page's folder's last
   commit on the first-parent history (or a newer preset it links to), the file a docs/site page renders, a preset's or
   post's own dates; an index takes its newest entry (`scripts/seo/lastmod.ts`, one `git log` pass). A shallow clone

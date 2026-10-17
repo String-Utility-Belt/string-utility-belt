@@ -1,7 +1,8 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { describe, it, expect, afterEach, vi } from 'vitest'
 import BlogPost from './BlogPost'
-import { parseTags } from './blogManifest'
+import { discussLinks, parseTags } from './blogManifest'
+import { EVENT_OPEN_FEEDBACK } from '@/app/feedback/open'
 
 const POST = `---\ntitle: Hello World\ndate: 2025-01-15\n---\n# Heading\n\nSome **bold** text.`
 
@@ -174,11 +175,88 @@ describe('<BlogPost /> header and footer', () => {
   })
 })
 
+describe('<BlogPost /> discussion and feedback', () => {
+  afterEach(() => vi.unstubAllGlobals())
+  const fetchFor = (text) => vi.fn(url => Promise.resolve(url === '/blog/_manifest.json'
+    ? { ok: true, json: () => Promise.resolve([]) }
+    : { ok: true, headers: { get: () => 'text/markdown' }, text: () => Promise.resolve(text) }))
+  const DISCUSSED = '---\ntitle: Discussed\ndiscuss: [https://dev.to/someone/discussed-1a2b, https://news.ycombinator.com/item?id=1]\n---\n\nBody.'
+  const QUIET = '---\ntitle: Quiet\n---\n\nBody.'
+
+  it('links the threads its frontmatter lists, by site name, each in a new tab', async () => {
+    vi.stubGlobal('fetch', fetchFor(DISCUSSED))
+    render(<BlogPost slug="discussed" />)
+    const dev = await screen.findByRole('link', { name: 'DEV (opens in a new tab)' })
+    expect(dev).toHaveAttribute('href', 'https://dev.to/someone/discussed-1a2b')
+    expect(dev).toHaveAttribute('target', '_blank')
+    expect(dev).toHaveAttribute('rel', 'noopener')
+    expect(screen.getByRole('link', { name: 'Hacker News (opens in a new tab)' })).toHaveAttribute('href', 'https://news.ycombinator.com/item?id=1')
+    expect(dev.closest('p')).toHaveTextContent(/^Discuss this post on DEV and Hacker News\.$/)
+    expect(dev.closest('footer')).toBeTruthy()
+  })
+
+  it('has no discussion line when the post lists no thread, but still asks for feedback', async () => {
+    vi.stubGlobal('fetch', fetchFor(QUIET))
+    render(<BlogPost slug="quiet" />)
+    const feedback = await screen.findByRole('link', { name: 'Send feedback' })
+    expect(feedback).toHaveAttribute('href', '/contact/#feedback')
+    expect(feedback.closest('p')).toHaveTextContent(/^Spotted a mistake\? Send feedback\.$/)
+    expect(screen.queryByText(/Discuss this post/)).toBeNull()
+  })
+
+  it("opens the feedback form over the post as other feedback, leaving a modified click to reach the contact page's form", async () => {
+    vi.stubGlobal('fetch', fetchFor(QUIET))
+    const opened = vi.fn()
+    window.addEventListener(EVENT_OPEN_FEEDBACK, opened)
+    try {
+      render(<BlogPost slug="quiet" />)
+      const feedback = await screen.findByRole('link', { name: 'Send feedback' })
+      expect(fireEvent.click(feedback, { ctrlKey: true })).toBe(true)
+      expect(opened).not.toHaveBeenCalled()
+      expect(fireEvent.click(feedback)).toBe(false)
+      expect(opened).toHaveBeenCalledTimes(1)
+      // a correction, not the form's default utility suggestion
+      expect(opened.mock.calls[0][0].detail).toEqual({ kind: 'other' })
+    } finally {
+      window.removeEventListener(EVENT_OPEN_FEEDBACK, opened)
+    }
+  })
+})
+
 describe('parseTags', () => {
   it('reads a bracketed or bare list, unquoting items and dropping empty ones', () => {
     expect(parseTags('[base64, "encoding", \'cli\']')).toEqual(['base64', 'encoding', 'cli'])
     expect(parseTags('a, b,')).toEqual(['a', 'b'])
     expect(parseTags(undefined)).toEqual([])
     expect(parseTags('[]')).toEqual([])
+  })
+})
+
+describe('discussLinks', () => {
+  it('names each thread by its site, in the order listed, with the list syntax of tags', () => {
+    const raw = '[https://dev.to/a/b-1c2d, "https://www.reddit.com/r/javascript/comments/abc/x/", https://news.ycombinator.com/item?id=1]'
+    expect(discussLinks(raw)).toEqual([
+      { href: 'https://dev.to/a/b-1c2d', label: 'DEV' },
+      { href: 'https://www.reddit.com/r/javascript/comments/abc/x/', label: 'Reddit' },
+      { href: 'https://news.ycombinator.com/item?id=1', label: 'Hacker News' },
+    ])
+    expect(discussLinks('https://old.reddit.com/r/webdev/comments/abc/x/')).toEqual([
+      { href: 'https://old.reddit.com/r/webdev/comments/abc/x/', label: 'Reddit' },
+    ])
+    expect(discussLinks(undefined)).toEqual([])
+    expect(discussLinks('[]')).toEqual([])
+  })
+
+  it('keeps only plain https links to a known site, so a link is never labelled with the wrong site', () => {
+    for (const raw of ['http://dev.to/a', 'javascript:alert(1)', 'data:text/html,x', 'https://example.com/a', 'https://dev.to.example.com/a',
+      'https://evil.example/dev.to', 'https://user:pw@dev.to/a', 'https://dev.to:8443/a', 'dev.to/a', '/blog/x/', 'not a url']) {
+      expect(discussLinks(raw), raw).toEqual([])
+    }
+  })
+
+  it('keeps the first thread on a site: two links reading "Reddit" would be indistinguishable', () => {
+    expect(discussLinks('https://www.reddit.com/r/javascript/comments/a/x/, https://old.reddit.com/r/webdev/comments/b/y/')).toEqual([
+      { href: 'https://www.reddit.com/r/javascript/comments/a/x/', label: 'Reddit' },
+    ])
   })
 })

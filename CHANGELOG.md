@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Blog posts end with where to discuss them.** A post that is also on DEV, Reddit or Hacker News links to those
+  threads at its end, and every post has a "Spotted a mistake? Send feedback" link that opens the feedback form over
+  the post.
+
 ## [1.16.3] - 2026-10-17
 
 ### Changed

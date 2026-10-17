@@ -5,7 +5,8 @@ import { renderMarkdownDocument } from '@/app/pages/guide'
 import { pageTitle } from '@/app/pages/seo'
 import PagePromo from '@/app/sponsors/PagePromo'
 import PageSponsor from '@/app/sponsors/PageSponsor'
-import { fetchPosts, parseTags, type PostMeta } from './blogManifest'
+import { discussLinks, fetchPosts, parseTags, type PostMeta } from './blogManifest'
+import PostDiscussion from './PostDiscussion'
 
 type BlogPostProps = { slug: string }
 type Frontmatter = Record<string, string>
@@ -113,14 +114,17 @@ export default function BlogPost({ slug }: BlogPostProps) {
         <>
           <div className="md [&>:first-child]:mt-0" dangerouslySetInnerHTML={{ __html: post.html }} />
           <PagePromo page={{ kind: 'blog', slug }} slot="inline" />
-          {others.length > 0 && (
-            <footer className="grid gap-1 pt-6 border-t">
-              <h2 className="m-0 text-xs font-normal text-muted">Also on the blog</h2>
-              {others.map(p => (
-                <a key={p.slug} href={`/blog/${p.slug}/`} className="text-base leading-6 font-semibold hover:text-acc">{p.title}</a>
-              ))}
-            </footer>
-          )}
+          <footer className="grid gap-6 pt-6 border-t">
+            <PostDiscussion links={discussLinks(post.meta.discuss)} />
+            {others.length > 0 && (
+              <div className="grid gap-1">
+                <h2 className="m-0 text-xs font-normal text-muted">Also on the blog</h2>
+                {others.map(p => (
+                  <a key={p.slug} href={`/blog/${p.slug}/`} className="text-base leading-6 font-semibold hover:text-acc">{p.title}</a>
+                ))}
+              </div>
+            )}
+          </footer>
         </>
       )}
     </article>

@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { parseBlogManifest, readBlogManifest, readBlogPostSource, isSafeSlug, dropRepeatedTitle, postImage } from './blog'
 import { parseFrontmatter } from '../../src/lib/markdown.js'
-import { parseTags } from '../../src/components/blogManifest'
+import { discussLinks, parseTags } from '../../src/components/blogManifest'
 
 const PUBLIC_BLOG = path.join(process.cwd(), 'public', 'blog')
 
@@ -47,6 +47,13 @@ describe('readBlogManifest / readBlogPostSource (public/blog fixtures — the bu
     for (const post of readBlogManifest(PUBLIC_BLOG)) {
       const { frontmatter } = parseFrontmatter(readBlogPostSource(PUBLIC_BLOG, post.slug)!)
       expect((post as { tags?: string[] }).tags, post.slug).toEqual(parseTags(frontmatter.tags))
+    }
+  })
+
+  it("links every thread a post's discuss frontmatter lists: none is left out as unknown or repeated", () => {
+    for (const post of readBlogManifest(PUBLIC_BLOG)) {
+      const { frontmatter } = parseFrontmatter(readBlogPostSource(PUBLIC_BLOG, post.slug)!) as { frontmatter: Record<string, string> }
+      expect(discussLinks(frontmatter.discuss), post.slug).toHaveLength(parseTags(frontmatter.discuss).length)
     }
   })
 
