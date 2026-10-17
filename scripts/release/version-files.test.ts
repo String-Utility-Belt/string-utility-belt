@@ -35,6 +35,19 @@ describe('readJsonVersion / writeJsonVersion', () => {
     expect(JSON.parse(out).version).toBe('1.0.0')
   })
 
+  it('reads and rewrites a version after a prefix, such as a package pinned in an npx argument', () => {
+    const mcp = '{\n  "mcpServers": {\n    "x": { "command": "npx", "args": ["-y", "@scope/pkg@1.7.0"] }\n  }\n}\n'
+    const pointer = ['mcpServers', 'x', 'args', 1]
+    expect(readJsonVersion(mcp, pointer, '@scope/pkg@')).toBe('1.7.0')
+    expect(writeJsonVersion(mcp, pointer, '1.7.1', '@scope/pkg@')).toBe(mcp.replace('@scope/pkg@1.7.0', '@scope/pkg@1.7.1'))
+  })
+
+  it('refuses a value that does not start with the prefix, rather than overwrite it', () => {
+    const mcp = '{ "args": ["-y", "@other/pkg@1.7.0"] }'
+    expect(() => readJsonVersion(mcp, ['args', 1], '@scope/pkg@')).toThrow(/\["args"\]\[1\] does not start with "@scope\/pkg@"/)
+    expect(() => writeJsonVersion(mcp, ['args', 1], '1.7.1', '@scope/pkg@')).toThrow(/does not start with/)
+  })
+
   it('refuses missing paths and non-string values', () => {
     expect(() => readJsonVersion(MANIFEST, ['nope'])).toThrow(/no value at \["nope"\]/)
     expect(() => readJsonVersion(MANIFEST, ['nested', 'list', 5])).toThrow(/no value/)

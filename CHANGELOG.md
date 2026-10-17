@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **A Claude plugin for the MCP server** (`plugins/string-utility-belt/`), ready for Anthropic's plugin directory: it
+  starts the server in Claude Code and in Cowork on your computer, pinned to the version released with it, and says
+  what it runs and that nothing is sent anywhere.
+
 ### Changed
 
 - **The MCP server introduces itself.** MCP clients now show it as "String Utility Belt", with the site's icon, a

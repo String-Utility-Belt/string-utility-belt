@@ -1,8 +1,8 @@
 /**
  * Generates the brand icons from a vector mark, using @resvg/resvg-wasm so the build has no
  * native image dependency: the site's PWA icons and favicon (public/icons/*.png), the browser
- * extension's toolbar icons (packages/extension/icons/*.png) and the MCP server's bundle icon
- * (packages/mcp/assets/*.png). Run with
+ * extension's toolbar icons (packages/extension/icons/*.png) and the icon directories list the MCP
+ * server with (packages/mcp/assets, plugins/string-utility-belt). Run with
  * `npx vite-node scripts/icons.ts` after touching the mark and commit the resulting PNGs.
  * They are NOT regenerated at build time.
  */
@@ -52,8 +52,11 @@ export const EXTENSION_ICON_SPECS: IconSpec[] = [
   { file: 'icon128.png', size: 128, variant: 'full', maskable: false, padding: 16 },
 ]
 
-/** The MCP server's .mcpb icon (packages/mcp/assets), the one its manifest.json names: Claude Desktop wants 512 px. */
-export const MCP_ICON_SPECS: IconSpec[] = [
+/**
+ * The icon a directory lists the MCP server with, inside what it installs: the .mcpb (manifest.json's `icon`;
+ * Claude Desktop wants 512 px) and the Claude plugin (plugin.json's `icon`).
+ */
+export const LISTING_ICON_SPECS: IconSpec[] = [
   { file: 'icon-512.png', size: 512, variant: 'full', maskable: false },
 ]
 
@@ -61,7 +64,8 @@ export const MCP_ICON_SPECS: IconSpec[] = [
 export const ICON_TARGETS: ReadonlyArray<readonly [dir: string, specs: IconSpec[]]> = [
   ['public/icons', ICON_SPECS],
   ['packages/extension/icons', EXTENSION_ICON_SPECS],
-  ['packages/mcp/assets', MCP_ICON_SPECS],
+  ['packages/mcp/assets', LISTING_ICON_SPECS],
+  ['plugins/string-utility-belt', LISTING_ICON_SPECS],
 ]
 
 /*

@@ -1,15 +1,18 @@
 // @vitest-environment node
 /**
- * The server describes itself in five places: what it answers `initialize` with (server.ts), its npm
- * package (package.json), the MCP Registry entry (server.json), the .mcpb manifest (manifest.json)
- * and the README. Directories read different ones, so they must agree.
+ * The server describes itself in several places: what it answers `initialize` with (server.ts), its npm
+ * package (package.json), the MCP Registry entry (server.json), the .mcpb manifest (manifest.json), the
+ * Claude plugin (plugins/string-utility-belt) and the READMEs. Directories read different ones, so they
+ * must agree.
  */
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js'
 import type { Tool } from '@modelcontextprotocol/sdk/types.js'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import pluginMcp from '../../../plugins/string-utility-belt/.mcp.json'
+import plugin from '../../../plugins/string-utility-belt/.claude-plugin/plugin.json'
 import registryEntry from '../../../server.json'
 import { staticRegistry } from '../../../src/utilities/static-registry'
 import manifest from '../manifest.json'
@@ -18,6 +21,20 @@ import { SERVER_ICONS, SERVER_TITLE, createServer } from './server'
 
 const PACKAGE_DIR = path.resolve(__dirname, '..')
 const ROOT = path.resolve(PACKAGE_DIR, '../..')
+const PLUGIN_DIR = path.join(ROOT, 'plugins/string-utility-belt')
+
+/** Every file under `dir`, relative to it. */
+function filesUnder(dir: string, rel = ''): string[] {
+  return readdirSync(path.join(dir, rel), { withFileTypes: true }).flatMap(entry => {
+    const child = rel ? `${rel}/${entry.name}` : entry.name
+    return entry.isDirectory() ? filesUnder(dir, child) : [child]
+  })
+}
+
+/** The `## heading` section of a Markdown file, up to the next `## `. */
+function section(markdown: string, heading: string): string {
+  return markdown.split(new RegExp(`^## ${heading}$`, 'm'))[1]?.split(/^## /m)[0] ?? ''
+}
 
 /** Width and height from a PNG's IHDR chunk. */
 function pngSize(file: string) {
@@ -90,12 +107,11 @@ describe('MCP server metadata', () => {
     })
 
     it('links a privacy policy over HTTPS, which the README links too', () => {
-      const readme = readFileSync(path.join(PACKAGE_DIR, 'README.md'), 'utf8')
-      const section = readme.split(/^## Privacy Policy$/m)[1]?.split(/^## /m)[0] ?? ''
+      const privacy = section(readFileSync(path.join(PACKAGE_DIR, 'README.md'), 'utf8'), 'Privacy Policy')
       expect(manifest.privacy_policies.length).toBeGreaterThan(0)
       for (const url of manifest.privacy_policies) {
         expect(new URL(url).protocol, url).toBe('https:')
-        expect(section, `README "## Privacy Policy" links ${url}`).toContain(`](${url})`)
+        expect(privacy, `README "## Privacy Policy" links ${url}`).toContain(`](${url})`)
       }
     })
 
@@ -129,6 +145,59 @@ describe('MCP server metadata', () => {
         const url = new URL(icon.src)
         expect(url.origin, icon.src).toBe(site.origin)
         expect(icon.sizes, icon.src).toEqual([pngSize(path.join(ROOT, 'public', url.pathname))])
+      }
+    })
+  })
+
+  // What Anthropic's plugin directory checks: https://claude.com/docs/plugins/pre-submission-checklist
+  describe('Claude plugin (plugins/string-utility-belt)', () => {
+    it('lists the same name, publisher and links as the .mcpb', () => {
+      expect(plugin).toMatchObject({
+        displayName: SERVER_TITLE,
+        version: pkg.version,
+        license: pkg.license,
+        author: { name: manifest.author.name, email: manifest.author.email },
+        supportUrl: manifest.support,
+      })
+      expect(manifest.privacy_policies).toContain(plugin.privacyPolicyUrl)
+      for (const url of [plugin.homepage, plugin.documentationUrl, plugin.supportUrl, plugin.privacyPolicyUrl]) {
+        expect(new URL(url).protocol, url).toBe('https:')
+      }
+    })
+
+    it('starts the npm package at exactly this version: the directory blocks an unpinned npx package', () => {
+      expect(pluginMcp.mcpServers).toEqual({
+        subelt: { command: 'npx', args: ['-y', `${pkg.name}@${pkg.version}`] },
+      })
+    })
+
+    it('has the 512 px icon its manifest names', () => {
+      expect(pngSize(path.join(PLUGIN_DIR, plugin.icon))).toBe('512x512')
+    })
+
+    it('has a README of at least 40 words outside code that names every tool and links the privacy policy', () => {
+      const readme = readFileSync(path.join(PLUGIN_DIR, 'README.md'), 'utf8')
+      const prose = readme.replace(/^```[\s\S]*?^```/gm, '')
+      expect(prose.split(/\s+/).filter(Boolean).length).toBeGreaterThanOrEqual(40)
+      for (const tool of manifest.tools) expect(readme, tool.name).toContain(`\`${tool.name}\``)
+      expect(section(readme, 'Privacy Policy')).toContain(`](${plugin.privacyPolicyUrl})`)
+    })
+
+    it('carries the repository\'s MIT license text, which installed copies must include', () => {
+      expect(readFileSync(path.join(PLUGIN_DIR, 'LICENSE'), 'utf8')).toBe(readFileSync(path.join(ROOT, 'LICENSE'), 'utf8'))
+    })
+
+    it('holds nothing the directory blocks or holds for review', () => {
+      const files = filesUnder(PLUGIN_DIR)
+      // a package-manager config could point npx at another registry; a lockfile installs on every user's machine
+      const forbidden = /(^|\/)(\.npmrc|\.yarnrc(\.yml)?|bunfig\.toml|uv\.toml|pip\.conf|package\.json|package-lock\.json|\.DS_Store|Thumbs\.db|desktop\.ini)$/
+      expect(files.filter(f => forbidden.test(f))).toEqual([])
+      // claude.ai and Cowork refuse to install a plugin with a top-level bin/
+      expect(files.filter(f => f.startsWith('bin/'))).toEqual([])
+      expect(files.length).toBeLessThanOrEqual(512)
+      for (const file of files) {
+        const limit = file.endsWith('.png') ? 5 * 1024 * 1024 : 256 * 1024
+        expect(statSync(path.join(PLUGIN_DIR, file)).size, file).toBeLessThan(limit)
       }
     })
   })

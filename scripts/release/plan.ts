@@ -168,7 +168,7 @@ function versionSetAt(git: Git, target: Target, since: string | null): string | 
   const versionAt = (rev: string) => {
     const text = git.show(rev, file.path)
     try {
-      return text === null ? null : readJsonVersion(text, file.pointer)
+      return text === null ? null : readJsonVersion(text, file.pointer, file.prefix)
     } catch {
       return null
     }
@@ -216,7 +216,7 @@ export function readTargetVersion(target: Target, read: (file: string) => string
   const texts = new Map<string, string>()
   const found = target.versionFiles.map(f => {
     if (!texts.has(f.path)) texts.set(f.path, read(f.path))
-    return { where: `${f.path}${formatPointer(f.pointer)}`, version: readJsonVersion(texts.get(f.path)!, f.pointer) }
+    return { where: `${f.path}${formatPointer(f.pointer)}`, version: readJsonVersion(texts.get(f.path)!, f.pointer, f.prefix) }
   })
   const versions = new Set(found.map(f => f.version))
   if (versions.size !== 1) {
@@ -239,7 +239,7 @@ export function applyPlan(root: string, targets: readonly Target[], plans: reado
     if (plan.bump) {
       for (const file of target.versionFiles) {
         const full = path.join(root, file.path)
-        writeFileSync(full, writeJsonVersion(readFileSync(full, 'utf8'), file.pointer, plan.next))
+        writeFileSync(full, writeJsonVersion(readFileSync(full, 'utf8'), file.pointer, plan.next, file.prefix))
         changed.add(file.path)
       }
     }

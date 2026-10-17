@@ -112,7 +112,7 @@ describe('generateIcons', () => {
   }, 30_000)
 })
 
-describe('committed icons (public/icons, packages/extension/icons, packages/mcp/assets)', () => {
+describe('committed icons (every ICON_TARGETS directory)', () => {
   it('are up to date with the generator: run `npx vite-node scripts/icons.ts` after changing the mark', async () => {
     for (const [dir, specs] of ICON_TARGETS) {
       for (const spec of specs) {
