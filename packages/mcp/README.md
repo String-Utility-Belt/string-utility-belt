@@ -2,7 +2,7 @@
 
 [![smithery badge](https://smithery.ai/badge/string-utility-belt/string-utility-belt)](https://smithery.ai/servers/string-utility-belt/string-utility-belt)
 
-An [MCP](https://modelcontextprotocol.io) server that exposes [String Utility Belt](https://stringutilitybelt.com/?utm_source=npm&utm_medium=referral&utm_campaign=mcp)'s 246
+An [MCP](https://modelcontextprotocol.io) server that exposes [String Utility Belt](https://stringutilitybelt.com/?utm_source=npm&utm_medium=referral&utm_campaign=mcp)'s 247
 string-transformation utilities — and its pipeline engine — as tools an AI agent can call
 directly, with no browser involved.
 
@@ -66,6 +66,23 @@ and pretty-print the JSON": it finds the utilities with `list_utilities` and run
   code execution is out of scope for this server. The two utilities that need a browser
   `DOMParser` (`xml_to_json`, `html_table_to_csv`) fail with an explanatory error.
 
+## Privacy Policy
+
+The server runs entirely on your computer. Our full privacy policy is at
+[stringutilitybelt.com/privacy/](https://stringutilitybelt.com/privacy/); for this server it comes down to:
+
+- **Data collection.** It receives only the arguments your MCP client sends in each tool call (the input text,
+  utility ids, parameters, pipeline steps) and returns results only to that client. It contains no analytics,
+  telemetry or ads.
+- **Use and storage.** Inputs are processed in memory, by the server and its child processes, to produce the
+  result you asked for. Nothing is written to disk. Diagnostics, such as a failed start or a runner that ran
+  out of memory, go to standard error, which your MCP client may keep in its own logs.
+- **Third-party sharing.** None. The server makes no network requests, so nothing you give it reaches us or
+  anyone else. (Your MCP client may download the icon listed in the server's metadata from
+  stringutilitybelt.com to display it; the server itself does not.)
+- **Retention.** Nothing is kept once a call returns.
+- **Contact.** [contact@stringutilitybelt.com](mailto:contact@stringutilitybelt.com).
+
 ## Building
 
 From the repo root (no separate install needed — it reuses the root `node_modules`):
@@ -91,11 +108,11 @@ claude mcp add subelt -- node /absolute/path/to/string-utility-belt/packages/mcp
 
 ```bash
 # Unit + integration tests (in-process via InMemoryTransport, plus the process pool)
-npx vitest run packages/mcp/src --minWorkers=1 --maxWorkers=2
+npx vitest run packages/mcp/src --maxWorkers=2
 
 # Build, then also run the stdio smoke tests against the real binary
 npm run build:mcp
-npx vitest run packages/mcp/src/bin.smoke.test.ts --minWorkers=1 --maxWorkers=1
+npx vitest run packages/mcp/src/bin.smoke.test.ts --maxWorkers=1
 ```
 
 ## Source and issues

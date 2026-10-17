@@ -21,6 +21,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   searched for. When a message can't be sent, the form opens it in your own email app instead. The privacy policy
   says what the form sends and what happens to it.
 
+### Changed
+
+- **The MCP server introduces itself.** MCP clients now show it as "String Utility Belt", with the site's icon, a
+  description and a link to the site, instead of the bare name `subelt`, and it tells the agent how its tools fit
+  together (find a utility, read its parameters, run it, or chain several in one pipeline). Its listing in the MCP
+  Registry carries the same title and icon, and the Claude Desktop extension (`.mcpb`) links the privacy policy, says
+  it needs Node.js 20 or later and uses the current keycap icon instead of the old one.
+
 ## [1.13.2] - 2026-10-11
 
 ### Changed
