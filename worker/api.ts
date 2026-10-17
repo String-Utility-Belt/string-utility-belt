@@ -7,13 +7,16 @@
  *   GET     /api/utilities/:id     one utility + examples    (public CORS)
  *   GET     /api/fetch?url=        same-origin fetch proxy   (no CORS)
  *   POST    /api/event             count a site event        (same-origin, no CORS)
+ *   POST    /api/feedback          email us a visitor's message (same-origin, no CORS)
  */
 import { EVENT_PATH } from '../src/lib/countedEvents'
+import { FEEDBACK_PATH } from '../src/lib/feedback'
 import { MANIFEST } from '../src/utilities/_generated/manifest'
 import { EXAMPLES } from '../src/utilities/_generated/examples'
 import { staticRegistry } from '../src/utilities/static-registry'
 import type { ApiEnv, ApiOptions } from './env'
 import { handleEvent } from './events'
+import { handleFeedback } from './feedback'
 import { handleFetchProxy } from './fetch-proxy'
 import { CORS_HEADERS, jsonError } from './http'
 import { createRateLimiter, rateLimitKey } from './rate-limit'
@@ -47,6 +50,8 @@ export function createApi(opts: ApiOptions = {}): Api {
   const limiter = createRateLimiter({ ...(opts.rateLimit ?? { limit: 30, windowMs: 60_000 }), now: opts.now })
   const runLimiter = createRateLimiter({ ...(opts.runRateLimit ?? { limit: 60, windowMs: 60_000 }), now: opts.now })
   const eventLimiter = createRateLimiter({ ...(opts.eventRateLimit ?? { limit: 30, windowMs: 60_000 }), now: opts.now })
+  // a person sends one or two; more is a script filling our inbox
+  const feedbackLimiter = createRateLimiter({ ...(opts.feedbackRateLimit ?? { limit: 5, windowMs: 3_600_000 }), now: opts.now })
 
   async function route(request: Request, url: URL, env: ApiEnv): Promise<Response> {
     const path = url.pathname
@@ -90,6 +95,8 @@ export function createApi(opts: ApiOptions = {}): Api {
     }
 
     if (path === EVENT_PATH) return handleEvent(request, env, { limiter: eventLimiter })
+
+    if (path === FEEDBACK_PATH) return handleFeedback(request, env, { limiter: feedbackLimiter })
 
     return jsonError(404, `no API route for ${method} ${path.slice(0, 200)}`)
   }

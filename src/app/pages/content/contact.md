@@ -1,19 +1,19 @@
 ---
 title: Contact String Utility Belt
-description: Get in touch with String Utility Belt to report a bug, suggest a new utility, or ask about privacy or advertising. Email us at contact@stringutilitybelt.com.
+description: Suggest a new utility, report a bug or send feedback to String Utility Belt with the form on this page, or email contact@stringutilitybelt.com.
 ---
 
 # Contact
 
-The best way to reach us is by email at [contact@stringutilitybelt.com](mailto:contact@stringutilitybelt.com). We read every message, although we cannot always reply straight away.
-
-## Reporting a bug
-
-Tell us which utility you were using, what you expected and what happened instead. A share link of the pipeline is the quickest way to show us: use **Share** in the tool, and only include your input if it contains nothing private.
+Send us a message with the form at the end of this page, or email [contact@stringutilitybelt.com](mailto:contact@stringutilitybelt.com). You can also open the form from **Feedback** at the foot of any page, or from a utility search that finds nothing. We read every message, although we cannot always reply straight away.
 
 ## Suggesting a utility
 
 Describe the transformation you need, ideally with a short example input and the output you want. Many of the current utilities started as suggestions.
+
+## Reporting a bug
+
+Tell us which utility you were using, what you expected and what happened instead. A share link of the pipeline is the quickest way to show us: use **Share** in the tool, and only include your input if it contains nothing private. Never send passwords, tokens or keys, in the form or by email.
 
 ## Privacy questions
 

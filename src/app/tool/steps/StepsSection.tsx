@@ -19,6 +19,7 @@ import MagicButton from '@/app/magic/MagicButton'
 import { seededParams } from '@/app/magic/seed'
 import Select from '@/components/Select'
 import UtilityPicker from '@/components/UtilityPicker'
+import { suggestUtility } from '@/app/feedback/open'
 import EmptyState from '../EmptyState'
 import PipelineToolbar from '../PipelineToolbar'
 import StepList from '../StepList'
@@ -108,7 +109,7 @@ export default function StepsSection() {
                 onChange={id => { if (id) addStep(id) }} />
             </div>
             {showPicker && (
-              <UtilityPicker previousProduces={previousProduces} onClose={closePicker}
+              <UtilityPicker previousProduces={previousProduces} onClose={closePicker} onSuggest={suggestUtility}
                 onPick={id => { addStep(id); closePicker() }} />
             )}
           </div>

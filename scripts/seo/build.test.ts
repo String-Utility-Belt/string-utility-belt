@@ -218,7 +218,7 @@ describe('buildSeo over a built dist/', () => {
     for (const rel of ['index.html', 'util/trim/index.html', 'utilities/index.html', 'presets/index.html', 'blog/index.html', 'changelog/index.html', 'docs/index.html', 'privacy/index.html', '404.html']) {
       const doc = html(read(dist, rel))
       const footer = [...doc.querySelectorAll('#root footer a')].map(a => a.getAttribute('href'))
-      expect(footer, rel).toEqual(['/utilities/', '/presets/', '/blog/', '/changelog/', '/integrations/', '/about/', '/privacy/', '/contact/', '/advertise/',
+      expect(footer, rel).toEqual(['/utilities/', '/presets/', '/blog/', '/changelog/', '/integrations/', '/about/', '/privacy/', '/contact/', '/contact/#feedback', '/advertise/',
         GITHUB_SPONSORS_URL, DEVHUNT.href])
       expect([...doc.querySelectorAll('#root > header nav[aria-label="main"] a')].map(a => a.getAttribute('href')), rel)
         .toEqual(['/', '/docs/', '/utilities/', '/presets/', '/blog/', '/changelog/'])

@@ -24,6 +24,17 @@ export function jsonError(status: number, error: string, extra: Record<string, u
   return json({ error, ...extra }, status, { 'cache-control': 'no-store', ...headers })
 }
 
+/**
+ * Whether a request came from anywhere but one of this site's own pages, for the routes
+ * only the site calls (`/api/event`, `/api/feedback`): browsers set Sec-Fetch-Site on
+ * every request, and Origin on a cross-origin one, and neither can be set from a page.
+ */
+export function isCrossSite(request: Request): boolean {
+  const origin = request.headers.get('origin')
+  return request.headers.get('sec-fetch-site') !== 'same-origin'
+    || (origin !== null && origin !== new URL(request.url).origin)
+}
+
 export class TooLargeError extends Error {
   readonly limit: number
   constructor(limit: number) {

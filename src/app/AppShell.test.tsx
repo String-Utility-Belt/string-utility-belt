@@ -35,7 +35,7 @@ describe('site links', () => {
     render(<Footer />)
     const links = within(screen.getByRole('navigation', { name: 'site' })).getAllByRole('link')
     expect(links.map(a => a.getAttribute('href'))).toEqual([
-      '/utilities/', '/presets/', '/blog/', '/changelog/', '/integrations/', '/about/', '/privacy/', '/contact/', '/advertise/',
+      '/utilities/', '/presets/', '/blog/', '/changelog/', '/integrations/', '/about/', '/privacy/', '/contact/', '/contact/#feedback', '/advertise/',
       GITHUB_SPONSORS_URL,
     ])
     const sponsor = screen.getByRole('link', { name: 'Sponsor on GitHub (opens in a new tab)' })
@@ -87,6 +87,17 @@ describe('site links', () => {
       scroll.mockRestore()
       delete (Element.prototype as Partial<Element>).scrollIntoView
     }
+  })
+
+  it("opens the feedback form over the page from the footer, leaving a modified click to reach the contact page's form", async () => {
+    history.replaceState(null, '', '/utilities/')
+    render(<AppShell />)
+    const feedback = within(screen.getByRole('navigation', { name: 'site' })).getByRole('link', { name: 'Feedback' })
+    expect(fireEvent.click(feedback, { ctrlKey: true })).toBe(true)
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(fireEvent.click(feedback)).toBe(false)
+    expect(await screen.findByRole('dialog', { name: 'Feedback and suggestions' }, LAZY)).toBeTruthy()
+    expect(location.pathname).toBe('/utilities/')
   })
 
   it('says so above the tool when the address is not a page, and keeps it out of search results', () => {

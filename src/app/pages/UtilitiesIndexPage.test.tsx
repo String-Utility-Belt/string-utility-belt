@@ -3,6 +3,7 @@ import { render, screen, fireEvent, within } from '@testing-library/react'
 import { registry } from '@/app/registry'
 import UtilitiesIndexPage from './UtilitiesIndexPage'
 import { utilitiesTitle } from './seo'
+import { EVENT_OPEN_FEEDBACK } from '@/app/feedback/open'
 
 describe('UtilitiesIndexPage', () => {
   it('sets the document title, and restores it on leaving', () => {
@@ -21,6 +22,21 @@ describe('UtilitiesIndexPage', () => {
     expect(link!.textContent).toContain('trim')
     expect(link!.textContent).toContain(registry.get('trim')!.description)
     expect(container.querySelectorAll('a[href^="/util/"]')).toHaveLength(registry.list().length)
+  })
+
+  it('offers to suggest a utility when the filter matches nothing, starting from the filter text', () => {
+    const opened = vi.fn()
+    window.addEventListener(EVENT_OPEN_FEEDBACK, opened)
+    try {
+      render(<UtilitiesIndexPage />)
+      fireEvent.change(screen.getByRole('searchbox', { name: 'Filter utilities' }), { target: { value: 'zzqx' } })
+      fireEvent.click(screen.getByRole('button', { name: 'suggest a new utility' }))
+      expect((opened.mock.calls[0][0] as CustomEvent).detail).toEqual({
+        kind: 'utility', message: 'I searched for “zzqx” and would like a utility that ',
+      })
+    } finally {
+      window.removeEventListener(EVENT_OPEN_FEEDBACK, opened)
+    }
   })
 
   it('shows each category with its count', () => {
@@ -48,7 +64,7 @@ describe('UtilitiesIndexPage', () => {
   it('shows a message when nothing matches', () => {
     render(<UtilitiesIndexPage />)
     fireEvent.change(screen.getByLabelText('Filter utilities'), { target: { value: 'zzzznotarealutility' } })
-    expect(screen.getByText('Nothing matches “zzzznotarealutility”. Try a format name like base64, json or hex.')).toBeTruthy()
+    expect(screen.getByText(/^Nothing matches “zzzznotarealutility”\. Try a format name like base64, json or hex, or/)).toBeTruthy()
     expect(screen.getByRole('status').textContent).toMatch(/^0 of /)
   })
 

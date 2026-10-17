@@ -2,6 +2,7 @@ import React, { Fragment, useMemo, useState } from 'react'
 import { Search } from 'lucide-react'
 import { registry } from '@/app/registry'
 import PagePromo from '@/app/sponsors/PagePromo'
+import { suggestUtility } from '@/app/feedback/open'
 import { utilityPath } from './related'
 import { UTILITIES_HEADING, displayName, utilitiesDescription, utilitiesTitle } from './seo'
 import { useDocumentMeta } from './useDocumentMeta'
@@ -84,7 +85,12 @@ export default function UtilitiesIndexPage() {
       )}
 
       {groups.length === 0 && (
-        <p className="text-sm text-muted">Nothing matches “{q}”. Try a format name like base64, json or hex.</p>
+        <p className="text-sm text-muted">
+          Nothing matches “{q}”. Try a format name like base64, json or hex, or{' '}
+          <button type="button" className="underline underline-offset-2 hover:text-fg" onClick={() => suggestUtility(q)}>
+            suggest a new utility
+          </button>.
+        </p>
       )}
 
       {groups.map(({ category, items }, i) => (
