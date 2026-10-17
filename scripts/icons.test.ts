@@ -3,9 +3,12 @@ import { describe, it, expect } from 'vitest'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { EXTENSION_ICON_SPECS, ICON_SPECS, ICON_TARGETS, buildIconSvg, generateIcons, renderIconPng, renderIconPixels, LOGO_COLOR, LOGO_FOREGROUND } from './icons'
+import { ICON_SPECS, ICON_TARGETS, VSCODE_ICON_SPECS, buildIconSvg, generateIcons, renderIconPng, renderIconPixels, LOGO_COLOR, LOGO_FOREGROUND } from './icons'
 
 const ROOT = path.resolve(__dirname, '..')
+
+/** Every committed icon, named by its path: file names repeat across sets. */
+const ALL_SPECS = ICON_TARGETS.flatMap(([dir, specs]) => specs.map((spec) => ({ ...spec, path: `${dir}/${spec.file}` })))
 
 /** Width/height from a PNG's IHDR chunk. */
 function pngSize(bytes: Uint8Array) {
@@ -28,8 +31,8 @@ describe('ICON_SPECS', () => {
   })
 
   it('draws the three-letter keycap only where it can be read: 128 px and up', () => {
-    for (const spec of [...ICON_SPECS, ...EXTENSION_ICON_SPECS]) {
-      expect(spec.variant === 'full', spec.file).toBe(spec.size - 2 * (spec.padding ?? 0) >= 96)
+    for (const spec of ALL_SPECS) {
+      expect(spec.variant === 'full', spec.path).toBe(spec.size - 2 * (spec.padding ?? 0) >= 96)
     }
   })
 })
@@ -74,7 +77,7 @@ describe('the rendered mark', () => {
   }
 
   // A key seen from the front: a thin rim on top, letters on the accent face, a deep base.
-  it.each([...ICON_SPECS, ...EXTENSION_ICON_SPECS].filter(s => s.variant !== 'tiny' && s.size >= 128))('is a keycap with a deep base ($file)', async (spec) => {
+  it.each(ALL_SPECS.filter(s => s.variant !== 'tiny' && s.size >= 128))('is a keycap with a deep base ($path)', async (spec) => {
     const image = await renderIconPixels(spec)
     // left of centre: through the key's rim and base, clear of the letters
     const runs = creamRuns(image, Math.round(image.width * 0.27))
@@ -82,7 +85,7 @@ describe('the rendered mark', () => {
     expect(runs[1]).toBeGreaterThan(runs[0] * 1.5)
   }, 30_000)
 
-  it.each([...ICON_SPECS, ...EXTENSION_ICON_SPECS])('is the accent tile with cream on it ($file)', async (spec) => {
+  it.each(ALL_SPECS)('is the accent tile with cream on it ($path)', async (spec) => {
     const { pixels, width, height } = await renderIconPixels(spec)
     let accent = 0
     let cream = 0
@@ -114,13 +117,23 @@ describe('generateIcons', () => {
 
 describe('committed icons (every ICON_TARGETS directory)', () => {
   it('are up to date with the generator: run `npx vite-node scripts/icons.ts` after changing the mark', async () => {
-    for (const [dir, specs] of ICON_TARGETS) {
-      for (const spec of specs) {
-        const committed = fs.readFileSync(path.join(ROOT, dir, spec.file))
-        expect(Buffer.from(await renderIconPng(spec)).equals(committed), `${dir}/${spec.file}`).toBe(true)
-      }
+    for (const spec of ALL_SPECS) {
+      const committed = fs.readFileSync(path.join(ROOT, spec.path))
+      expect(Buffer.from(await renderIconPng(spec)).equals(committed), spec.path).toBe(true)
     }
   }, 30_000)
+
+  it('include the icon packages/vscode/package.json names: a PNG of at least 128 px, shipped by .vscodeignore', () => {
+    const dir = path.join(ROOT, 'packages/vscode')
+    const { icon } = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'))
+    expect(VSCODE_ICON_SPECS.map((spec) => spec.file)).toEqual([icon])
+    const { width, height } = pngSize(fs.readFileSync(path.join(dir, icon)))
+    expect(width).toBe(height)
+    expect(width).toBeGreaterThanOrEqual(128)
+    // an allowlist: everything is ignored, then each shipped file is re-included
+    const rules = fs.readFileSync(path.join(dir, '.vscodeignore'), 'utf8').split('\n').map((line) => line.trim())
+    expect(rules).toContain(`!${icon}`)
+  })
 
   it('match the sizes and purposes public/manifest.webmanifest declares, and index.html links them', () => {
     const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'public/manifest.webmanifest'), 'utf8'))
