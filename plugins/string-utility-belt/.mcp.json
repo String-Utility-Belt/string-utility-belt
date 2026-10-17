@@ -2,7 +2,7 @@
   "mcpServers": {
     "subelt": {
       "command": "npx",
-      "args": ["-y", "@string-utility-belt/mcp@1.9.0"]
+      "args": ["-y", "@string-utility-belt/mcp@1.9.1"]
     }
   }
 }
