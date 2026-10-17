@@ -22,7 +22,9 @@ import { SERVER_ICONS, SERVER_TITLE, createServer } from './server'
 
 const PACKAGE_DIR = path.resolve(__dirname, '..')
 const ROOT = path.resolve(PACKAGE_DIR, '../..')
-const PLUGIN_DIR = path.join(ROOT, 'plugins/string-utility-belt')
+/** The plugin's folder from the repository root, with `/` separators on every OS as marketplace.json writes it. */
+const PLUGIN_FOLDER = 'plugins/string-utility-belt'
+const PLUGIN_DIR = path.join(ROOT, PLUGIN_FOLDER)
 
 /** Every file under `dir`, relative to it. */
 function filesUnder(dir: string, rel = ''): string[] {
@@ -170,7 +172,7 @@ describe('MCP server metadata', () => {
     // Claude Code reads plugin.json before install anyway.
     it('is listed in the repository\'s marketplace by name and folder only', () => {
       const entry = marketplace.plugins.find(p => p.name === plugin.name)
-      expect(entry).toEqual({ name: plugin.name, source: `./${path.relative(ROOT, PLUGIN_DIR)}` })
+      expect(entry).toEqual({ name: plugin.name, source: `./${PLUGIN_FOLDER}` })
       expect(marketplace.owner).toMatchObject({ name: manifest.author.name, email: manifest.author.email })
     })
 
