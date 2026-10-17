@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
-import { parseBlogManifest, readBlogManifest, readBlogPostSource, isSafeSlug, dropRepeatedTitle } from './blog'
+import { parseBlogManifest, readBlogManifest, readBlogPostSource, isSafeSlug, dropRepeatedTitle, postImage } from './blog'
 import { parseFrontmatter } from '../../src/lib/markdown.js'
 import { parseTags } from '../../src/components/blogManifest'
 
@@ -101,6 +103,34 @@ describe('dropRepeatedTitle', () => {
       const title = (frontmatter as Record<string, string>).title
       const firstLine = dropRepeatedTitle(body, title).trim().split('\n')[0]
       expect(firstLine).not.toBe(`# ${title}`)
+    }
+  })
+})
+
+describe('postImage (a post\'s own preview image)', () => {
+  const dir = mkdtempSync(path.join(os.tmpdir(), 'post-image-'))
+  writeFileSync(path.join(dir, 'cover.png'), '')
+  writeFileSync(path.join(dir, 'cover.jpg'), '')
+
+  it('takes a PNG that is there beside the posts', () => {
+    expect(postImage('/blog/cover.png', dir)).toBe('/blog/cover.png')
+  })
+
+  it('ignores a missing file, another type, directory or host, and a traversal', () => {
+    for (const value of [undefined, '', '/blog/missing.png', '/blog/cover.jpg', '/og/cover.png', 'blog/cover.png',
+      '/blog/../blog/cover.png', '/blog/sub/cover.png', 'https://example.com/blog/cover.png', '/blog/.png']) {
+      expect(postImage(value, dir), String(value)).toBeUndefined()
+    }
+  })
+
+  it('finds every shipped post\'s image, a 1200x630 PNG as the page\'s og:image tags say', () => {
+    for (const post of readBlogManifest(PUBLIC_BLOG)) {
+      const { frontmatter } = parseFrontmatter(readBlogPostSource(PUBLIC_BLOG, post.slug)!) as { frontmatter: Record<string, string> }
+      if (!frontmatter.image) continue
+      expect(postImage(frontmatter.image, PUBLIC_BLOG), post.slug).toBe(frontmatter.image)
+      const png = readFileSync(path.join(PUBLIC_BLOG, path.basename(frontmatter.image)))
+      expect(png.subarray(1, 4).toString('latin1'), post.slug).toBe('PNG')
+      expect([png.readUInt32BE(16), png.readUInt32BE(20)], post.slug).toEqual([1200, 630])
     }
   })
 })

@@ -6,6 +6,7 @@ import type { UtilityMeta } from '../../src/core/registry'
 import { MANIFEST } from '../../src/utilities/_generated/manifest'
 import { buildRssItems, buildSeo, SITE } from './build'
 import { parseGuide } from '../../src/app/pages/guide'
+import { parseFrontmatter } from '../../src/lib/markdown.js'
 import {
   POPULAR_UTILITY_IDS, DOCS_DESCRIPTION, DOCS_TITLE, HOME_HEADING, PRESETS_HEADING, displayName, homeDescription, pageTitle,
 } from '../../src/app/pages/seo'
@@ -51,13 +52,20 @@ const SHIPPED_POSTS: { slug: string }[] = JSON.parse(readFileSync(path.join(ROOT
 /** Pages besides the utilities, presets and posts: the indexes, changelog, docs, site pages and 404. */
 const OTHER_PAGES = 11
 
+/** A shipped post's frontmatter `image`, if it has one of its own. */
+const ownImage = (slug: string): string | undefined =>
+  (parseFrontmatter(readFileSync(path.join(ROOT, 'public', 'blog', `${slug}.md`), 'utf8')) as { frontmatter: Record<string, string> }).frontmatter.image
+
 function fixtureDist(): string {
   const dir = mkdtempSync(path.join(os.tmpdir(), 'build-seo-'))
   tmpDirs.push(dir)
   writeFileSync(path.join(dir, 'index.html'), TEMPLATE)
   const blog = path.join(dir, 'blog')
   mkdirSync(blog)
-  for (const post of SHIPPED_POSTS) copyFileSync(path.join(ROOT, 'public', 'blog', `${post.slug}.md`), path.join(blog, `${post.slug}.md`))
+  // the posts and the images beside them (public/ is copied into dist/ before buildSeo runs)
+  for (const file of readdirSync(path.join(ROOT, 'public', 'blog'))) {
+    if (file !== '_manifest.json') copyFileSync(path.join(ROOT, 'public', 'blog', file), path.join(blog, file))
+  }
   writeFileSync(path.join(blog, '_manifest.json'), JSON.stringify([
     ...SHIPPED_POSTS,
     { slug: 'no-markdown-file', title: 'Ghost post', date: '2025-10-01' },
@@ -307,6 +315,20 @@ describe('buildSeo over a built dist/', () => {
     const doc = html(read(dist, 'blog/md5-insecure-but-useful/index.html'))
     expect(doc.querySelectorAll('#root h1')).toHaveLength(1)
     expect(doc.querySelector('meta[property="og:type"]')?.getAttribute('content')).toBe('article')
+  })
+
+  it("gives each blog post a preview image of its own: its frontmatter image, else its generated card", () => {
+    for (const post of SHIPPED_POSTS) {
+      const doc = html(read(dist, `blog/${post.slug}/index.html`))
+      const image = ownImage(post.slug)
+      const expected = image ? `${SITE}${image}` : `${SITE}/og/blog/${post.slug}.png`
+      expect(doc.querySelector('meta[property="og:image"]')?.getAttribute('content'), post.slug).toBe(expected)
+      expect(doc.querySelector('meta[name="twitter:image"]')?.getAttribute('content'), post.slug).toBe(expected)
+      const ld = [...doc.querySelectorAll('script[type="application/ld+json"]')].map(s => JSON.parse(s.textContent!))
+      expect(ld[0].image, post.slug).toBe(expected)
+    }
+    expect(SHIPPED_POSTS.some(p => ownImage(p.slug)) && SHIPPED_POSTS.some(p => !ownImage(p.slug))).toBe(true)
+    expect(html(read(dist, 'blog/index.html')).querySelector('meta[property="og:image"]')?.getAttribute('content')).toBe(`${SITE}/og/default.png`)
   })
 
   it('marks blog posts up as BlogPosting with their dates', () => {
@@ -611,19 +633,21 @@ describe('buildSeo edge cases', () => {
     await expect(buildSeo({ outDir: dir, root: ROOT, og: false, log: silent })).rejects.toThrow(/vite build/)
   })
 
-  it('renders an OG image per utility and preset, plus the default card', async () => {
+  it('renders an OG image per utility, preset and blog post without an image of its own, plus the default card', async () => {
     const dist = fixtureDist()
     const manifest = MANIFEST.filter(m => m.id === 'trim' || m.id === 'tabs_spaces')
     const preset = STATIC_PRESETS[0]
     const guide = readFileSync(path.join(ROOT, 'src', 'presets', preset.slug, 'guide.md'), 'utf8')
     const result = await buildSeo({ outDir: dist, root: ROOT, now: NOW, log: silent, manifest, presets: [{ preset, guide }] })
-    expect(readdirSync(path.join(dist, 'og')).sort()).toEqual(['default.png', 'presets', 'tabs_spaces.png', 'trim.png'])
+    const blogCards = SHIPPED_POSTS.filter(p => !ownImage(p.slug)).map(p => `${p.slug}.png`)
+    expect(readdirSync(path.join(dist, 'og')).sort()).toEqual(['blog', 'default.png', 'presets', 'tabs_spaces.png', 'trim.png'])
     expect(readdirSync(path.join(dist, 'og', 'presets'))).toEqual([`${preset.slug}.png`])
+    expect(readdirSync(path.join(dist, 'og', 'blog')).sort()).toEqual(blogCards.sort())
     const png = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]
-    for (const file of ['default.png', 'tabs_spaces.png', 'trim.png', `presets/${preset.slug}.png`]) {
+    for (const file of ['default.png', 'tabs_spaces.png', 'trim.png', `presets/${preset.slug}.png`, ...blogCards.map(f => `blog/${f}`)]) {
       expect([...readFileSync(path.join(dist, 'og', file)).subarray(0, 8)], file).toEqual(png)
     }
-    expect(result.ogImages).toBe(4)
+    expect(result.ogImages).toBe(4 + blogCards.length)
     expect(result.missingGlyphs).toEqual([])
   }, 60000)
 })

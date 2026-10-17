@@ -45,6 +45,19 @@ export function readBlogManifest(blogDir: string): BlogPostMeta[] {
   return parseBlogManifest(readFileSync(file, 'utf8'))
 }
 
+const POST_IMAGE = /^\/blog\/([A-Za-z0-9][A-Za-z0-9_-]*\.png)$/
+
+/**
+ * A post's own preview image, from its frontmatter `image`: a PNG beside the posts,
+ * written as `/blog/<name>.png`. Anything else (another directory or type, a file that
+ * isn't there) is `undefined`, and the post keeps its generated card. The page's
+ * og:image tags say 1200x630, which blog.test.ts checks for every shipped post.
+ */
+export function postImage(value: string | undefined, blogDir: string): string | undefined {
+  const m = value ? POST_IMAGE.exec(value) : null
+  return m && existsSync(path.join(blogDir, m[1])) ? value : undefined
+}
+
 /** Reads `<blogDir>/<slug>.md` verbatim (frontmatter + body); `null` if missing or the slug is unsafe. */
 export function readBlogPostSource(blogDir: string, slug: string): string | null {
   if (!isSafeSlug(slug)) return null

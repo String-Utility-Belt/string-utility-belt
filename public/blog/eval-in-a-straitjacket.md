@@ -4,6 +4,7 @@ description: "How I let people run their own JavaScript on a site where they pas
 date: 2026-10-17
 slug: eval-in-a-straitjacket
 tags: [javascript, security, csp, sandbox]
+image: /blog/eval-in-a-straitjacket.png
 ---
 
 # eval() in a straitjacket: sandboxing JavaScript under CSP
