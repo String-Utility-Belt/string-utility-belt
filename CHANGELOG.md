@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **The VS Code extension uses the current icon**: the "sub" keycap on the orange tile, as on the site and the browser
+  extension, instead of a plain blue placeholder. It is drawn at 256 px, so it stays sharp on high-DPI screens.
+
 ## [1.15.0] - 2026-10-17
 
 ### Added

@@ -1,7 +1,8 @@
 /**
  * Generates the brand icons from a vector mark, using @resvg/resvg-wasm so the build has no
- * native image dependency: the site's PWA icons and favicon (public/icons/*.png) and the browser
- * extension's toolbar icons (packages/extension/icons/*.png). Run with
+ * native image dependency: the site's PWA icons and favicon (public/icons/*.png), the browser
+ * extension's toolbar icons (packages/extension/icons/*.png) and the VS Code extension's
+ * Marketplace icon (packages/vscode/icon.png). Run with
  * `npx vite-node scripts/icons.ts` after touching the mark and commit the resulting PNGs.
  * They are NOT regenerated at build time.
  */
@@ -49,6 +50,22 @@ export const EXTENSION_ICON_SPECS: IconSpec[] = [
   { file: 'icon32.png', size: 32, variant: 'compact', maskable: false },
   { file: 'icon48.png', size: 48, variant: 'compact', maskable: false },
   { file: 'icon128.png', size: 128, variant: 'full', maskable: false, padding: 16 },
+]
+
+/**
+ * The VS Code extension's Marketplace and Extensions-view icon (packages/vscode), the one its
+ * package.json names. The Marketplace takes a PNG of at least 128 px (vsce refuses SVG) and asks
+ * for 256 on high-DPI screens.
+ */
+export const VSCODE_ICON_SPECS: IconSpec[] = [
+  { file: 'icon.png', size: 256, variant: 'full', maskable: false },
+]
+
+/** Where each set is committed, relative to the repository root. */
+export const ICON_TARGETS: ReadonlyArray<readonly [dir: string, specs: IconSpec[]]> = [
+  ['public/icons', ICON_SPECS],
+  ['packages/extension/icons', EXTENSION_ICON_SPECS],
+  ['packages/vscode', VSCODE_ICON_SPECS],
 ]
 
 /*
@@ -164,8 +181,11 @@ export async function generateIcons(outDir = path.join(ROOT, 'public/icons'), sp
 // pure functions from a test, which also loads this module, doesn't
 // trigger a wasm init + file write as a side effect).
 if (!process.env.VITEST) {
-  Promise.all([generateIcons(), generateIcons(path.join(ROOT, 'packages/extension/icons'), EXTENSION_ICON_SPECS)]).then(
-    ([site, extension]) => console.log(`[icons] wrote ${site.length + extension.length} icon(s):\n` + [...site, ...extension].map((w) => `  ${w}`).join('\n')),
+  Promise.all(ICON_TARGETS.map(([dir, specs]) => generateIcons(path.join(ROOT, dir), specs))).then(
+    (sets) => {
+      const written = sets.flat()
+      console.log(`[icons] wrote ${written.length} icon(s):\n` + written.map((w) => `  ${w}`).join('\n'))
+    },
     (e) => { console.error(`[icons] ${e?.message ?? e}`); process.exit(1) },
   )
 }
