@@ -10,7 +10,7 @@ its changes wait until you start a release for it ([below](#releasing-the-browse
 | `app` | automatically | stringutilitybelt.com (Cloudflare Workers) | `package.json`, `package-lock.json`; `CHANGELOG.md` sections |
 | `core` | automatically | npm `@string-utility-belt/core` | `packages/core/package.json` |
 | `cli` | automatically | npm `subelt` | `packages/cli/package.json` |
-| `mcp` | automatically | npm `@string-utility-belt/mcp` + the MCP Registry (+ a `.mcpb` on the GitHub release) | `packages/mcp/package.json`, `packages/mcp/manifest.json`, `server.json` (both versions) |
+| `mcp` | automatically | npm `@string-utility-belt/mcp` + the MCP Registry (+ a `.mcpb` on the GitHub release); Anthropic's plugin directory reads `plugins/string-utility-belt` from `main` ([below](#anthropics-plugin-directory)) | `packages/mcp/package.json`, `packages/mcp/manifest.json`, `server.json` (both versions), `plugins/string-utility-belt/.claude-plugin/plugin.json`, the package pinned in `plugins/string-utility-belt/.mcp.json` |
 | `extension` | **by hand** | Chrome Web Store | `packages/extension/manifest.json` |
 | `vscode` | automatically | VS Code Marketplace (+ Open VSX, opt-in) | `packages/vscode/package.json` |
 
@@ -100,6 +100,9 @@ its deploy failed and another pull request was merged meanwhile), the next relea
 - **Packages and extensions:** registries don't take a version back. Revert on `main` and let the
   next patch release supersede it (`npm deprecate <pkg>@<version> "<why>"` for a broken npm version;
   the Chrome Web Store dashboard can also roll back to the previous published version).
+- **The `mcp` job failed after the release commit:** the Claude plugin on `main` now pins an npm
+  version that doesn't exist yet, so marketplace installs can't start the server. Re-run the job, and
+  don't publish that plugin version in the developer portal until it has put the version on npm.
 
 ## One-time setup
 
@@ -330,6 +333,77 @@ registry both get 1.3.4. The extension waits for its first manual release. To ke
 first run, tag the commit whose content its store already ships, e.g.
 `git tag vscode-v1.3.0 <sha> && git push origin vscode-v1.3.0`; it then releases only after its
 files change.
+
+## Directory listings
+
+The MCP Registry entry is published by every `mcp` release, and the Claude Code marketplace is this
+repository itself. Two other directories list the MCP server and need a person, once.
+
+### Claude Code marketplace
+
+`.claude-plugin/marketplace.json` makes the repository a Claude Code plugin marketplace with one plugin,
+`plugins/string-utility-belt`, so anyone can install it from `main` without waiting for a directory
+review: `/plugin install string-utility-belt --marketplace String-Utility-Belt/string-utility-belt`. The
+entry names the plugin's folder and nothing else; the listing comes from its `plugin.json`.
+
+Between a release commit and the `mcp` job putting that version on npm, a fresh install pins a version
+npm doesn't serve yet, so the server fails to start. `npx` fetches on every start, so it works on the
+next start once the job has published. Try a branch before merging:
+
+```bash
+claude plugin validate . --strict
+claude plugin marketplace add String-Utility-Belt/string-utility-belt#<branch> --sparse .claude-plugin plugins
+claude plugin install string-utility-belt@string-utility-belt
+```
+
+### Anthropic's plugin directory
+
+The plugin in `plugins/string-utility-belt` installs the MCP server in Claude Code and in Cowork on
+the user's computer (claude.ai chat doesn't start local servers). It runs
+`npx -y @string-utility-belt/mcp@<version>`: the directory refuses an unpinned package, so every
+`mcp` release bumps the pin and the plugin's `version` with the rest, and any change to the plugin is
+an `mcp` release (installed copies only update when `version` changes).
+
+Check it before submitting:
+
+```bash
+claude plugin validate plugins/string-utility-belt --strict
+claude --plugin-dir plugins/string-utility-belt mcp list   # plugin:string-utility-belt:subelt: … Connected
+```
+
+**Submit** (anyone on a paid Claude plan; on a Team or Enterprise plan, an Owner): at
+[claude.ai/directory/manage](https://claude.ai/directory/manage) choose **Submit new → Plugin bundle**,
+repository `String-Utility-Belt/string-utility-belt`, plugin path `plugins/string-utility-belt`, branch
+`main`. **Validate**, answer the data-handling questions (no personal data is read or stored; nothing is
+sent anywhere but npm, to download the server), keep the **GitHub push webhook**, and submit.
+
+**Every release after that:** the directory scans the release commit. A plugin that runs a pinned npx
+package is always **held for a reviewer** (its dependencies resolve at install time, even though ours
+has none), so each version waits for Anthropic's review before it goes live; leave auto-publish off.
+Wait for the `mcp` job to finish before you select **Publish** (see
+[Failures](#failures-retries-and-rollbacks)).
+
+### Glama
+
+[glama.ai/mcp/servers/String-Utility-Belt/string-utility-belt](https://glama.ai/mcp/servers/String-Utility-Belt/string-utility-belt)
+lists the server already, and `glama.json` names its maintainer. Until Glama has a release of its own
+the listing says "This server cannot be deployed" and has no tool or quality grade, because Glama can't
+start the server to inspect it. A GitHub release doesn't count.
+
+Signed in to Glama as a maintainer, open the listing's **Admin → Dockerfile** page and enter:
+
+| Field | Value |
+| --- | --- |
+| Node.js version | `22` |
+| Build steps | `npm install -g @string-utility-belt/mcp` |
+| CMD arguments | `subelt-mcp` |
+| Environment variables | none (`SUBELT_MCP_TIMEOUT_MS` is optional) |
+| Pinned commit | leave empty |
+
+**Deploy**, wait for the test to pass, **Make Release**, then publish it on the releases page. The build
+installs the published npm package rather than building this repository, so the image is what users
+run and needs no network once built. A Glama release is a snapshot: make a new one when the tools
+change.
 
 ## Locally
 

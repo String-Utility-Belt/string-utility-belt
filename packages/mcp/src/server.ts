@@ -1,5 +1,5 @@
 /**
- * MCP server exposing String Utility Belt's 246 utilities and its pipeline engine
+ * MCP server exposing String Utility Belt's utilities and its pipeline engine
  * as tools for AI agents (roadmap §12.2). Built on the framework-free `src/core`
  * engine and the statically-imported `src/utilities/static-registry` (every
  * utility's code, no lazy chunk loading — this runs in plain Node).
@@ -22,9 +22,19 @@ import { checkInputSize, errorMessage, paramSummary } from './format'
 import { isEvalUtility, runJob } from './jobs'
 import type { Job, JobResult } from './jobs'
 import { MAX_INPUT_BYTES, MAX_OUTPUT_CHARS, MAX_PIPELINE_STEPS, TOOL_TIMEOUT_MS } from './limits'
-import { version as SERVER_VERSION } from '../package.json'
+import { description as SERVER_DESCRIPTION, homepage as SERVER_WEBSITE, version as SERVER_VERSION } from '../package.json'
 
 const SERVER_NAME = 'subelt'
+/** What clients show instead of `name`; the MCP Registry entry (server.json) and the .mcpb (manifest.json) use the same. */
+export const SERVER_TITLE = 'String Utility Belt'
+/**
+ * The site's own icons, as the HTTPS URLs the MCP Registry requires (server.json lists the same).
+ * A client may fetch them to show the server; the server itself never makes a network request.
+ */
+export const SERVER_ICONS = [
+  { src: 'https://stringutilitybelt.com/icons/icon-192.png', mimeType: 'image/png', sizes: ['192x192'] },
+  { src: 'https://stringutilitybelt.com/icons/icon-512.png', mimeType: 'image/png', sizes: ['512x512'] },
+]
 
 const errorResult = (message: string): CallToolResult => ({ content: [{ type: 'text', text: message }], isError: true })
 /** The body twice: as `structuredContent` (checked against the tool's `outputSchema`) and as JSON text for older clients. */
@@ -130,7 +140,23 @@ const bytes = MAX_INPUT_BYTES.toLocaleString('en-US')
 export function createServer(opts: ServerOptions = {}): McpServer {
   const executor = opts.executor ?? inProcessExecutor(runJob)
   const timeoutMs = opts.timeoutMs ?? TOOL_TIMEOUT_MS
-  const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION })
+  const utilityCount = staticRegistry.list().length
+  const server = new McpServer({
+    name: SERVER_NAME,
+    title: SERVER_TITLE,
+    version: SERVER_VERSION,
+    description: SERVER_DESCRIPTION,
+    websiteUrl: SERVER_WEBSITE,
+    icons: SERVER_ICONS,
+  }, {
+    // Sent with `initialize`: clients that load tools on demand use it to know when to reach for this server.
+    instructions:
+      `${utilityCount} string and data transformations (encode/decode, hash, encrypt, compress, convert between ` +
+      'JSON, YAML, TOML, CSV and XML, change case, format, analyse), run on this machine with no network access. ' +
+      'Find a utility with list_utilities, read its exact parameters with describe_utility, then run it with ' +
+      'run_utility. Several transformations in a row go in one run_pipeline call instead of a run_utility call ' +
+      'each. detect_format identifies an unknown input (base64, JWT, gzip, …) before you pick a utility.',
+  })
 
   /** Size-checks `input`, runs `job` through the executor, and maps any failure to `isError`. */
   const execute = async (job: Job, signal: AbortSignal): Promise<CallToolResult> => {
@@ -149,7 +175,7 @@ export function createServer(opts: ServerOptions = {}): McpServer {
   server.registerTool('list_utilities', {
     title: 'List utilities',
     description:
-      'Search the string-transformation utilities this server can run (246 total, across categories like ' +
+      `Search the string-transformation utilities this server can run (${utilityCount} total, across categories like ` +
       'Encoding, Hashing, Ciphers, Compression, Data Formats, Analysis, Generators and more). Returns ' +
       '{items: [{id, name, category, description}], total, categories}, best matches first. Use this ' +
       'first to find an id, then call describe_utility for its exact parameters before run_utility.',

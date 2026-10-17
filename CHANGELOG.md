@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **A Claude plugin for the MCP server** (`plugins/string-utility-belt/`): it starts the server in Claude Code and in
+  Cowork on your computer, pinned to the version released with it, and says what it runs and that nothing is sent
+  anywhere. Install it in Claude Code with
+  `/plugin install string-utility-belt --marketplace String-Utility-Belt/string-utility-belt`; it is also ready for
+  Anthropic's plugin directory.
+
+### Changed
+
+- **The MCP server introduces itself.** MCP clients now show it as "String Utility Belt", with the site's icon, a
+  description and a link to the site, instead of the bare name `subelt`, and it tells the agent how its tools fit
+  together (find a utility, read its parameters, run it, or chain several in one pipeline). Its listing in the MCP
+  Registry carries the same title and icon, and the Claude Desktop extension (`.mcpb`) links the privacy policy, says
+  it needs Node.js 20 or later and uses the current keycap icon instead of the old one.
+
 ## [1.15.0] - 2026-10-17
 
 ### Added

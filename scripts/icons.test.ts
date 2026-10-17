@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { EXTENSION_ICON_SPECS, ICON_SPECS, buildIconSvg, generateIcons, renderIconPng, renderIconPixels, LOGO_COLOR, LOGO_FOREGROUND } from './icons'
+import { EXTENSION_ICON_SPECS, ICON_SPECS, ICON_TARGETS, buildIconSvg, generateIcons, renderIconPng, renderIconPixels, LOGO_COLOR, LOGO_FOREGROUND } from './icons'
 
 const ROOT = path.resolve(__dirname, '..')
 
@@ -112,9 +112,9 @@ describe('generateIcons', () => {
   }, 30_000)
 })
 
-describe('committed icons (public/icons, packages/extension/icons)', () => {
+describe('committed icons (every ICON_TARGETS directory)', () => {
   it('are up to date with the generator: run `npx vite-node scripts/icons.ts` after changing the mark', async () => {
-    for (const [dir, specs] of [['public/icons', ICON_SPECS], ['packages/extension/icons', EXTENSION_ICON_SPECS]] as const) {
+    for (const [dir, specs] of ICON_TARGETS) {
       for (const spec of specs) {
         const committed = fs.readFileSync(path.join(ROOT, dir, spec.file))
         expect(Buffer.from(await renderIconPng(spec)).equals(committed), `${dir}/${spec.file}`).toBe(true)

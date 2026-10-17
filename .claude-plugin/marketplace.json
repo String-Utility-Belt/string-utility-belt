@@ -1,0 +1,15 @@
+{
+  "name": "string-utility-belt",
+  "description": "String Utility Belt's plugins for Claude Code: its string and data utilities as tools, run on your computer.",
+  "owner": {
+    "name": "String Utility Belt",
+    "email": "contact@stringutilitybelt.com",
+    "url": "https://stringutilitybelt.com"
+  },
+  "plugins": [
+    {
+      "name": "string-utility-belt",
+      "source": "./plugins/string-utility-belt"
+    }
+  ]
+}

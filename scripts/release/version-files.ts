@@ -9,23 +9,33 @@
 export interface VersionFile {
   path: string
   pointer: readonly (string | number)[]
+  /** What the string holds before the version, e.g. `@scope/pkg@` in an `npx` argument that pins a package. */
+  prefix?: string
 }
 
-export function readJsonVersion(text: string, pointer: VersionFile['pointer']): string {
+export function readJsonVersion(text: string, pointer: VersionFile['pointer'], prefix = ''): string {
   const [start, end] = locateString(text, pointer)
-  return JSON.parse(text.slice(start, end)) as string
+  return versionAfter(JSON.parse(text.slice(start, end)) as string, pointer, prefix)
 }
 
-export function writeJsonVersion(text: string, pointer: VersionFile['pointer'], version: string): string {
+export function writeJsonVersion(text: string, pointer: VersionFile['pointer'], version: string, prefix = ''): string {
   const [start, end] = locateString(text, pointer)
-  const next = `${text.slice(0, start)}${JSON.stringify(version)}${text.slice(end)}`
+  // a value that doesn't have the expected shape is refused, not overwritten
+  versionAfter(JSON.parse(text.slice(start, end)) as string, pointer, prefix)
+  const next = `${text.slice(0, start)}${JSON.stringify(prefix + version)}${text.slice(end)}`
   // belt and braces: the edit must change exactly that one value
   const expected = JSON.parse(text)
-  setAt(expected, pointer, version)
+  setAt(expected, pointer, prefix + version)
   if (JSON.stringify(JSON.parse(next)) !== JSON.stringify(expected)) {
     throw new Error(`rewriting ${formatPointer(pointer)} changed more than the version`)
   }
   return next
+}
+
+/** What follows `prefix` in `value`, the string at `pointer`; throws when `value` doesn't start with it. */
+function versionAfter(value: string, pointer: VersionFile['pointer'], prefix: string): string {
+  if (!value.startsWith(prefix)) throw new Error(`the value at ${formatPointer(pointer)} does not start with ${JSON.stringify(prefix)}`)
+  return value.slice(prefix.length)
 }
 
 export function formatPointer(pointer: VersionFile['pointer']): string {

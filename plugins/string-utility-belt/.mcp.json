@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "subelt": {
+      "command": "npx",
+      "args": ["-y", "@string-utility-belt/mcp@1.8.0"]
+    }
+  }
+}
