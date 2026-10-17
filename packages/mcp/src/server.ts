@@ -178,7 +178,11 @@ export function createServer(opts: ServerOptions = {}): McpServer {
       `Search the string-transformation utilities this server can run (${utilityCount} total, across categories like ` +
       'Encoding, Hashing, Ciphers, Compression, Data Formats, Analysis, Generators and more). Returns ' +
       '{items: [{id, name, category, description}], total, categories}, best matches first. Use this ' +
-      'first to find an id, then call describe_utility for its exact parameters before run_utility.',
+      'first to find an id, then call describe_utility for its exact parameters before run_utility. ' +
+      '`category` and `query` combine (a utility must match both); omit both to browse the whole catalog. ' +
+      'A category that does not exist matches nothing rather than failing, so take one from `categories`. ' +
+      'There is no paging: when `total` exceeds the items returned, raise `limit` or narrow the query. ' +
+      'Reads the bundled catalog only: no network access and no rate limit.',
     annotations: { readOnlyHint: true, openWorldHint: false },
     inputSchema: {
       category: z.string().optional().describe('Category to filter to (case-insensitive), e.g. "Encoding" or "Hashing".'),
@@ -202,7 +206,10 @@ export function createServer(opts: ServerOptions = {}): McpServer {
       'the value types it accepts/produces, tags, aliases, worked examples (input, inputEncoding, params and ' +
       'expected output — byte outputs there use the app\'s display format, while run_utility returns bytes as ' +
       'base64), and which runtime capabilities it needs. Call this before run_utility to learn the exact ' +
-      'parameter names and defaults.',
+      'parameter names and defaults; skip it for a utility you have already described. `id` must be an exact, ' +
+      'case-sensitive utility id: names and aliases are not resolved, so look those up with list_utilities ' +
+      'first. An unknown id returns isError ("unknown utility: <id>"). When `unavailable` is set, run_utility ' +
+      'and run_pipeline refuse the utility.',
     annotations: { readOnlyHint: true, openWorldHint: false },
     inputSchema: {
       id: z.string().describe('Utility id, as returned by list_utilities (e.g. "base64_encode").'),
@@ -233,9 +240,11 @@ export function createServer(opts: ServerOptions = {}): McpServer {
   server.registerTool('run_utility', {
     title: 'Run utility',
     description:
-      'Run a single utility on `input` and return {output, outputEncoding?}. Plain text output is returned ' +
-      'as-is; a JSON-producing utility returns pretty-printed JSON text; a byte-producing utility (e.g. ' +
-      'gzip_compress, get_bytes) returns base64 with `outputEncoding: "base64"`. `inputEncoding` controls how ' +
+      'Run a single utility on `input` and return {output, outputEncoding?}. For two or more transformations ' +
+      'in a row, make one run_pipeline call instead of chaining run_utility calls; if you do not know the id ' +
+      'yet, find it with list_utilities. Plain text output is returned as-is; a JSON-producing utility returns ' +
+      'pretty-printed JSON text; a byte-producing utility (e.g. gzip_compress, get_bytes) returns base64 with ' +
+      '`outputEncoding: "base64"`. `inputEncoding` controls how ' +
       '`input` itself is decoded first: "text" (default) uses it as-is, "base64" or "hex" decode it to raw ' +
       'bytes, "json" parses it. Params are validated against describe_utility\'s spec; invalid ones are ' +
       `rejected. ${limitsNote} A failing utility returns isError with the error message. Utilities that run ` +
@@ -256,9 +265,11 @@ export function createServer(opts: ServerOptions = {}): McpServer {
   server.registerTool('run_pipeline', {
     title: 'Run pipeline',
     description:
-      "Run a whole pipeline — an ordered list of steps, in the string-utility-belt v3 schema, which may " +
-      'include branches (parallel forks merged back together), macros (named sub-pipelines) and "run on each" ' +
-      'steps (a sub-pipeline run on every line, delimited piece, JSON array element or JSON object value) — on `input`. ' +
+      'Run several transformations on `input` in one call: an ordered list of steps (string-utility-belt v3 ' +
+      "schema), each step's output feeding the next. Besides utility steps, a pipeline can hold branches " +
+      '(parallel forks merged back together), macros (named sub-pipelines) and "run on each" steps (a ' +
+      'sub-pipeline run on every line, delimited piece, JSON array element or JSON object value). Prefer this ' +
+      'to chaining run_utility calls; for a single transformation, run_utility is simpler. ' +
       'Returns {output, outputEncoding?, errors, timings, skipped, halted}: `errors` maps step id to its error ' +
       'message, `timings` maps step id to milliseconds. Provide exactly one of `steps` or `share` (a ' +
       '`#/p/<payload>` share link, a full URL containing one, or the bare payload). Untrusted step data is ' +
@@ -299,7 +310,13 @@ export function createServer(opts: ServerOptions = {}): McpServer {
       'Guess what `input` is — JSON, YAML, TOML, XML, HTML, CSV/TSV, base64/base32/hex, URL-encoding, JWT, ' +
       'UUID, data URI, gzip/zlib, email, URL, IP address, unix timestamp, Markdown, SQL, Morse code, ROT13, ' +
       'plain binary — and return {candidates: [{format, confidence, note}]}, best first, confidence 0-1. ' +
-      'Empty input yields an empty list.',
+      'Use it when you are handed an opaque or unlabelled value and must pick a utility for it; skip it when ' +
+      'the format is already known. It only identifies, never transforms: to decode, search list_utilities ' +
+      'for the top format (base64 -> base64_decode, JWT -> jwt_decode) and run that with run_utility. ' +
+      'Ambiguous input yields several candidates (all-digit text can be a timestamp, JSON and hex at once); ' +
+      'treat anything below about 0.45 as a weak guess. Use inputEncoding "base64"/"hex" only to deliver ' +
+      'binary data such as gzip bytes: it is decoded before detection, so a base64 string you want identified ' +
+      'must stay "text" (the default). Empty input yields an empty list.',
     annotations: { readOnlyHint: true, openWorldHint: false },
     inputSchema: {
       input: z.string().describe('The value to inspect.'),
