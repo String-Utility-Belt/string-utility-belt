@@ -115,7 +115,7 @@ describe('generateIcons', () => {
   }, 30_000)
 })
 
-describe('committed icons (public/icons, packages/extension/icons, packages/vscode)', () => {
+describe('committed icons (every ICON_TARGETS directory)', () => {
   it('are up to date with the generator: run `npx vite-node scripts/icons.ts` after changing the mark', async () => {
     for (const spec of ALL_SPECS) {
       const committed = fs.readFileSync(path.join(ROOT, spec.path))

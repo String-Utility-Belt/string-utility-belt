@@ -97,9 +97,11 @@ export const TARGETS: readonly Target[] = [
   },
   {
     id: 'mcp',
-    title: '@string-utility-belt/mcp (npm + MCP Registry)',
+    title: '@string-utility-belt/mcp (npm + MCP Registry + Claude plugin)',
     trigger: 'auto',
-    include: [...ENGINE, 'packages/mcp/**', 'server.json'],
+    // The Claude plugin is the server's listing in Anthropic's directory, which reads it from main: any change
+    // to it needs a new version, or installed copies never update.
+    include: [...ENGINE, 'packages/mcp/**', 'server.json', 'plugins/string-utility-belt/**'],
     exclude: [...PACKAGE_EXCLUDE, 'packages/mcp/assets/screenshots/**'],
     rootManifest: 'bundled',
     entries: ['packages/mcp/src/bin.ts'],
@@ -108,6 +110,9 @@ export const TARGETS: readonly Target[] = [
       { path: 'packages/mcp/manifest.json', pointer: ['version'] },
       { path: 'server.json', pointer: ['version'] },
       { path: 'server.json', pointer: ['packages', 0, 'version'] },
+      { path: 'plugins/string-utility-belt/.claude-plugin/plugin.json', pointer: ['version'] },
+      // the directory refuses an unpinned npx package
+      { path: 'plugins/string-utility-belt/.mcp.json', pointer: ['mcpServers', 'subelt', 'args', 1], prefix: '@string-utility-belt/mcp@' },
     ],
   },
   {

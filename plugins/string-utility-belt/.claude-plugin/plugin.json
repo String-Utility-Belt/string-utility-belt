@@ -1,0 +1,34 @@
+{
+  "name": "string-utility-belt",
+  "displayName": "String Utility Belt",
+  "version": "1.9.1",
+  "description": "Encode, decode, hash, encrypt, compress, convert and format text and data with String Utility Belt's utilities and multi-step pipelines, run on your computer by its MCP server.",
+  "author": {
+    "name": "String Utility Belt",
+    "email": "contact@stringutilitybelt.com",
+    "url": "https://stringutilitybelt.com"
+  },
+  "homepage": "https://stringutilitybelt.com/integrations/#mcp-server-for-ai-agents",
+  "repository": "https://github.com/String-Utility-Belt/string-utility-belt",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "text",
+    "string",
+    "encoding",
+    "decoding",
+    "hashing",
+    "base64",
+    "json",
+    "yaml",
+    "jwt",
+    "regex",
+    "pipeline",
+    "developer-tools",
+    "offline"
+  ],
+  "icon": "./icon-512.png",
+  "documentationUrl": "https://github.com/String-Utility-Belt/string-utility-belt/tree/main/packages/mcp#readme",
+  "supportUrl": "https://stringutilitybelt.com/contact/",
+  "privacyPolicyUrl": "https://stringutilitybelt.com/privacy/"
+}

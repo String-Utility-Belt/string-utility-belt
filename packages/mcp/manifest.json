@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "@string-utility-belt/mcp",
   "display_name": "String Utility Belt",
-  "version": "1.8.0",
+  "version": "1.9.1",
   "description": "MCP server exposing String Utility Belt's utilities and pipelines as tools for AI agents.",
   "author": {
     "name": "String Utility Belt",
@@ -12,7 +12,10 @@
   "homepage": "https://stringutilitybelt.com",
   "documentation": "https://stringutilitybelt.com/docs/",
   "support": "https://stringutilitybelt.com/contact/",
-  "icon": "assets/icon-192.png",
+  "privacy_policies": [
+    "https://stringutilitybelt.com/privacy/"
+  ],
+  "icon": "assets/icon-512.png",
   "server": {
     "type": "node",
     "entry_point": "./dist/server.mjs",
@@ -26,10 +29,15 @@
       }
     }
   },
+  "compatibility": {
+    "runtimes": {
+      "node": ">=20"
+    }
+  },
   "tools": [
     {
       "name": "list_utilities",
-      "description": "Search the 246 utilities by category or keywords; start here."
+      "description": "Search the utilities by category or keywords; start here."
     },
     {
       "name": "describe_utility",

@@ -1,18 +1,32 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.stringutilitybelt/mcp",
+  "title": "String Utility Belt",
   "description": "MCP server exposing String Utility Belt's utilities and pipelines as tools for AI agents.",
   "repository": {
     "url": "https://github.com/String-Utility-Belt/string-utility-belt",
-    "source": "github"
+    "source": "github",
+    "subfolder": "packages/mcp"
   },
   "websiteUrl": "https://stringutilitybelt.com",
-  "version": "1.8.0",
+  "icons": [
+    {
+      "src": "https://stringutilitybelt.com/icons/icon-192.png",
+      "mimeType": "image/png",
+      "sizes": ["192x192"]
+    },
+    {
+      "src": "https://stringutilitybelt.com/icons/icon-512.png",
+      "mimeType": "image/png",
+      "sizes": ["512x512"]
+    }
+  ],
+  "version": "1.9.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@string-utility-belt/mcp",
-      "version": "1.8.0",
+      "version": "1.9.1",
       "transport": {
         "type": "stdio"
       }
