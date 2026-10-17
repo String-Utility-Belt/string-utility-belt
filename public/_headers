@@ -14,14 +14,15 @@
 #   compiles the user's custom JavaScript, under this policy too. 'wasm-unsafe-eval':
 #   the WebAssembly utilities (hash-wasm: SHA-3, BLAKE, bcrypt, Argon2).
 # - connect-src https:: "fetch a URL" input tries the user's URL from the browser first
-#   (src/app/io/fetchInput.ts).
+#   (src/app/io/fetchInput.ts). 'self' also lets the sandbox Worker's probe through: it runs
+#   no code unless a request to this site is blocked, which only the frame's policy can do.
 # - img-src: data:/blob: for generated images.
 # - style-src 'unsafe-inline': CodeMirror and Framer Motion inject styles; styles run no code.
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-1vD0G2u6HxMsRuzeJrDja6uqhzcCB6+OZqSM7tcGIPw=' 'sha256-e3JLvqPIAXkjEg3QWQg3qfG5KAeariOwujRV06XHyn8=' 'unsafe-eval' 'wasm-unsafe-eval' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https:; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-1vD0G2u6HxMsRuzeJrDja6uqhzcCB6+OZqSM7tcGIPw=' 'sha256-GEeTkVytTUUIWrAzp6DigTJknyY1YY7ce+Kc5zkwvtQ=' 'unsafe-eval' 'wasm-unsafe-eval' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https:; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'
 
 # Raw markdown the app fetches to render each guide and post. Crawlers must still be
 # able to fetch it (search engines render the pages with it), but the pre-rendered

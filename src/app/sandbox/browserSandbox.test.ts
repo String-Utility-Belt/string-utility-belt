@@ -82,6 +82,7 @@ describe('the host protocol', () => {
       code: 'return 1',
       input: { k: 'j', v: '{"a":[1]}' },
       timeoutMs: 1500,
+      probe: `${window.location.origin}/robots.txt`,
     })
     running()
     answer({ ok: true, value: 'done' })
@@ -116,6 +117,20 @@ describe('the host protocol', () => {
     expect(err!.message.startsWith('ReferenceError: x is not defined')).toBe(true)
     expect(err!.message.length).toBe(2000)
     expect(frames()).toHaveLength(0)
+  })
+
+  it("points the Worker's request probe at a file on this page's own site", () => {
+    // a request the site's CSP allows, so only the frame's policy can block it (see ./frame)
+    const probe = new URL(start().job().probe)
+    expect(probe.origin).toBe(window.location.origin)
+    expect(probe.pathname).toBe('/robots.txt')
+    expect(probe.search + probe.hash).toBe('')
+  })
+
+  it('bakes in an empty probe, which the Worker refuses, when the page has no usable location', () => {
+    const win = { location: { href: 'about:blank' }, addEventListener: vi.fn(), removeEventListener: vi.fn() }
+    createBrowserSandbox({ win: win as unknown as Window }).run({ code: 'return input', input: 'hi', timeoutMs: 1000 }).catch(() => {})
+    expect(jobOf(frames()[0]).probe).toBe('')
   })
 
   it('clamps the time budget it bakes into the frame', () => {
@@ -286,6 +301,8 @@ describe('end to end, host + bootstrap + worker source', () => {
   class VmWorker {
     static sources = new Map<string, string>()
     static last: VmWorker | undefined
+    /** Whether a request from the Worker goes through: only when the frame's CSP did not reach it. */
+    static requestsAllowed = false
     onmessage: ((e: { data: unknown }) => void) | null = null
     onerror: ((e: unknown) => void) | null = null
     onmessageerror: (() => void) | null = null
@@ -298,6 +315,10 @@ describe('end to end, host + bootstrap + worker source', () => {
           const data = structuredClone(m)
           setTimeout(() => { if (!this.terminated) this.onmessage?.({ data }) })
         },
+        URL,
+        // the frame's CSP at work: a data: script and a request to the site are both refused
+        importScripts: () => { throw new DOMException('Refused to load the script', 'NetworkError') },
+        fetch: () => VmWorker.requestsAllowed ? Promise.resolve({ type: 'opaque' }) : Promise.reject(new TypeError('Failed to fetch')),
       })
       vm.runInContext('var self = globalThis;', this.ctx)
       vm.runInContext(VmWorker.sources.get(url)!, this.ctx)
@@ -351,6 +372,16 @@ describe('end to end, host + bootstrap + worker source', () => {
 
   it('reports errors from the code', async () => {
     await expect(boot({ code: 'throw new RangeError("nope")' }).promise).rejects.toThrow('RangeError: nope')
+  })
+
+  it("refuses to run the code when the frame's CSP does not stop the Worker's request probe", async () => {
+    VmWorker.requestsAllowed = true
+    try {
+      await expect(boot({ code: 'return "ran"' }).promise).rejects.toThrow(/does not block network access/)
+      expect(frames()).toHaveLength(0)
+    } finally {
+      VmWorker.requestsAllowed = false
+    }
   })
 
   it("times out a run that never settles, via the frame's own timer", async () => {

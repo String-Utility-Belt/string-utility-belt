@@ -9,7 +9,9 @@
  *   reach `parent`'s objects — only postMessage.
  * - The CSP (`default-src 'none'`) blocks fetch, XHR, WebSocket, EventSource,
  *   `import()` and `importScripts()` of any URL, so input cannot be exfiltrated. A
- *   Blob-URL Worker inherits the frame's CSP, so the same rules bind the user code.
+ *   Blob-URL Worker inherits the frame's CSP, so the same rules bind the user code. The
+ *   Worker checks that before running anything: a request to the app's own site, which
+ *   the site's CSP allows and only the frame's blocks, must fail, or the run is refused.
  * - The user code runs in a Worker, not in the frame's document: a busy loop never
  *   blocks the app's (possibly shared) main thread, it cannot navigate or touch any
  *   document, and the frame can still `terminate()` it when the time budget runs out.
@@ -56,6 +58,12 @@ export interface SandboxJob {
   code: string
   input: EncodedInput
   timeoutMs: number
+  /**
+   * An absolute URL on the app's own site, which the site's CSP allows a request to. The
+   * Worker requests it before running any code and refuses the run if the request is
+   * not blocked (see WORKER_SOURCE). It carries nothing of the job.
+   */
+  probe: string
 }
 
 /** Base64 of the bytes, in chunks so a large array never overflows the argument list. */
@@ -79,12 +87,28 @@ export function encodeInput(input: Value): EncodedInput {
 }
 
 /**
- * Runs inside the Worker. Grabs `postMessage` before any user code can replace it
- * and announces itself (`{alive: true}`) before any user code runs, so the time
- * budget measures the code rather than thread start-up. Compiles the body with the
- * AsyncFunction constructor (so `await` and returned promises work) and posts back
- * `{ok, value}` or `{ok: false, error}`. Wrapped in a function: top-level `var`s of a
- * classic Worker script are globals, which the user code could read and reassign.
+ * Runs inside the Worker. Grabs `postMessage` before any user code can replace it, so
+ * overwriting it cannot stop the reply (the code can still post a message of its own,
+ * which gives it no more than returning a value), and announces itself (`{alive: true}`)
+ * before any user code runs, so the time budget measures the code rather than thread
+ * start-up. Compiles the body with the AsyncFunction constructor (so `await` and
+ * returned promises work) and posts back `{ok, value}` or `{ok: false, error}`. Wrapped
+ * in a function: top-level `var`s of a classic Worker script are globals, which the user
+ * code could read and reassign.
+ *
+ * The frame's CSP is the only thing keeping the Worker off the network, and it gets there
+ * only by inheritance, on top of the site's own policy. So before compiling anything the
+ * Worker tries two things the frame's policy forbids, and refuses the run if either works:
+ * - a `data:` script, which no policy here allows: it catches a Worker under no policy;
+ * - a HEAD request to the job's probe URL on the site itself, which the site's policy
+ *   allows: only the frame's `default-src 'none'` stops it, so it catches a Worker that
+ *   inherited the site's policy without the frame's, which the `data:` script misses (the
+ *   site's script-src refuses `data:` too). It is `no-cors` because the Worker's origin
+ *   is opaque: the request then resolves whenever it is allowed, CORS headers or not.
+ * A CSP block rejects the request before anything is sent. A request that fails for
+ * another reason (offline) also reads as blocked; offline, the code has nowhere to send
+ * anything either. A missing or non-http(s) probe URL refuses the run: the check fails
+ * closed.
  */
 export const WORKER_SOURCE = `(function () {
 'use strict';
@@ -100,20 +124,36 @@ function describe(err) {
     return 'the code threw a value that cannot be printed';
   }
 }
+var REFUSED = 'custom code is refused: this browser does not block network access inside the sandbox';
 // The frame's CSP is the only thing keeping this Worker off the network, and it gets
-// here only by inheritance. A data: script is outside script-src, so if one loads the
-// policy is not being applied: refuse rather than run code that could exfiltrate.
-function networkBlocked() {
+// here only by inheritance. Unless a data: script and a request to the site (which the
+// site's own CSP allows) are both refused, it is not being applied: refuse to run.
+function scriptsBlocked() {
   try { importScripts('data:text/javascript,'); } catch (e) { return true; }
   return false;
+}
+function requestsBlocked(probe) {
+  try {
+    var url = new URL(probe);
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') return Promise.resolve(false);
+    return fetch(url.href, { method: 'HEAD', mode: 'no-cors', credentials: 'omit' })
+      .then(function () { return false; }, function () { return true; });
+  } catch (e) {
+    return Promise.resolve(false);
+  }
 }
 self.onmessage = function (e) {
   self.onmessage = null;
   var d = e.data;
-  if (!networkBlocked()) {
-    post({ ok: false, error: 'custom code is refused: this browser does not block network access inside the sandbox' });
+  if (!scriptsBlocked()) {
+    post({ ok: false, error: REFUSED });
     return;
   }
+  requestsBlocked(d.probe).then(function (blocked) {
+    if (blocked) run(d); else post({ ok: false, error: REFUSED });
+  });
+};
+function run(d) {
   Promise.resolve().then(function () {
     var fn = new AsyncFunction('input', '"use strict";\\n' + d.code);
     return fn.call(undefined, d.input);
@@ -126,20 +166,21 @@ self.onmessage = function (e) {
   }, function (err) {
     post({ ok: false, error: describe(err) });
   });
-};
+}
 post({ alive: true });
 })();
 `
 
 /**
  * Runs in the sandboxed frame. Reads the job the app baked into this document (the
- * JSON data block `#subelt-job`: token, code, encoded input, time budget), starts a Worker to run
- * the code, tells the parent when the Worker is up (`running`, the moment the budget
- * starts) and relays the outcome (`result`). Every message to the parent carries the
- * job's token, which only THIS document knows — the app never posts the token (or the
- * code or input) to the frame, so a document that replaced this one cannot forge a
- * reply. Messages go to the parent at `'*'` (an opaque-origin frame cannot name the
- * parent's origin), but they only ever travel frame→parent and carry no secret.
+ * JSON data block `#subelt-job`: token, code, encoded input, time budget, probe URL),
+ * starts a Worker to run the code, tells the parent when the Worker is up (`running`,
+ * the moment the budget starts) and relays the outcome (`result`). Every message to the
+ * parent carries the job's token, which only THIS document knows — the app never posts
+ * the token (or the code or input) to the frame, so a document that replaced this one
+ * cannot forge a reply. Messages go to the parent at `'*'` (an opaque-origin frame
+ * cannot name the parent's origin), but they only ever travel frame→parent and carry
+ * no secret.
  */
 export const BOOTSTRAP_SOURCE = `(function () {
 'use strict';
@@ -238,7 +279,7 @@ worker.onerror = function (ev) {
 worker.onmessageerror = function () {
   finish({ ok: false, error: 'the result could not be read' });
 };
-worker.postMessage({ code: job.code, input: input });
+worker.postMessage({ code: job.code, input: input, probe: job.probe });
 })();`
 
 /**

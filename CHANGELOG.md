@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Security
+
+- **The custom JavaScript sandbox checks that it is cut off from the network before it runs your code.** Its Worker
+  already refused to run where nothing stopped it loading a script; now it also tries a request to this site, which
+  the site's own policy allows and only the sandbox's policy blocks, and refuses to run unless that request is blocked
+  too. In the browsers we test, the sandbox's policy was already in force; the check makes a browser where it isn't
+  refuse the code instead of letting it reach the network.
+
 ## [1.16.0] - 2026-10-17
 
 ### Added
