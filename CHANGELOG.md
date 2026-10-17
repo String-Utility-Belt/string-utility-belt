@@ -15,6 +15,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   here-string; flags with no equivalent are named in a comment.
 - **Preset: Convert a curl command to PowerShell** (`/presets/convert-curl-to-powershell/`): paste a curl command from
   API docs or Chrome's "Copy as cURL" and get the same request as `Invoke-RestMethod`.
+- **Send feedback or suggest a utility from the site.** A short form, on the contact page, behind a new **Feedback**
+  link at the foot of every page and under any utility search that finds nothing, emails your message to us. It asks
+  for an email address only if you want a reply, and a search that found nothing starts the suggestion with what you
+  searched for. When a message can't be sent, the form opens it in your own email app instead. The privacy policy
+  says what the form sends and what happens to it.
 
 ## [1.13.2] - 2026-10-11
 

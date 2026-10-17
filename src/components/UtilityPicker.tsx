@@ -18,6 +18,8 @@ export interface UtilityPickerProps {
   previousProduces?: ValueType[]
   /** A line above the search box saying what the pick is for. */
   title?: string
+  /** Offered when a search finds nothing ("Suggest it"), with the search text. */
+  onSuggest?: (query: string) => void
 }
 
 interface VisibleItem {
@@ -107,7 +109,7 @@ const PickerCard = memo(function PickerCard({
   )
 })
 
-export default function UtilityPicker({ onPick, onClose, previousProduces: producesProp, title }: UtilityPickerProps) {
+export default function UtilityPicker({ onPick, onClose, previousProduces: producesProp, title, onSuggest }: UtilityPickerProps) {
   // an empty list carries no type information: behave as if none was given
   const previousProduces = producesProp?.length ? producesProp : undefined
   const [category, setCategory] = useState('All')
@@ -316,12 +318,21 @@ export default function UtilityPicker({ onPick, onClose, previousProduces: produ
             {renderGrid(g.entries)}
           </div>
         ))}
-        {visible.length === 0 && (
-          <div className="px-2.5 py-5 text-[13px] text-muted">
-            {query.trim() ? `No utility matches “${query.trim()}”.` : 'No utilities match these filters.'}
-          </div>
-        )}
       </div>
+      {/* after the listbox, not in it: a listbox holds only options, and this can hold a button */}
+      {visible.length === 0 && (
+        <div className="px-4 pt-2 pb-5 text-[13px] text-muted">
+          {query.trim() ? `No utility matches “${query.trim()}”.` : 'No utilities match these filters.'}
+          {query.trim() && onSuggest && (
+            <>
+              {' '}
+              <button type="button" className="underline underline-offset-[3px] hover:text-fg" onClick={() => onSuggest(query.trim())}>
+                Suggest it
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   )
 }

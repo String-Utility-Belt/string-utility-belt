@@ -14,6 +14,11 @@ export interface ApiEnv {
   ASSETS?: Fetcher
   /** Workers Analytics Engine dataset `POST /api/event` adds to (`wrangler.jsonc`); without it events are dropped. */
   EVENTS?: AnalyticsEngineDataset
+  /**
+   * Email Service binding `POST /api/feedback` sends through, pinned to our own address
+   * (`wrangler.jsonc`); without it the route answers 503 and the form offers a `mailto:` link.
+   */
+  FEEDBACK?: SendEmail
 }
 
 /** The slice of a utility registry the API needs (the static registry in production). */
@@ -52,6 +57,8 @@ export interface ApiOptions {
   runRateLimit?: { limit: number; windowMs: number }
   /** POST /api/event, per client IP. */
   eventRateLimit?: { limit: number; windowMs: number }
+  /** POST /api/feedback, per client IP. */
+  feedbackRateLimit?: { limit: number; windowMs: number }
   /** Rate-limiter clock. */
   now?: () => number
   /** Defaults to the global `fetch`, looked up per call so tests can stub it. */

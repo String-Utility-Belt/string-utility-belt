@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { FEEDBACK_ADDRESS } from '../src/lib/feedback'
 
 /** JSONC → JSON: drops comments and trailing commas outside strings ("/api/*" contains "/*"). */
 function parseJsonc(text: string): any {
@@ -42,6 +43,11 @@ describe('wrangler.jsonc', () => {
 
   it('binds the events dataset the worker writes to (worker/events.ts)', () => {
     expect(config.analytics_engine_datasets).toContainEqual({ binding: 'EVENTS', dataset: 'sub_events' })
+  })
+
+  it('binds the feedback email sender to our own address and no other (worker/feedback.ts)', () => {
+    // pinned: even a bug in the route cannot make it email anyone else
+    expect(config.send_email).toEqual([{ name: 'FEEDBACK', destination_address: FEEDBACK_ADDRESS }])
   })
 
   it('keeps the custom-domain route', () => {

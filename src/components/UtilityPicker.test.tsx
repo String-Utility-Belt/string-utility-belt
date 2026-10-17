@@ -256,6 +256,20 @@ describe('UtilityPicker', () => {
     expect(screen.getByText('No utilities match these filters.')).toBeInTheDocument()
   })
 
+  it('offers to suggest a search that finds nothing, outside the listbox, when the host takes suggestions', () => {
+    const onSuggest = vi.fn()
+    const { rerender } = render(<UtilityPicker onPick={vi.fn()} onSuggest={onSuggest} />)
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: '  zzqx  ' } })
+    expect(screen.getByText(/No utility matches “zzqx”/)).toBeInTheDocument()
+    const suggest = screen.getByRole('button', { name: 'Suggest it' })
+    expect(suggest.closest('[role="listbox"]')).toBeNull()
+    fireEvent.click(suggest)
+    expect(onSuggest).toHaveBeenCalledWith('zzqx')
+    // without a host for it (an embed), only the message
+    rerender(<UtilityPicker onPick={vi.fn()} />)
+    expect(screen.queryByRole('button', { name: 'Suggest it' })).toBeNull()
+  })
+
   it("makes only the active option's favorite toggle a Tab stop, not one per card", () => {
     render(<UtilityPicker onPick={() => {}} />)
     const stars = () => screen.getAllByRole('button', { name: /^(Star|Unstar) / })

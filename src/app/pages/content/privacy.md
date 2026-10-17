@@ -5,7 +5,7 @@ description: How String Utility Belt handles data: your text is processed in you
 
 # Privacy Policy
 
-*Last updated: 11 October 2026*
+*Last updated: 17 October 2026*
 
 String Utility Belt ("we", "us") runs the website at stringutilitybelt.com and publishes the String Utility Belt browser extension, VS Code extension, command-line tool (`subelt`), MCP server and code library. This policy explains what information is collected when you use the site or these tools, why, and the choices you have. Questions about it can be sent to [contact@stringutilitybelt.com](mailto:contact@stringutilitybelt.com).
 
@@ -31,9 +31,10 @@ When you create a share link, your pipeline (and your input, if you choose to in
 
 - **Fetching a web address.** When you load input from a URL, your browser first tries to fetch it directly. If the other site does not allow that, the request goes through our fetch proxy, which retrieves the address on your behalf and passes the response back to you. The proxy sees the address you requested and your IP address; it does not keep the content it fetches.
 - **The public API.** Developers can send text to our HTTP API to run a pipeline. Requests are processed in memory and are not stored.
+- **Feedback and suggestions.** When you send a message with the feedback form (on the contact page, from **Feedback** at the foot of a page, or after a utility search that finds nothing), your browser sends our server what you wrote, the kind of message you chose, the email address you gave for a reply, if any, and the address of the page you sent it from, without anything after a `?` or `#`. Our server emails exactly that to contact@stringutilitybelt.com through Cloudflare's email service and keeps no copy; your IP address and browser details are not in the email. We keep the email for as long as we need it to answer you or act on your suggestion, use your address only to reply, and delete the message if you ask us to. If the form cannot send a message, it offers to open it in your own email app instead, which then sends it like any other email.
 - **Text sent to the site in its web address.** When you share text into the installed app from your device's share menu, or use the browser extension's "Open in String Utility Belt", the text is placed in the page address (`?text=…`), so it is sent to our host along with the request for the page, and may appear in the short-lived operational logs described next. The site then processes it in your browser like any other input. Our analytics never record it: Cloudflare Web Analytics drops everything after a `?` or `#` in the address.
 
-To protect the fetch proxy, the API and the click counts (see "Cookies and analytics") from abuse, your IP address is used for rate limiting. It is held briefly in memory and is not written to storage. Requests to them, and page requests that carry text in their address, may also appear in short-lived operational logs (for example the requested address, the time and the response status), which we use only to keep the service running and secure, and which are deleted automatically.
+To protect the fetch proxy, the API, the feedback form and the click counts (see "Cookies and analytics") from abuse, your IP address is used for rate limiting. It is held briefly in memory and is not written to storage. Requests to them, and page requests that carry text in their address, may also appear in short-lived operational logs (for example the requested address, the time and the response status), which we use only to keep the service running and secure, and which are deleted automatically.
 
 The site is hosted by Cloudflare, which processes every request to deliver the site and protect it from attacks. See [Cloudflare's privacy policy](https://www.cloudflare.com/privacypolicy/).
 
@@ -82,9 +83,9 @@ The site sets no cookies, and the tools work the same whatever your browser bloc
 
 ## Your rights
 
-Depending on where you live (for example under the GDPR or the UK GDPR), you may have the right to access, correct or delete personal data about you, to restrict or object to its processing, and to withdraw consent at any time. Because the site has no accounts and keeps your tool data on your own device, we usually hold no personal data that identifies you. For data Google received through Google Fonts or Google Analytics before October 2026, see [Google's privacy policy](https://policies.google.com/privacy), which also explains how to exercise your rights with Google. You can contact us with any request, and you can complain to your local data protection authority.
+Depending on where you live (for example under the GDPR or the UK GDPR), you may have the right to access, correct or delete personal data about you, to restrict or object to its processing, and to withdraw consent at any time. Because the site has no accounts and keeps your tool data on your own device, we usually hold no personal data that identifies you, apart from messages you send us. For data Google received through Google Fonts or Google Analytics before October 2026, see [Google's privacy policy](https://policies.google.com/privacy), which also explains how to exercise your rights with Google. You can contact us with any request, and you can complain to your local data protection authority.
 
-We process data on the basis of our legitimate interest in understanding how the site is used (cookieless page and click counts) and in running a secure and reliable service (rate limiting and operational logs).
+We process data on the basis of our legitimate interest in understanding how the site is used (cookieless page and click counts), in running a secure and reliable service (rate limiting and operational logs) and in answering the messages you choose to send us.
 
 ## Children
 

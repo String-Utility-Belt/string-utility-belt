@@ -16,6 +16,8 @@ export interface DialogProps {
    * since closed. Normally the button that owns the dialog.
    */
   returnFocus?: React.RefObject<HTMLElement | null>
+  /** What takes focus on open, instead of the first control (e.g. the box a form is about). */
+  initialFocus?: React.RefObject<HTMLElement | null>
 }
 
 const FOCUSABLE = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
@@ -27,7 +29,7 @@ const FOCUSABLE = 'a[href], button:not([disabled]), textarea:not([disabled]), in
  * <body> so a transformed / backdrop-filtered ancestor (a sticky blurred header,
  * an animated card) cannot turn the fixed overlay into a clipped box.
  */
-export default function Dialog({ title, onClose, children, widthClass = 'max-w-[520px]', headerExtra, returnFocus }: DialogProps) {
+export default function Dialog({ title, onClose, children, widthClass = 'max-w-[520px]', headerExtra, returnFocus, initialFocus }: DialogProps) {
   const panelRef = useRef<HTMLDivElement>(null)
   const titleId = useId()
   // Callers pass inline `onClose` arrows; reading it through a ref keeps the effect
@@ -37,6 +39,7 @@ export default function Dialog({ title, onClose, children, widthClass = 'max-w-[
   useEffect(() => { onCloseRef.current = onClose })
   const returnFocusRef = useRef(returnFocus)
   useEffect(() => { returnFocusRef.current = returnFocus })
+  const initialFocusRef = useRef(initialFocus)
 
   useEffect(() => {
     const opener = document.activeElement as HTMLElement | null
@@ -46,7 +49,7 @@ export default function Dialog({ title, onClose, children, widthClass = 'max-w-[
     const focusables = () => (panel
       ? Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(el => el.tabIndex >= 0)
       : [])
-    ;(focusables()[0] ?? panel)?.focus()
+    ;(initialFocusRef.current?.current ?? focusables()[0] ?? panel)?.focus()
 
     const onKeyDown = (e: KeyboardEvent) => {
       // a control inside that consumed Escape (cancel an inline rename, close a menu) wins

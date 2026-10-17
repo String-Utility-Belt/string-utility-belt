@@ -46,7 +46,7 @@ const link = ([href, label]: readonly [string, string]) => `<a href="${escapeHtm
 const NAV_LINKS = [['/', 'Tool'], ['/docs/', 'Docs'], ['/utilities/', 'Utilities'], ['/presets/', 'Presets'], ['/blog/', 'Blog'], ['/changelog/', 'Changelog']] as const
 const FOOTER_LINKS = [
   ['/utilities/', 'All utilities'], ['/presets/', 'Presets'], ['/blog/', 'Blog'], ['/changelog/', 'Changelog'], ['/integrations/', 'Extensions, CLI & MCP'],
-  ['/about/', 'About'], ['/privacy/', 'Privacy policy'], ['/contact/', 'Contact'], ['/advertise/', 'Advertise'],
+  ['/about/', 'About'], ['/privacy/', 'Privacy policy'], ['/contact/', 'Contact'], ['/contact/#feedback', 'Feedback'], ['/advertise/', 'Advertise'],
 ] as const
 
 // the header's integrations group (src/app/integrations/IntegrationsNav.tsx)

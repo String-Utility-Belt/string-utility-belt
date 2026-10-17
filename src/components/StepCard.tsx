@@ -11,6 +11,7 @@ import StepFrame from '@/app/tool/steps/StepFrame'
 import StepStateChips from '@/app/tool/steps/StepStateChips'
 import { useStepDepth } from '@/app/tool/steps/depth'
 import { signatureOf, typeLabel } from '@/app/tool/steps/status'
+import { suggestUtility } from '@/app/feedback/open'
 import ParamsEditor from './ParamsEditor'
 import UtilityPicker from './UtilityPicker'
 
@@ -110,7 +111,7 @@ export default function StepCard({
     >
       {picking && (
         <div className="px-3.5 pb-3">
-          <UtilityPicker title={`Pick a new utility for step ${index + 1}`} onClose={closePicker}
+          <UtilityPicker title={`Pick a new utility for step ${index + 1}`} onClose={closePicker} onSuggest={suggestUtility}
             previousProduces={input !== undefined ? [valueType(input)] : undefined}
             onPick={id => { closePicker(); if (id !== step.utilityId) onChangeUtil(id) }} />
         </div>

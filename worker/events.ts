@@ -11,7 +11,7 @@
  */
 import { eventFields, MAX_EVENT_BYTES, parseCountedEvent } from '../src/lib/countedEvents'
 import type { ApiEnv } from './env'
-import { jsonError, readCapped, TooLargeError } from './http'
+import { isCrossSite, jsonError, readCapped, TooLargeError } from './http'
 import { rateLimitKey, type RateLimiter } from './rate-limit'
 
 export interface EventDeps {
@@ -20,15 +20,9 @@ export interface EventDeps {
 
 const accepted = () => new Response(null, { status: 204, headers: { 'cache-control': 'no-store' } })
 
-function fromOtherSite(request: Request): boolean {
-  const origin = request.headers.get('origin')
-  return request.headers.get('sec-fetch-site') !== 'same-origin'
-    || (origin !== null && origin !== new URL(request.url).origin)
-}
-
 export async function handleEvent(request: Request, env: ApiEnv, deps: EventDeps): Promise<Response> {
   if (request.method !== 'POST') return jsonError(405, 'use POST', {}, { allow: 'POST' })
-  if (fromOtherSite(request)) return jsonError(403, 'events are only accepted from this site')
+  if (isCrossSite(request)) return jsonError(403, 'events are only accepted from this site')
 
   const wait = deps.limiter.hit(rateLimitKey(request.headers.get('cf-connecting-ip')))
   if (wait) return jsonError(429, `too many events; try again in ${wait} s`, {}, { 'retry-after': String(wait) })
