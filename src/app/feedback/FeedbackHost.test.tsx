@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, expect, it } from 'vitest'
-import { act, render, screen } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import FeedbackHost from './FeedbackHost'
 import { openFeedback, suggestUtility } from './open'
@@ -12,7 +12,8 @@ describe('FeedbackHost', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
     act(() => openFeedback())
     const dialog = await screen.findByRole('dialog', { name: 'Feedback and suggestions' })
-    expect(screen.getByRole('textbox', { name: 'Your message' })).toHaveFocus()
+    // the dialog moves focus in an effect, which can run after the lazy chunk's render is found
+    await waitFor(() => expect(screen.getByRole('textbox', { name: 'Your message' })).toHaveFocus())
     await user.keyboard('{Escape}')
     expect(dialog).not.toBeInTheDocument()
   })

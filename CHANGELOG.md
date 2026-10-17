@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Blog post: eval() in a straitjacket** (`/blog/eval-in-a-straitjacket/`): how the custom JavaScript step runs your
   code in a sandbox with no way onto the network, under the site's strict Content-Security-Policy, and how the sandbox
   checks that before it runs anything. The custom JavaScript page links to it.
+### Changed
+
+- **The VS Code extension uses the current icon**: the "sub" keycap on the orange tile, as on the site and the browser
+  extension, instead of a plain blue placeholder. It is drawn at 256 px, so it stays sharp on high-DPI screens.
 
 ## [1.16.1] - 2026-10-17
 

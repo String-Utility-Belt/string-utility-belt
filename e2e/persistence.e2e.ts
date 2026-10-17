@@ -17,10 +17,12 @@ test.describe('persistence', () => {
     await pad.getByLabel('pad character').fill('*')
     await caseStep.getByLabel('Mode').selectOption('title')
 
+    // Wait for the settled output, not just any text: until a run on this input completes, the
+    // result region shows the previous run's output, or the raw input if none has completed yet
+    // (`OutputPanel`). Every edited param shows in it: the defaults would give "HELLO     ".
+    const expected = 'Hello***'
     await setInput(page, 'hello')
-    await expect(result(page)).not.toHaveText('')
-    const before = await result(page).innerText()
-    expect(before.trim().length).toBeGreaterThan(0)
+    await expect(result(page)).toHaveText(expected)
 
     // Only the pipeline (steps + params) is persisted across a reload, not the raw
     // text input (see `src/lib/persist.ts`'s `PersistedState`) — so the input box
@@ -34,7 +36,7 @@ test.describe('persistence', () => {
     await expect(stepCard(page, 1).getByLabel('Mode')).toHaveValue('title')
 
     await setInput(page, 'hello')
-    await expect(result(page)).toHaveText(before)
+    await expect(result(page)).toHaveText(expected)
   })
 
   test('undo/redo via the toolbar buttons and Ctrl+Z/Ctrl+Shift+Z (focus outside text fields)', async ({ page }) => {
