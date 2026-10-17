@@ -45,16 +45,21 @@ const TEMPLATE = `<!doctype html>
 
 const tmpDirs: string[] = []
 
+/** The shipped posts: the fixture dist carries each one, and buildSeo pre-renders a page for each. */
+const SHIPPED_POSTS: { slug: string }[] = JSON.parse(readFileSync(path.join(ROOT, 'public', 'blog', '_manifest.json'), 'utf8'))
+
+/** Pages besides the utilities, presets and posts: the indexes, changelog, docs, site pages and 404. */
+const OTHER_PAGES = 11
+
 function fixtureDist(): string {
   const dir = mkdtempSync(path.join(os.tmpdir(), 'build-seo-'))
   tmpDirs.push(dir)
   writeFileSync(path.join(dir, 'index.html'), TEMPLATE)
   const blog = path.join(dir, 'blog')
   mkdirSync(blog)
-  const shipped = JSON.parse(readFileSync(path.join(ROOT, 'public', 'blog', '_manifest.json'), 'utf8'))
-  for (const post of shipped) copyFileSync(path.join(ROOT, 'public', 'blog', `${post.slug}.md`), path.join(blog, `${post.slug}.md`))
+  for (const post of SHIPPED_POSTS) copyFileSync(path.join(ROOT, 'public', 'blog', `${post.slug}.md`), path.join(blog, `${post.slug}.md`))
   writeFileSync(path.join(blog, '_manifest.json'), JSON.stringify([
-    ...shipped,
+    ...SHIPPED_POSTS,
     { slug: 'no-markdown-file', title: 'Ghost post', date: '2025-10-01' },
     { slug: '../../escape', title: 'Traversal', date: '2025-10-01' },
   ]))
@@ -141,11 +146,11 @@ describe('buildSeo over a built dist/', () => {
     const presetDirs = readdirSync(path.join(dist, 'presets')).filter(f => f !== 'index.html')
     expect(presetDirs.sort()).toEqual(STATIC_PRESETS.map(r => r.slug).sort())
     for (const rel of ['utilities/index.html', 'presets/index.html', 'blog/index.html', 'changelog/index.html', 'docs/index.html',
-      'blog/base64-encode-decode-online/index.html', 'blog/md5-insecure-but-useful/index.html',
+      ...SHIPPED_POSTS.map(post => `blog/${post.slug}/index.html`),
       'about/index.html', 'privacy/index.html', 'contact/index.html', 'integrations/index.html', 'advertise/index.html', '404.html']) {
       expect(existsSync(path.join(dist, rel)), rel).toBe(true)
     }
-    expect(result.pages).toBe(MANIFEST.length + STATIC_PRESETS.length + 13)
+    expect(result.pages).toBe(MANIFEST.length + STATIC_PRESETS.length + SHIPPED_POSTS.length + OTHER_PAGES)
   })
 
   it('gives every utility page exactly one title and canonical, and JSON-LD that parses', () => {
@@ -548,7 +553,7 @@ describe('buildSeo presets', () => {
     const urls = [...doc.getElementsByTagName('url')].map(u => [u.getElementsByTagName('loc')[0].textContent, u.getElementsByTagName('lastmod')[0].textContent])
     expect(urls).toContainEqual([`${SITE}/presets/shout-slugs/`, '2026-06-02'])
     expect(urls).toContainEqual([`${SITE}/presets/`, '2026-06-02'])
-    expect(result.pages).toBe(MANIFEST.length + 1 + 13)
+    expect(result.pages).toBe(MANIFEST.length + 1 + SHIPPED_POSTS.length + OTHER_PAGES)
   })
 
   it('fails the build when a preset no longer produces its first sample', async () => {

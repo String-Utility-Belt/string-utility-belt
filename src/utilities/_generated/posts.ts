@@ -30,6 +30,12 @@ export const POSTS: Record<string, { slug: string; title: string }[]> = {
       "title": "Why MD5 Is Insecure (But Still Useful for Developers)"
     }
   ],
+  "custom_js": [
+    {
+      "slug": "eval-in-a-straitjacket",
+      "title": "eval() in a straitjacket: sandboxing JavaScript under CSP"
+    }
+  ],
   "hash": [
     {
       "slug": "md5-insecure-but-useful",

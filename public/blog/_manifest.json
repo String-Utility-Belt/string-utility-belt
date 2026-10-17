@@ -1,5 +1,20 @@
 [
   {
+    "slug": "eval-in-a-straitjacket",
+    "title": "eval() in a straitjacket: sandboxing JavaScript under CSP",
+    "description": "How I let people run their own JavaScript on a site where they paste secrets, with no unsafe-inline, no server, and nowhere for their data to go.",
+    "date": "2026-10-17",
+    "tags": [
+      "javascript",
+      "security",
+      "csp",
+      "sandbox"
+    ],
+    "utilities": [
+      "custom_js"
+    ]
+  },
+  {
     "slug": "base64-encode-decode-online",
     "title": "How to Encode and Decode Base64 (JavaScript, Python, CLI)",
     "description": "Encode and decode Base64 correctly in JavaScript, Node.js, Python, and the command line, with UTF-8 handling, Base64url, and common error fixes.",
