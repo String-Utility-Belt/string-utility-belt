@@ -231,9 +231,9 @@ describe('InputPanel — review regressions', () => {
     fireEvent.click(screen.getByRole('button', { name: /^fetch$/i }))
     const name = await screen.findByText('logo.png')
     expect((name.parentElement as HTMLElement).textContent).toContain('image/png')
-    // binary input has no textarea, so focus goes back to the button
+    // binary input has no textarea, so focus goes back to the button (in an effect after the row closes)
     expect(screen.queryByLabelText('URL to fetch')).toBeNull()
-    expect(screen.getByRole('button', { name: /fetch url/i })).toHaveFocus()
+    await waitFor(() => expect(screen.getByRole('button', { name: /fetch url/i })).toHaveFocus())
   })
 
   it('says the clipboard is unavailable (not "denied") when the Clipboard API is missing', async () => {
@@ -348,7 +348,8 @@ describe('InputPanel — fetch URL row', () => {
     fireEvent.click(screen.getByRole('button', { name: /^fetch$/i }))
     await waitFor(() => expect(textarea()).toHaveValue('hello'))
     expect(screen.queryByLabelText('URL to fetch')).toBeNull()
-    expect(textarea()).toHaveFocus()
+    // focus moves in an effect after the commit that closes the row
+    await waitFor(() => expect(textarea()).toHaveFocus())
     // a successful fetch starts the next one from an empty field
     fireEvent.click(button())
     expect(url()).toHaveValue('')
