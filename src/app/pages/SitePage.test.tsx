@@ -36,6 +36,20 @@ describe('SitePage', () => {
     expect(container.querySelector('[data-promo-slot]')).toBeNull()
   })
 
+  it('ends the contact page with the feedback form, listed beside it, at the #feedback the footer links', () => {
+    const { container } = render(<SitePage slug="contact" />)
+    const section = container.querySelector('section#feedback') as HTMLElement
+    expect(within(section).getByRole('heading', { level: 2, name: 'Send us a message' })).toBeTruthy()
+    expect(within(section).getByRole('textbox', { name: 'Your message' })).toBeTruthy()
+    const toc = screen.getByRole('navigation', { name: 'On this page' })
+    expect(within(toc).getByRole('link', { name: 'Send us a message' })).toHaveAttribute('href', '/contact/#feedback')
+  })
+
+  it('carries the form on the contact page only', () => {
+    render(<SitePage slug="about" />)
+    expect(screen.queryByRole('textbox', { name: 'Your message' })).toBeNull()
+  })
+
   it('links the site pages to each other by crawlable paths', () => {
     render(<SitePage slug="about" />)
     const hrefs = screen.getAllByRole('link').map(a => a.getAttribute('href'))

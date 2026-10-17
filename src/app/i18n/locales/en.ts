@@ -39,6 +39,7 @@ export const en = {
     about: 'About',
     privacy: 'Privacy policy',
     contact: 'Contact',
+    feedback: 'Feedback',
     advertise: 'Advertise',
     sponsor: 'Sponsor on GitHub',
     newTab: '(opens in a new tab)',

@@ -22,6 +22,31 @@ interface AnalyticsEngineDataset {
   writeDataPoint(event?: AnalyticsEngineDataPoint): void
 }
 
+/** Email Service's `send_email` binding (`send()` with a structured message). */
+interface EmailAddress {
+  email: string
+  name?: string
+}
+
+interface EmailMessageBuilder {
+  to: string | EmailAddress | (string | EmailAddress)[]
+  from: string | EmailAddress
+  subject: string
+  text?: string
+  html?: string
+  replyTo?: string | EmailAddress
+  headers?: Record<string, string>
+}
+
+interface EmailSendResult {
+  messageId: string
+}
+
+/** Rejects with an Error carrying a string `code` (`E_DELIVERY_FAILED`, `E_RATE_LIMIT_EXCEEDED`, …). */
+interface SendEmail {
+  send(message: EmailMessageBuilder): Promise<EmailSendResult>
+}
+
 interface ExportedHandler<Env = unknown> {
   fetch?(request: Request, env: Env, ctx: ExecutionContext): Response | Promise<Response>
 }

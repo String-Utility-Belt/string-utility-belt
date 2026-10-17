@@ -27,6 +27,12 @@
 	"analytics_engine_datasets": [
 		{ "binding": "EVENTS", "dataset": "sub_events" }
 	],
+	// POST /api/feedback (worker/feedback.ts) emails visitors' messages through this binding, which
+	// can send to this one address and no other. It needs Email Routing on the zone, with this
+	// address added and verified under Email Routing > Destination addresses, before a deploy.
+	"send_email": [
+		{ "name": "FEEDBACK", "destination_address": "contact@stringutilitybelt.com" }
+	],
 	"routes": [
 		{
 			"pattern": "stringutilitybelt.com",

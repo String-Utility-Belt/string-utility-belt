@@ -24,7 +24,7 @@ const violations = (page: Page) => page.evaluate(() => window.__cspViolations ??
 
 const PAGES = [
   '/', '/utilities/', '/util/base64_encode/', '/presets/', '/presets/decode-saml-request/',
-  '/blog/', '/docs/', '/about/', '/privacy/', '/advertise/', '/no-such-page/',
+  '/blog/', '/docs/', '/about/', '/privacy/', '/contact/', '/advertise/', '/no-such-page/',
 ]
 
 test('every kind of page loads under the CSP without a violation', async ({ page }) => {

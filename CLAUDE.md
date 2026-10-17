@@ -236,13 +236,26 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
   2026-10-08), plus GA4 export tables (`analytics_507388453`) that expire 426 days after collection. Presets were
   recipes until October 2026: older GA data says `recipe_*` and `/recipes/`.
 
+### Feedback (`src/app/feedback/`, `worker/feedback.ts`)
+- `FeedbackForm` (kind, message, optional reply address, a hidden bot field) posts to `POST /api/feedback`; the Worker
+  emails it to contact@stringutilitybelt.com through the `FEEDBACK` `send_email` binding, which `wrangler.jsonc` pins to
+  that one address (`config.test.ts`): nothing else can be emailed. `src/lib/feedback.ts` is the contract: both sides run
+  `checkFeedback`, the page sent is a pathname only (a fragment can carry input). Same-origin only, 5 per IP per hour,
+  nothing stored; a 503 (no binding: tests, dev), 502 or network error makes the form offer a `mailto:` link instead.
+- Opened from the footer's Feedback link (`/contact/#feedback` without scripts), a search that finds nothing
+  (`suggestUtility`, the picker's `onSuggest`, the utilities index) and inline on `/contact/`. `openFeedback()` fires
+  `sub:open-feedback`; `FeedbackHost` (in `AppShell`) lazy-loads the dialog. A change to what it sends changes the
+  privacy policy's "Feedback and suggestions".
+- The binding needs Email Routing on the zone and contact@ verified as a destination address before a deploy.
+
 ### State
 - Pipeline config persisted to localStorage under `string-utility-belt` (`src/lib/persist.ts`).
 - Library under `sub:library`; preferences under `sub:pref:<name>` (theme, locale, favorites, recents).
 
 ### Worker (`worker/`) and packages (`packages/`)
 - `worker/api.ts`: `POST /api/run`, `GET /api/utilities[/:id]` (public CORS, rate-limited, per-request
-  budget), `GET /api/fetch?url=` (same-origin fetch proxy with SSRF guards), `POST /api/event` (counted events). Everything else is static assets.
+  budget), `GET /api/fetch?url=` (same-origin fetch proxy with SSRF guards), `POST /api/event` (counted events),
+  `POST /api/feedback` (see "Feedback" below). Everything else is static assets.
 - `packages/core` is a build artifact over `src/core` + the static registry; `cli` (`subelt`), `mcp`
   (stdio server; runs jobs in killable child processes), `extension` (MV3), `vscode`. Each has a README.
 - App ↔ extension: `src/core/extensionBridge.ts` is the shared contract (messages, `BRIDGE_ORIGINS`, the store

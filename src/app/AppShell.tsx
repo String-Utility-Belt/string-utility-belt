@@ -22,6 +22,8 @@ import type { PromoPage } from './sponsors/promos'
 import { GITHUB_SPONSORS_URL } from '@/app/support'
 import { DEVHUNT } from '@/app/listings'
 import DevHuntBadge from '@/app/DevHuntBadge'
+import FeedbackHost from './feedback/FeedbackHost'
+import { openFeedback } from './feedback/open'
 
 // Only the tool ships in the entry chunk; every other route is fetched on first visit.
 const BlogIndex = lazy(() => import('@/components/BlogIndex'))
@@ -49,6 +51,9 @@ const NAV = [
   { href: '/changelog/', key: 'nav.changelog', routes: ['changelog'] },
 ] as const satisfies ReadonlyArray<{ href: string; key: string; routes: ReadonlyArray<Route['name']> }>
 
+/** Where the footer's Feedback link goes on a modified click, or before the app runs: the contact page's form. */
+const FEEDBACK_HREF = '/contact/#feedback'
+
 const FOOTER_LINKS = [
   { href: '/utilities/', key: 'footer.utilities' },
   { href: '/presets/', key: 'nav.presets' },
@@ -58,17 +63,28 @@ const FOOTER_LINKS = [
   { href: '/about/', key: 'footer.about' },
   { href: '/privacy/', key: 'footer.privacy' },
   { href: '/contact/', key: 'footer.contact' },
+  { href: FEEDBACK_HREF, key: 'footer.feedback' },
   { href: '/advertise/', key: 'footer.advertise' },
 ] as const
 
-/** Site links on every page: the about, privacy and contact pages visitors look for, the GitHub Sponsors page and the DevHunt badge. */
+/** A plain click on the Feedback link opens the form in place, over the page it was clicked on. */
+function openFeedbackFromLink(e: React.MouseEvent<HTMLAnchorElement>) {
+  if (!isPlainLeftClick(e, e.currentTarget)) return
+  e.preventDefault()
+  openFeedback()
+}
+
+/** Site links on every page: the about, privacy and contact pages visitors look for, feedback, the GitHub Sponsors page and the DevHunt badge. */
 export function Footer() {
   const { t } = useT()
   return (
     <footer className="border-t">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-5 flex flex-wrap items-center justify-between gap-3 text-[12.5px] text-muted">
         <nav aria-label={t('footer.label')} className="flex flex-wrap gap-x-[18px] gap-y-1.5">
-          {FOOTER_LINKS.map(l => <a key={l.href} href={l.href} className="text-muted hover:text-fg">{t(l.key)}</a>)}
+          {FOOTER_LINKS.map(l => (
+            <a key={l.href} href={l.href} className="text-muted hover:text-fg"
+              onClick={l.href === FEEDBACK_HREF ? openFeedbackFromLink : undefined}>{t(l.key)}</a>
+          ))}
           <a href={GITHUB_SPONSORS_URL} target="_blank" rel="noopener" className="text-muted hover:text-fg"
             aria-label={`${t('footer.sponsor')} ${t('footer.newTab')}`}>{t('footer.sponsor')}</a>
         </nav>
@@ -256,6 +272,7 @@ export default function AppShell() {
       <Footer />
       <CommandPalette />
       <ShortcutsHelp />
+      <FeedbackHost />
     </div>
   )
 }
