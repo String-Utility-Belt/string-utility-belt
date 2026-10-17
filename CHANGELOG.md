@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.16.2] - 2026-10-17
+
 ### Added
 
 - **Blog post: eval() in a straitjacket** (`/blog/eval-in-a-straitjacket/`): how the custom JavaScript step runs your
