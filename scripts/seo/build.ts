@@ -14,7 +14,7 @@ import {
   stripRootContent, setRobots, jsonLdScript, jsonDataScript, seoMetaTags, rssLinkTag,
 } from './html'
 import { buildSitemap, buildRss, toIsoDate, type SitemapUrl, type RssItem } from './xml'
-import { readBlogManifest, readBlogPostSource, dropRepeatedTitle, isSafeSlug, type BlogPostMeta } from './blog'
+import { readBlogManifest, readBlogPostSource, dropRepeatedTitle, isSafeSlug, postImage, type BlogPostMeta } from './blog'
 import { parseChangelog, summarizeMarkdown, type ChangelogRelease } from './changelog'
 import {
   renderUtilityContent, renderUtilitiesIndexContent, renderBlogIndexContent, renderBlogPostContent,
@@ -156,6 +156,11 @@ function webPageLd(type: string, name: string, url: string, description: string)
   return { '@context': 'https://schema.org', '@type': type, name, url, description, isPartOf: WEBSITE }
 }
 
+/** A post's preview image: its own (frontmatter `image`), else the card buildSeo renders for it. */
+function postOgImage(post: PublishedPost): string {
+  return post.image ? `${SITE}${post.image}` : `${SITE}/og/blog/${post.meta.slug}.png`
+}
+
 function blogPostingLd(post: PublishedPost, url: string) {
   const modified = post.updated ?? post.date
   return {
@@ -165,7 +170,7 @@ function blogPostingLd(post: PublishedPost, url: string) {
     description: post.description,
     url,
     mainEntityOfPage: url,
-    image: DEFAULT_OG,
+    image: postOgImage(post),
     inLanguage: 'en',
     ...(post.date ? { datePublished: post.date } : {}),
     ...(modified ? { dateModified: modified } : {}),
@@ -253,6 +258,8 @@ export interface PublishedPost {
   date?: string
   /** Frontmatter `updated`: the last substantial revision, when later than `date`. */
   updated?: string
+  /** Frontmatter `image`: the post's own 1200x630 preview (`/blog/<name>.png`), used instead of a generated card. */
+  image?: string
   bodyHtml: string
 }
 
@@ -268,12 +275,17 @@ function loadPosts(blogDir: string, log: (m: string) => void): PublishedPost[] {
     }
     const { frontmatter, body } = parseFrontmatter(source) as { frontmatter: Record<string, string>; body: string }
     const title = frontmatter.title || meta.title
+    const image = postImage(frontmatter.image, blogDir)
+    if (frontmatter.image && !image) {
+      log(`[build-seo] warning: ${meta.slug}.md's image "${frontmatter.image}" is not a PNG in blog/ — using its generated card`)
+    }
     posts.push({
       meta,
       title,
       description: frontmatter.description || meta.description || title,
       date: validDate(frontmatter.date) ?? validDate(meta.date),
       updated: validDate(frontmatter.updated),
+      image,
       // the renderer `BlogPost` uses too: guide syntax (lists, tables) at the post's own heading levels
       bodyHtml: renderMarkdownDocument(dropRepeatedTitle(body, title)),
     })
@@ -487,7 +499,7 @@ export async function buildSeo(options: BuildSeoOptions): Promise<BuildSeoResult
       title: pageTitle(post.title),
       description: post.description,
       canonical: url,
-      ogImage: DEFAULT_OG,
+      ogImage: postOgImage(post),
       ogType: 'article',
       published: post.date,
       modified: post.updated,
@@ -610,6 +622,10 @@ export async function buildSeo(options: BuildSeoOptions): Promise<BuildSeoResult
       ...presetMetas.map(r => ({
         file: path.join('presets', `${r.slug}.png`),
         card: { name: r.name, category: `Preset · ${stepCountText(r.stepCount)}`, description: r.chain.join(' → ') },
+      })),
+      ...posts.filter(p => !p.image).map(p => ({
+        file: path.join('blog', `${p.meta.slug}.png`),
+        card: { name: p.title, category: 'Blog', description: p.description },
       })),
       {
         file: 'default.png',

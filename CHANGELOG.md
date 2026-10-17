@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Blog posts have their own link preview.** Shared on Reddit, X, LinkedIn, Slack or Discord, a post now shows a card
+  with its title and summary, or a cover image of its own, instead of the site's generic card.
+
 ## [1.16.2] - 2026-10-17
 
 ### Added

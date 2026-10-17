@@ -154,6 +154,9 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
 - `src/app/pages/seo.ts` holds the search-facing strings both the app (`useDocumentMeta`) and the
   pre-render use — titles go through `pageTitle()` (site name only when it fits 60 chars). Change a
   title/description there, never in only one place: Google indexes the rendered page.
+- Link previews (`og:image`): every utility, preset and blog post gets a generated 1200×630 card (`scripts/seo/og.ts`,
+  rendered in Workers Builds only); other pages use `og/default.png`. A post can bring its own 1200×630 PNG instead:
+  frontmatter `image: /blog/<name>.png`, the file beside the post in `public/blog/` (`postImage`, checked by `blog.test.ts`).
 - Sitemap `lastmod` is when the page's content last changed, never the build time: a utility page's folder's last
   commit on the first-parent history (or a newer preset it links to), the file a docs/site page renders, a preset's or
   post's own dates; an index takes its newest entry (`scripts/seo/lastmod.ts`, one `git log` pass). A shallow clone
