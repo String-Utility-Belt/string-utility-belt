@@ -18,8 +18,20 @@ It needs **Node.js 20 or later**: the plugin starts the server with `npx`, which
 
 ## Install
 
-Add **String Utility Belt** from the plugin directory on claude.ai. Claude Code picks it up through your claude.ai
-account the next time it starts while you're signed in; in a session that's already open, run `/reload-plugins`.
+In a Claude Code session (version 2.1.275 or later):
+
+```text
+/plugin install string-utility-belt --marketplace String-Utility-Belt/string-utility-belt
+```
+
+That adds this repository as a plugin marketplace and installs the plugin from it. From your shell, run
+`claude plugin install string-utility-belt --marketplace String-Utility-Belt/string-utility-belt` instead. To
+download only the marketplace and the plugin rather than the whole repository, add the marketplace first with
+`claude plugin marketplace add String-Utility-Belt/string-utility-belt --sparse .claude-plugin plugins`, then run
+`claude plugin install string-utility-belt@string-utility-belt`.
+
+Once the plugin is in the plugin directory on claude.ai, you can also add it there: Claude Code picks it up through
+your claude.ai account the next time it starts while you're signed in.
 
 ## Use it
 

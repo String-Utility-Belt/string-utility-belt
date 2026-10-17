@@ -101,8 +101,8 @@ its deploy failed and another pull request was merged meanwhile), the next relea
   next patch release supersede it (`npm deprecate <pkg>@<version> "<why>"` for a broken npm version;
   the Chrome Web Store dashboard can also roll back to the previous published version).
 - **The `mcp` job failed after the release commit:** the Claude plugin on `main` now pins an npm
-  version that doesn't exist yet. Don't publish that plugin version in the developer portal until a
-  re-run of the job has put it on npm.
+  version that doesn't exist yet, so marketplace installs can't start the server. Re-run the job, and
+  don't publish that plugin version in the developer portal until it has put the version on npm.
 
 ## One-time setup
 
@@ -336,8 +336,25 @@ files change.
 
 ## Directory listings
 
-The MCP Registry entry is published by every `mcp` release. Two other directories list the MCP
-server and need a person, once.
+The MCP Registry entry is published by every `mcp` release, and the Claude Code marketplace is this
+repository itself. Two other directories list the MCP server and need a person, once.
+
+### Claude Code marketplace
+
+`.claude-plugin/marketplace.json` makes the repository a Claude Code plugin marketplace with one plugin,
+`plugins/string-utility-belt`, so anyone can install it from `main` without waiting for a directory
+review: `/plugin install string-utility-belt --marketplace String-Utility-Belt/string-utility-belt`. The
+entry names the plugin's folder and nothing else; the listing comes from its `plugin.json`.
+
+Between a release commit and the `mcp` job putting that version on npm, a fresh install pins a version
+npm doesn't serve yet, so the server fails to start. `npx` fetches on every start, so it works on the
+next start once the job has published. Try a branch before merging:
+
+```bash
+claude plugin validate . --strict
+claude plugin marketplace add String-Utility-Belt/string-utility-belt#<branch> --sparse .claude-plugin plugins
+claude plugin install string-utility-belt@string-utility-belt
+```
 
 ### Anthropic's plugin directory
 

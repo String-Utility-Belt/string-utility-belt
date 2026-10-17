@@ -8,9 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- **A Claude plugin for the MCP server** (`plugins/string-utility-belt/`), ready for Anthropic's plugin directory: it
-  starts the server in Claude Code and in Cowork on your computer, pinned to the version released with it, and says
-  what it runs and that nothing is sent anywhere.
+- **A Claude plugin for the MCP server** (`plugins/string-utility-belt/`): it starts the server in Claude Code and in
+  Cowork on your computer, pinned to the version released with it, and says what it runs and that nothing is sent
+  anywhere. Install it in Claude Code with
+  `/plugin install string-utility-belt --marketplace String-Utility-Belt/string-utility-belt`; it is also ready for
+  Anthropic's plugin directory.
 
 ### Changed
 

@@ -16,6 +16,13 @@ Nothing to clone or build: clients run it from npm with `npx` (Node.js 20 or lat
 claude mcp add subelt -- npx -y @string-utility-belt/mcp
 ```
 
+Or install it as a plugin, which pins the server to the release the plugin ships with
+([plugin README](https://github.com/String-Utility-Belt/string-utility-belt/tree/main/plugins/string-utility-belt#readme)):
+
+```text
+/plugin install string-utility-belt --marketplace String-Utility-Belt/string-utility-belt
+```
+
 **Claude Desktop, Cursor and other MCP clients**: add this to the client's MCP configuration
 (for Claude Desktop, `claude_desktop_config.json`), then restart the client:
 

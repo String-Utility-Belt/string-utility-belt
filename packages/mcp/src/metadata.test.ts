@@ -11,6 +11,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js'
 import type { Tool } from '@modelcontextprotocol/sdk/types.js'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import marketplace from '../../../.claude-plugin/marketplace.json'
 import pluginMcp from '../../../plugins/string-utility-belt/.mcp.json'
 import plugin from '../../../plugins/string-utility-belt/.claude-plugin/plugin.json'
 import registryEntry from '../../../server.json'
@@ -163,6 +164,14 @@ describe('MCP server metadata', () => {
       for (const url of [plugin.homepage, plugin.documentationUrl, plugin.supportUrl, plugin.privacyPolicyUrl]) {
         expect(new URL(url).protocol, url).toBe('https:')
       }
+    })
+
+    // An entry's display fields would override plugin.json's, a second copy to drift; with a relative-path source
+    // Claude Code reads plugin.json before install anyway.
+    it('is listed in the repository\'s marketplace by name and folder only', () => {
+      const entry = marketplace.plugins.find(p => p.name === plugin.name)
+      expect(entry).toEqual({ name: plugin.name, source: `./${path.relative(ROOT, PLUGIN_DIR)}` })
+      expect(marketplace.owner).toMatchObject({ name: manifest.author.name, email: manifest.author.email })
     })
 
     it('starts the npm package at exactly this version: the directory blocks an unpinned npx package', () => {

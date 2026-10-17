@@ -262,6 +262,7 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
   `manifest.json` (.mcpb) and `plugins/string-utility-belt/` (the Claude plugin for Anthropic's directory, which
   runs the npm package pinned in its `.mcp.json`); `packages/mcp/src/metadata.test.ts` keeps them in step. The
   plugin is part of the `mcp` release target: its `version` and pin are version files, so any change to it releases.
+  `.claude-plugin/marketplace.json` makes the repository a Claude Code marketplace for it (name and folder only).
 - App ↔ extension: `src/core/extensionBridge.ts` is the shared contract (messages, `BRIDGE_ORIGINS`, the store
   extension id, which utilities the extension can run, and — via `stepTypes` in its ping answer — which step
   types it can save; an answer without it means `LEGACY_STEP_TYPES`). The extension is `externally_connectable` from those origins
