@@ -1,7 +1,7 @@
 {
   "name": "subelt",
   "description": "Run a String Utility Belt pipeline from the shell: npx subelt trim base64_encode hash < file",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "author": "String Utility Belt",
   "license": "MIT",
   "homepage": "https://stringutilitybelt.com",

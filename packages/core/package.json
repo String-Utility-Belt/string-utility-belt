@@ -1,7 +1,7 @@
 {
   "name": "@string-utility-belt/core",
   "description": "Framework-free pipeline engine and all String Utility Belt utilities, for use outside the browser (Node scripts, servers, CLIs).",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "author": "String Utility Belt",
   "license": "MIT",
   "homepage": "https://stringutilitybelt.com",

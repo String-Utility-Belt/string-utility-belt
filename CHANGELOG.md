@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.16.1] - 2026-10-17
+
 ### Security
 
 - **The custom JavaScript sandbox checks that it is cut off from the network before it runs your code.** Its Worker
