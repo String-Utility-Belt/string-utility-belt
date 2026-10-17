@@ -26,7 +26,9 @@ export default defineConfig({
     trace: 'on-first-retry'
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } }
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    // The custom-code sandbox leans on how each engine applies a frame's CSP to the Worker it starts
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] }, grep: /@sandbox/ }
   ],
   webServer: {
     command: previewCommand,

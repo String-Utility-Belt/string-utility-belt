@@ -58,6 +58,22 @@ function createFrame(doc: Document, srcdoc: string): HTMLIFrameElement {
 
 const NOT_STARTED = 'the custom JavaScript sandbox did not start — this browser may be blocking it'
 
+/**
+ * What the Worker requests to check that the frame's CSP reached it (see ./frame): a
+ * small file on this site, so the site's own CSP allows the request and only the
+ * frame's policy can block it.
+ */
+export const PROBE_PATH = '/robots.txt'
+
+/** PROBE_PATH on this page's site; '' without a usable location, which the Worker refuses. */
+function probeUrl(win: Window): string {
+  try {
+    return new URL(PROBE_PATH, win.location.href).href
+  } catch {
+    return ''
+  }
+}
+
 export function createBrowserSandbox(opts: BrowserSandboxOptions = {}): Sandbox {
   const startupMs = opts.startupMs ?? 10000
   const graceMs = opts.graceMs ?? 1000
@@ -73,7 +89,9 @@ export function createBrowserSandbox(opts: BrowserSandboxOptions = {}): Sandbox 
         // The job — including the code and input — lives ONLY in the srcdoc, never in
         // a postMessage: an opaque-origin frame can only be posted to at '*', so a
         // page that framed the app and navigated this frame would otherwise read it.
-        const frame = createFrame(doc, buildSrcdoc({ token, code: req.code, input: encodeInput(req.input), timeoutMs }))
+        const frame = createFrame(doc, buildSrcdoc({
+          token, code: req.code, input: encodeInput(req.input), timeoutMs, probe: probeUrl(win),
+        }))
         // starting → (running) running → (result) settled
         let phase: 'starting' | 'running' = 'starting'
         let settled = false

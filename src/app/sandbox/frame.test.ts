@@ -10,8 +10,10 @@ import {
   buildSrcdoc, encodeInput, type SandboxJob,
 } from './frame'
 
+const PROBE = 'https://app.example/robots.txt'
+
 const job = (over: Partial<SandboxJob> = {}): SandboxJob =>
-  ({ token: 'tok123', code: 'return input', input: { k: 's', v: 'hi' }, timeoutMs: 100, ...over })
+  ({ token: 'tok123', code: 'return input', input: { k: 's', v: 'hi' }, timeoutMs: 100, probe: PROBE, ...over })
 
 /** The srcdoc's scripts as a browser parses them: [job data block, bootstrap]. */
 function parts(html: string) {
@@ -48,7 +50,7 @@ describe('frame document', () => {
   it('bakes the job into the document so it is never posted anywhere', () => {
     const html = buildSrcdoc(job({ token: 'abc', code: 'return input', input: { k: 's', v: 'secret' } }))
     const embedded = JSON.parse(parts(html).data!.textContent!)
-    expect(embedded).toEqual({ token: 'abc', code: 'return input', input: { k: 's', v: 'secret' }, timeoutMs: 100 })
+    expect(embedded).toEqual({ token: 'abc', code: 'return input', input: { k: 's', v: 'secret' }, timeoutMs: 100, probe: PROBE })
   })
 
   it('runs the same bootstrap on every run, so the site CSP can allow it by hash', () => {
@@ -83,10 +85,12 @@ describe('frame document', () => {
     }
   })
 
-  it('never loads anything by URL (the only importScripts is the data: CSP probe)', () => {
+  it('requests nothing but its two CSP probes, and names no URL but the job\'s probe', () => {
     const html = buildSrcdoc(job())
-    expect(html).not.toMatch(/\bsrc=|https?:|fetch\(/)
+    expect(html).not.toMatch(/\bsrc=|XMLHttpRequest|WebSocket|EventSource|sendBeacon|\bimport\(/)
     expect(html.match(/importScripts\([^)]*\)/g)).toEqual(["importScripts('data:text/javascript,')"])
+    expect(html.match(/fetch\([^,]*/g)).toEqual(['fetch(url.href'])
+    expect(html.match(/[a-z][a-z0-9+.-]*:\/\/[^"'\s]*/gi)).toEqual([PROBE])
   })
 })
 
@@ -165,14 +169,14 @@ describe('frame bootstrap', () => {
     expect(FakeWorker.instances).toHaveLength(0)
   })
 
-  it('starts the Worker from a Blob of the worker source and hands it decoded code and input — never the token', () => {
+  it('starts the Worker from a Blob of the worker source and hands it decoded code, input and probe — never the token', () => {
     const { blobs } = bootFrame({ input: { k: 'j', v: '{"a":1}' } })
     expect(blobs).toHaveLength(1)
     expect((blobs[0] as any).parts).toEqual([WORKER_SOURCE])
     expect(blobs[0].type).toBe('text/javascript')
     const w = FakeWorker.instances[0]
     expect(w.url).toBe('blob:null/1')
-    expect(w.sent).toEqual([{ code: 'return input', input: { a: 1 } }])
+    expect(w.sent).toEqual([{ code: 'return input', input: { a: 1 }, probe: PROBE }])
     expect(JSON.stringify(w.sent)).not.toContain('tok123')
   })
 
@@ -273,15 +277,49 @@ describe('frame bootstrap', () => {
 // worker (runs the user code)
 // ---------------------------------------------------------------------------
 
+/**
+ * The Worker's two probes failing the way the frame's CSP makes them fail: the data:
+ * script throws, and the request rejects before anything is sent.
+ */
+function cspBlocks() {
+  return {
+    importScripts: vi.fn(() => {
+      throw new DOMException("Refused to load the script because it violates the document's Content Security Policy", 'NetworkError')
+    }),
+    fetch: vi.fn(() => Promise.reject(new TypeError('Failed to fetch'))),
+  }
+}
+
+const PROBE_INIT = { method: 'HEAD', mode: 'no-cors', credentials: 'omit' }
+
+const REFUSED = { ok: false, error: expect.stringMatching(/does not block network access/) }
+
 /** Run WORKER_SOURCE against a fake `self` whose postMessage structured-clones like the real one. */
 async function runWorker(code: string, input: unknown = 'hi') {
   const sent: any[] = []
   const self: any = { postMessage: (m: unknown) => { sent.push(structuredClone(m)) } }
-  new Function('self', WORKER_SOURCE)(self)
-  self.onmessage({ data: { code, input } })
+  const { importScripts, fetch } = cspBlocks()
+  new Function('self', 'importScripts', 'fetch', WORKER_SOURCE)(self, importScripts, fetch)
+  self.onmessage({ data: { code, input, probe: PROBE } })
   await vi.waitFor(() => expect(sent.length).toBeGreaterThan(1))
   expect(sent[0]).toEqual({ alive: true })
   return { reply: sent[1], sent, self }
+}
+
+/**
+ * Run WORKER_SOURCE as a real Worker does, as a classic script in its own realm whose
+ * global object plays `self`, with the frame's CSP blocking both probes unless
+ * `globals` says otherwise. `send` hands it one request, as the frame does.
+ */
+function workerRealm(globals: Record<string, unknown> = {}) {
+  const sent: any[] = []
+  const env = { ...cspBlocks(), ...globals }
+  const ctx: any = vm.createContext({ postMessage: (m: unknown) => sent.push(JSON.parse(JSON.stringify(m))), URL, ...env })
+  vm.runInContext('var self = globalThis;', ctx)
+  vm.runInContext(WORKER_SOURCE, ctx)
+  const send = (code: string, extra: Record<string, unknown> = {}) =>
+    ctx.onmessage({ data: { code, input: 'hi', probe: PROBE, ...extra } })
+  return { ctx, sent, send, ...env }
 }
 
 describe('worker source', () => {
@@ -335,8 +373,9 @@ describe('worker source', () => {
     const fakeSelf: any = { postMessage: (m: unknown) => sent.push(m) }
     g.__workerSelf = fakeSelf
     try {
-      new Function('self', WORKER_SOURCE)(fakeSelf)
-      fakeSelf.onmessage({ data: { code: '__workerSelf.postMessage = () => {}; return "ok"', input: '' } })
+      const { importScripts, fetch } = cspBlocks()
+      new Function('self', 'importScripts', 'fetch', WORKER_SOURCE)(fakeSelf, importScripts, fetch)
+      fakeSelf.onmessage({ data: { code: '__workerSelf.postMessage = () => {}; return "ok"', input: '', probe: PROBE } })
       await vi.waitFor(() => expect(sent).toEqual([{ alive: true }, { ok: true, value: 'ok' }]))
     } finally {
       delete g.__workerSelf
@@ -347,58 +386,80 @@ describe('worker source', () => {
     // A Worker runs WORKER_SOURCE as a classic script, where a top-level `var` becomes a
     // global the user code can read and reassign. `new Function` (above) hides that, so
     // run it as a script in its own realm whose global object plays `self`.
-    const sent: any[] = []
-    const ctx: any = vm.createContext({ postMessage: (m: unknown) => sent.push(JSON.parse(JSON.stringify(m))) })
-    vm.runInContext('var self = globalThis;', ctx)
-    vm.runInContext(WORKER_SOURCE, ctx)
-    const run = async (code: string) => {
-      const before = sent.length
-      ctx.onmessage({ data: { code, input: 'hi' } })
-      await vi.waitFor(() => expect(sent.length).toBeGreaterThan(before))
-      return sent[sent.length - 1]
-    }
+    const { sent, send } = workerRealm()
     expect(sent).toEqual([{ alive: true }])
-    expect(await run('return [typeof post, typeof describe, typeof AsyncFunction].join()'))
-      .toEqual({ ok: true, value: 'undefined,undefined,undefined' })
-  })
-
-  it("refuses to run code where the frame's CSP does not reach the Worker (fails closed)", async () => {
-    // a data: script is outside the CSP's script-src: if it loads, nothing is blocking the network either
-    const sent: any[] = []
-    const loaded: string[] = []
-    const ctx: any = vm.createContext({
-      postMessage: (m: unknown) => sent.push(JSON.parse(JSON.stringify(m))),
-      importScripts: (url: string) => { loaded.push(url) },
-    })
-    vm.runInContext('var self = globalThis;', ctx)
-    vm.runInContext(WORKER_SOURCE, ctx)
-    ctx.onmessage({ data: { code: 'globalThis.ran = true; return "should not run"', input: '' } })
+    send('return [typeof post, typeof describe, typeof AsyncFunction, typeof run, typeof REFUSED].join()')
     await vi.waitFor(() => expect(sent).toHaveLength(2))
-    expect(sent[1]).toMatchObject({ ok: false, error: expect.stringMatching(/does not block network access/) })
-    expect(ctx.ran).toBeUndefined()
-    expect(loaded).toEqual([expect.stringMatching(/^data:/)])
+    expect(sent[1]).toEqual({ ok: true, value: 'undefined,undefined,undefined,undefined,undefined' })
   })
 
-  it('runs code when the CSP blocks the probe', async () => {
-    const sent: any[] = []
-    const ctx: any = vm.createContext({
-      postMessage: (m: unknown) => sent.push(JSON.parse(JSON.stringify(m))),
-      importScripts: () => { throw new Error("NetworkError: Refused to load the script because it violates the CSP") },
-    })
-    vm.runInContext('var self = globalThis;', ctx)
-    vm.runInContext(WORKER_SOURCE, ctx)
-    ctx.onmessage({ data: { code: 'return "ran"', input: '' } })
+  it('runs code only once the CSP has blocked both probes', async () => {
+    const { sent, send, importScripts, fetch } = workerRealm()
+    send('return "ran"')
+    await vi.waitFor(() => expect(sent).toEqual([{ alive: true }, { ok: true, value: 'ran' }]))
+    expect(importScripts).toHaveBeenCalledExactlyOnceWith('data:text/javascript,')
+    expect(fetch).toHaveBeenCalledExactlyOnceWith(PROBE, PROBE_INIT)
+  })
+
+  it("refuses to run code where no CSP reaches the Worker, and requests nothing (fails closed)", async () => {
+    // a data: script is outside every script-src here: if it loads, no policy binds the Worker
+    const loaded: string[] = []
+    const { ctx, sent, send, fetch } = workerRealm({ importScripts: (url: string) => { loaded.push(url) } })
+    send('globalThis.ran = true; return "should not run"')
+    await vi.waitFor(() => expect(sent).toHaveLength(2))
+    expect(sent[1]).toEqual(REFUSED)
+    expect(ctx.ran).toBeUndefined()
+    expect(loaded).toEqual(['data:text/javascript,'])
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it("refuses to run code where the Worker inherited the site's CSP but not the frame's", async () => {
+    // the site's policy refuses a data: script too, but allows a request to the site itself
+    const fetch = vi.fn(() => Promise.resolve({ type: 'opaque', status: 0 }))
+    const { ctx, sent, send } = workerRealm({ fetch })
+    send('globalThis.ran = true; return "should not run"')
+    await vi.waitFor(() => expect(sent).toHaveLength(2))
+    expect(sent[1]).toEqual(REFUSED)
+    expect(ctx.ran).toBeUndefined()
+    expect(fetch).toHaveBeenCalledExactlyOnceWith(PROBE, PROBE_INIT)
+  })
+
+  it('compiles nothing until the request probe has failed', async () => {
+    let fail!: (e: Error) => void
+    const fetch = vi.fn(() => new Promise((_resolve, reject) => { fail = reject }))
+    const { ctx, sent, send } = workerRealm({ fetch })
+    send('globalThis.ran = true; return "ran"')
+    await new Promise(r => setTimeout(r, 20))
+    expect(ctx.ran).toBeUndefined()
+    expect(sent).toEqual([{ alive: true }])
+    fail(new TypeError('Failed to fetch'))
     await vi.waitFor(() => expect(sent).toEqual([{ alive: true }, { ok: true, value: 'ran' }]))
   })
 
+  it('refuses to run code without an http(s) probe URL, and requests nothing', async () => {
+    for (const probe of [undefined, '', 'robots.txt', 'not a url', 'data:text/plain,x', 'blob:null/1', 'javascript:void 0', 'ftp://app.example/']) {
+      const { ctx, sent, send, fetch } = workerRealm()
+      send('globalThis.ran = true; return "should not run"', { probe })
+      await vi.waitFor(() => expect(sent, String(probe)).toHaveLength(2))
+      expect(sent[1], String(probe)).toEqual(REFUSED)
+      expect(ctx.ran, String(probe)).toBeUndefined()
+      expect(fetch, String(probe)).not.toHaveBeenCalled()
+    }
+  })
+
+  it('refuses to run code where it cannot make the request probe', async () => {
+    for (const globals of [{ fetch: undefined }, { fetch: () => { throw new TypeError('blocked') } }, { URL: undefined }]) {
+      const { ctx, sent, send } = workerRealm(globals)
+      send('globalThis.ran = true; return "should not run"')
+      await vi.waitFor(() => expect(sent).toHaveLength(2))
+      expect(sent[1]).toEqual(REFUSED)
+      expect(ctx.ran).toBeUndefined()
+    }
+  })
+
   it('still answers when the code clobbers what it can reach in a real Worker global', async () => {
-    const sent: any[] = []
-    const ctx: any = vm.createContext({ postMessage: (m: unknown) => sent.push(JSON.parse(JSON.stringify(m))) })
-    vm.runInContext('var self = globalThis;', ctx)
-    vm.runInContext(WORKER_SOURCE, ctx)
-    ctx.onmessage({
-      data: { code: 'try { post = () => {} } catch (e) {} self.postMessage = () => {}; return "ok"', input: '' },
-    })
+    const { sent, send } = workerRealm()
+    send('try { post = () => {} } catch (e) {} self.postMessage = () => {}; return "ok"')
     await vi.waitFor(() => expect(sent).toEqual([{ alive: true }, { ok: true, value: 'ok' }]))
   })
 
