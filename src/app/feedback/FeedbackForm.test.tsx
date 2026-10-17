@@ -25,8 +25,8 @@ describe('FeedbackForm', () => {
       kind: 'bug', message: 'The hex view freezes on big files.', email: 'ada@example.com', page: '/util/hex/', website: '',
     })
     expect(await screen.findByRole('status')).toHaveTextContent('We’ll reply to ada@example.com')
-    // focus moves to the next thing to do, not to <body>
-    expect(screen.getByRole('button', { name: 'Send another message' })).toHaveFocus()
+    // focus moves to the next thing to do, not to <body>, in an effect after the send resolves
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Send another message' })).toHaveFocus())
   })
 
   it('says what is wrong before sending, on the field, and focuses it', async () => {
