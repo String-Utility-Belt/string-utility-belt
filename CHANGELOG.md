@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Blog post: eval() in a straitjacket** (`/blog/eval-in-a-straitjacket/`): how the custom JavaScript step runs your
+  code in a sandbox with no way onto the network, under the site's strict Content-Security-Policy, and how the sandbox
+  checks that before it runs anything. The custom JavaScript page links to it.
+
 ## [1.16.1] - 2026-10-17
 
 ### Security
