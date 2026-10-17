@@ -162,6 +162,7 @@ export const HEADINGS: Record<string, string> = {
   "password_generator": "Password Generator",
   "pbkdf2": "PBKDF2 Key Derivation",
   "pluralize_words": "Pluralize Words",
+  "powershell_request_build": "JSON to PowerShell Invoke-RestMethod Command Builder",
   "protobuf_decode": "Protobuf Decoder",
   "punycode_decode": "Punycode Decoder",
   "punycode_encode": "Punycode Encoder",

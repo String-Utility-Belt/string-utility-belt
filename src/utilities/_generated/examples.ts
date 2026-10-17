@@ -2308,6 +2308,13 @@ export const EXAMPLES: Record<string, UtilityExample[]> = {
       "output": "3 apples"
     }
   ],
+  "powershell_request_build": [
+    {
+      "title": "POST with a bearer token and a JSON body",
+      "input": "{\"method\":\"POST\",\"url\":\"https://api.example.com/v1/users\",\"headers\":{\"Authorization\":\"Bearer test_token_123\",\"Content-Type\":\"application/json\"},\"body\":\"{\\\"name\\\":\\\"Ada\\\"}\"}",
+      "output": "$params = @{\n  Uri = 'https://api.example.com/v1/users'\n  Method = 'Post'\n  Headers = @{\n    'Authorization' = 'Bearer test_token_123'\n  }\n  ContentType = 'application/json'\n  Body = '{\"name\":\"Ada\"}'\n}\nInvoke-RestMethod @params"
+    }
+  ],
   "protobuf_decode": [
     {
       "title": "varint + string fields",

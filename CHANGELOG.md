@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **json to powershell request** (`powershell_request_build`): turns the JSON that curl command to json produces into a
+  runnable PowerShell `Invoke-RestMethod` (or `Invoke-WebRequest`) command. Headers, body, Basic and challenge auth,
+  form uploads and the curl flags with a PowerShell counterpart (`-k`, `--max-time`, `-o`, `--proxy`, …) carry
+  over; every value is quoted so PowerShell sends it unchanged; long requests are splatted, multi-line bodies go in a
+  here-string; flags with no equivalent are named in a comment.
+- **Preset: Convert a curl command to PowerShell** (`/presets/convert-curl-to-powershell/`): paste a curl command from
+  API docs or Chrome's "Copy as cURL" and get the same request as `Invoke-RestMethod`.
 - **Send feedback or suggest a utility from the site.** A short form, on the contact page, behind a new **Feedback**
   link at the foot of every page and under any utility search that finds nothing, emails your message to us. It asks
   for an email address only if you want a reply, and a search that found nothing starts the suggestion with what you

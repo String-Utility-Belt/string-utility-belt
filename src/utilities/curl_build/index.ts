@@ -21,7 +21,8 @@ const quotePosix = (s: string) => `'${s.replace(/'/g, `'\\''`)}'`
 /** PowerShell: double-quote, backtick-escaping " ` and $ . */
 const quotePowerShell = (s: string) => `"${s.replace(/[`"$]/g, (m) => '`' + m)}"`
 
-function toRecord(input: unknown): Record<string, unknown> | null {
+/** The request object from JSON text or an already-parsed value (shared with powershell_request_build). */
+export function requestRecord(input: unknown): Record<string, unknown> | null {
   if (input === null || input === undefined) return null
   if (typeof input === 'string') {
     const trimmed = input.trim()
@@ -41,7 +42,8 @@ function toRecord(input: unknown): Record<string, unknown> | null {
   throw new Error('expected a JSON object describing a request')
 }
 
-function headerPairs(source: unknown): Array<[string, string]> {
+/** Header [name, value] pairs from an object, a list of pairs/entries or "Name: value" lines; arrays repeat the header. */
+export function headerPairs(source: unknown): Array<[string, string]> {
   const pairs: Array<[string, string]> = []
   if (!source || typeof source !== 'object') return pairs
 
@@ -115,7 +117,7 @@ const util: Utility = {
     const powershell = params?.flavor === 'powershell'
     const q = powershell ? quotePowerShell : quotePosix
 
-    const req = toRecord(input)
+    const req = requestRecord(input)
     if (!req || Object.keys(req).length === 0) return ''
 
     const url = req.url === undefined || req.url === null ? '' : String(req.url).trim()

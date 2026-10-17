@@ -6949,6 +6949,50 @@ export const MANIFEST: UtilityMeta[] = [
     "exampleCount": 2
   },
   {
+    "id": "powershell_request_build",
+    "name": "json to powershell request",
+    "category": "Web & Dev",
+    "description": "Turn JSON describing an HTTP request (method, url, headers, body, auth, form fields, curl flags) into a runnable PowerShell Invoke-RestMethod or Invoke-WebRequest command.",
+    "accepts": "json",
+    "produces": "string",
+    "params": {
+      "cmdlet": {
+        "kind": "select",
+        "label": "cmdlet",
+        "options": [
+          "Invoke-RestMethod",
+          "Invoke-WebRequest"
+        ],
+        "default": "Invoke-RestMethod",
+        "description": "Invoke-RestMethod returns the parsed JSON or XML; Invoke-WebRequest returns the response with its status code and headers."
+      },
+      "multiline": {
+        "kind": "boolean",
+        "label": "splat across lines",
+        "default": true,
+        "description": "Put a request with more than two parameters in a $params hashtable (splatting), and a multi-line body in a here-string. Off: one command line."
+      },
+      "pretty": {
+        "kind": "boolean",
+        "label": "pretty-print a json body",
+        "default": false
+      }
+    },
+    "tags": [
+      "powershell",
+      "invoke-restmethod",
+      "invoke-webrequest",
+      "curl",
+      "http request",
+      "windows",
+      "rest api"
+    ],
+    "aliases": [],
+    "env": [],
+    "streamable": false,
+    "exampleCount": 1
+  },
+  {
     "id": "protobuf_decode",
     "name": "protobuf wire decode",
     "category": "Data Formats",
