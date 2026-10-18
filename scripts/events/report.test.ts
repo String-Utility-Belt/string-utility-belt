@@ -56,6 +56,24 @@ describe('formatReport', () => {
     expect(text).toContain('sampling')
   })
 
+  it('prints editor runs by pipeline source and size, and utility adds per utility with their sources on one line', () => {
+    const rows = parseRows({
+      data: [
+        { event: 'editor_run', first: 'editor', second: '1', count: 9 },
+        { event: 'editor_run', first: 'share', second: '2-3', count: 2 },
+        { event: 'utility_add', first: 'base64_decode', second: 'picker', count: 4 },
+        { event: 'utility_add', first: 'json_format', second: 'palette', count: 5 },
+        { event: 'utility_add', first: 'base64_decode', second: 'decode_all', count: 3 },
+      ],
+    })
+    const text = formatReport(rows, parsePeriod(['--days', '7'], NOW))
+    expect(text).toContain('Page loads that ran the editor: 11')
+    expect(text).toMatch(/share\s+2-3\s+2/)
+    expect(text).toContain('Utilities added to a pipeline: 12')
+    expect(text).toMatch(/utility\s+adds\n-+\s+-+\nbase64_decode\s+7\njson_format\s+5/)
+    expect(text).toContain('By from: palette 5, picker 4, decode_all 3')
+  })
+
   it('refuses an answer without data', () => {
     expect(() => parseRows({ errors: ['bad'] })).toThrow()
   })
