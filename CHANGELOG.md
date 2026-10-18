@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.16.5] - 2026-10-18
+
 ### Changed
 
 - **The site counts how the pipeline editor is used.** Alongside sponsor, tool and preset clicks, the site's own
