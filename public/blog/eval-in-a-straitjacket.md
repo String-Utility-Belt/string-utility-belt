@@ -5,6 +5,7 @@ date: 2026-10-17
 slug: eval-in-a-straitjacket
 tags: [javascript, security, csp, sandbox]
 image: /blog/eval-in-a-straitjacket.png
+discuss: https://dev.to/murraylr/eval-in-a-straitjacket-running-user-javascript-under-a-strict-csp-3dhp
 ---
 
 # eval() in a straitjacket: sandboxing JavaScript under CSP

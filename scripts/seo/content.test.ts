@@ -5,6 +5,7 @@ import {
   renderBlogPostContent, renderChangelogContent, renderSiteChrome, renderHomeContent,
   renderNotFoundContent, renderSitePageContent, renderDocsContent,
 } from './content'
+import { discussLinks } from '../../src/components/blogManifest'
 
 const XSS = '"><script>alert(1)</script>'
 
@@ -139,6 +140,27 @@ describe('renderBlogPostContent', () => {
     const html = renderBlogPostContent({ title: XSS, date: '2025-09-18' }, '<p class="md-p">safe body</p>')
     expect(html).not.toContain('<script>alert(1)</script>')
     expect(html).toContain('safe body')
+  })
+
+  it("ends with the app's PostDiscussion: the post's threads, then the feedback link", () => {
+    const discuss = discussLinks('[https://dev.to/a/b-1c2d, https://www.reddit.com/r/javascript/comments/abc/x/, https://news.ycombinator.com/item?id=1]')
+    const doc = new DOMParser().parseFromString(renderBlogPostContent({ title: 't', discuss }, '<p class="md-p">body</p>'), 'text/html')
+    const footer = doc.querySelector('article > footer')!
+    expect(doc.querySelector('article > div')?.nextElementSibling).toBe(footer)
+    const [threads, feedback] = [...footer.querySelectorAll('p')]
+    expect(threads.textContent).toBe('Discuss this post on DEV, Reddit and Hacker News.')
+    expect([...threads.querySelectorAll('a')].map(a => [a.getAttribute('href'), a.getAttribute('target'), a.getAttribute('rel')])).toEqual(
+      discuss.map(l => [l.href, '_blank', 'noopener']))
+    expect(feedback.textContent).toBe('Spotted a mistake? Send feedback.')
+    expect(feedback.querySelector('a')?.getAttribute('href')).toBe('/contact/#feedback')
+  })
+
+  it('has no discussion line for a post that lists no thread', () => {
+    for (const discuss of [undefined, []]) {
+      const html = renderBlogPostContent({ title: 't', discuss }, '')
+      expect(html).not.toContain('Discuss this post')
+      expect(html).toContain('href="/contact/#feedback"')
+    }
   })
 })
 

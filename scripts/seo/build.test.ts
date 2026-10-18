@@ -7,6 +7,7 @@ import { MANIFEST } from '../../src/utilities/_generated/manifest'
 import { buildRssItems, buildSeo, SITE } from './build'
 import { parseGuide } from '../../src/app/pages/guide'
 import { parseFrontmatter } from '../../src/lib/markdown.js'
+import { discussLinks } from '../../src/components/blogManifest'
 import {
   POPULAR_UTILITY_IDS, DOCS_DESCRIPTION, DOCS_TITLE, HOME_HEADING, PRESETS_HEADING, displayName, homeDescription, pageTitle,
 } from '../../src/app/pages/seo'
@@ -52,9 +53,12 @@ const SHIPPED_POSTS: { slug: string }[] = JSON.parse(readFileSync(path.join(ROOT
 /** Pages besides the utilities, presets and posts: the indexes, changelog, docs, site pages and 404. */
 const OTHER_PAGES = 11
 
+/** A shipped post's frontmatter. */
+const frontmatterOf = (slug: string): Record<string, string> =>
+  (parseFrontmatter(readFileSync(path.join(ROOT, 'public', 'blog', `${slug}.md`), 'utf8')) as { frontmatter: Record<string, string> }).frontmatter
+
 /** A shipped post's frontmatter `image`, if it has one of its own. */
-const ownImage = (slug: string): string | undefined =>
-  (parseFrontmatter(readFileSync(path.join(ROOT, 'public', 'blog', `${slug}.md`), 'utf8')) as { frontmatter: Record<string, string> }).frontmatter.image
+const ownImage = (slug: string): string | undefined => frontmatterOf(slug).image
 
 function fixtureDist(): string {
   const dir = mkdtempSync(path.join(os.tmpdir(), 'build-seo-'))
@@ -338,6 +342,22 @@ describe('buildSeo over a built dist/', () => {
     expect(ld[0]).toMatchObject({ datePublished: '2025-09-18', url: `${SITE}/blog/md5-insecure-but-useful/` })
     expect(ld[0].headline).toBe(doc.querySelector('#root h1')?.textContent)
     expect(doc.querySelector('meta[property="article:published_time"]')?.getAttribute('content')).toBe('2025-09-18')
+  })
+
+  it('ends each blog post with the threads its frontmatter lists, named as its discussionUrl, and the feedback link', () => {
+    const discussed = SHIPPED_POSTS.filter(post => {
+      const doc = html(read(dist, `blog/${post.slug}/index.html`))
+      const threads = discussLinks(frontmatterOf(post.slug).discuss).map(l => l.href)
+      const footer = doc.querySelector('#root article > footer')
+      expect([...footer?.querySelectorAll('a[target="_blank"]') ?? []].map(a => a.getAttribute('href')), post.slug).toEqual(threads)
+      expect(footer?.querySelector('a[href="/contact/#feedback"]')?.textContent, post.slug).toBe('Send feedback')
+      const ld = [...doc.querySelectorAll('script[type="application/ld+json"]')].map(s => JSON.parse(s.textContent!))
+      expect(ld[0].discussionUrl, post.slug).toEqual(threads.length > 0 ? threads : undefined)
+      return threads.length > 0
+    })
+    // some posts are discussed elsewhere and some are not, so both cases are checked
+    expect(discussed.length).toBeGreaterThan(0)
+    expect(discussed.length).toBeLessThan(SHIPPED_POSTS.length)
   })
 
   it('pre-renders the changelog with real lists', () => {

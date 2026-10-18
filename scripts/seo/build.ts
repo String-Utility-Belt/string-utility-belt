@@ -15,6 +15,7 @@ import {
 } from './html'
 import { buildSitemap, buildRss, toIsoDate, type SitemapUrl, type RssItem } from './xml'
 import { readBlogManifest, readBlogPostSource, dropRepeatedTitle, isSafeSlug, postImage, type BlogPostMeta } from './blog'
+import { discussLinks, parseTags, type DiscussLink } from '../../src/components/blogManifest'
 import { parseChangelog, summarizeMarkdown, type ChangelogRelease } from './changelog'
 import {
   renderUtilityContent, renderUtilitiesIndexContent, renderBlogIndexContent, renderBlogPostContent,
@@ -174,6 +175,7 @@ function blogPostingLd(post: PublishedPost, url: string) {
     inLanguage: 'en',
     ...(post.date ? { datePublished: post.date } : {}),
     ...(modified ? { dateModified: modified } : {}),
+    ...(post.discuss.length > 0 ? { discussionUrl: post.discuss.map(l => l.href) } : {}),
     author: ORGANIZATION,
     publisher: ORGANIZATION,
     isPartOf: WEBSITE,
@@ -260,6 +262,8 @@ export interface PublishedPost {
   updated?: string
   /** Frontmatter `image`: the post's own 1200x630 preview (`/blog/<name>.png`), used instead of a generated card. */
   image?: string
+  /** Frontmatter `discuss`: threads about the post on other sites, linked at its end and as its `discussionUrl`. */
+  discuss: DiscussLink[]
   bodyHtml: string
 }
 
@@ -279,6 +283,10 @@ function loadPosts(blogDir: string, log: (m: string) => void): PublishedPost[] {
     if (frontmatter.image && !image) {
       log(`[build-seo] warning: ${meta.slug}.md's image "${frontmatter.image}" is not a PNG in blog/ — using its generated card`)
     }
+    const discuss = discussLinks(frontmatter.discuss)
+    if (discuss.length < parseTags(frontmatter.discuss).length) {
+      log(`[build-seo] warning: ${meta.slug}.md's discuss lists a link that is not an https thread on a known site, or a second on one site — left out`)
+    }
     posts.push({
       meta,
       title,
@@ -286,6 +294,7 @@ function loadPosts(blogDir: string, log: (m: string) => void): PublishedPost[] {
       date: validDate(frontmatter.date) ?? validDate(meta.date),
       updated: validDate(frontmatter.updated),
       image,
+      discuss,
       // the renderer `BlogPost` uses too: guide syntax (lists, tables) at the post's own heading levels
       bodyHtml: renderMarkdownDocument(dropRepeatedTitle(body, title)),
     })
@@ -507,7 +516,7 @@ export async function buildSeo(options: BuildSeoOptions): Promise<BuildSeoResult
         blogPostingLd(post, url),
         breadcrumbLd([HOME_CRUMB, { name: 'Blog', url: blogUrl }, { name: post.title, url }]),
       ],
-      content: renderBlogPostContent({ title: post.title, date: post.date, updated: post.updated }, post.bodyHtml,
+      content: renderBlogPostContent({ title: post.title, date: post.date, updated: post.updated, discuss: post.discuss }, post.bodyHtml,
         sponsorOf({ kind: 'blog', slug: post.meta.slug })),
     })
   }
