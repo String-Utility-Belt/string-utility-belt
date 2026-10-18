@@ -34,7 +34,7 @@ npm run build:tools  # packages/{core,cli,mcp,extension,vscode}
 npm run test:e2e     # Playwright against a production build
 npm run deploy       # build:site (build + build:seo) + wrangler deploy (manual; releases deploy from CI)
 npm run release -- plan   # what a release from HEAD would ship, at which versions (read-only; RELEASING.md)
-npm run events            # counted clicks from Analytics Engine (-- --days N | --month YYYY-MM; needs a CF token)
+npm run events            # counted events from Analytics Engine (-- --days N | --month YYYY-MM; needs a CF token)
 npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after npm run build; needs ffmpeg)
 ```
 
@@ -231,14 +231,18 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
 - No cookies and no tracking scripts. Cloudflare Web Analytics (cookieless; the zone injects its beacon at the edge,
   so no build sees it) counts page views per path, with countries, devices and load timings; it drops the query and
   fragment, so share links' input never reaches it. Google Analytics was removed on 2026-10-09.
-- The site counts three events itself (`src/lib/countedEvents.ts`, the contract): `sponsor_click {sponsorship, page}`,
-  `integration_click {integration, source}` and `preset_open {preset, source: 'page'|'gallery'}` (a preset loaded
-  into the editor from its page or from the editor's Presets dialog). The app sends them with `countEvent()`
+- The site counts five events itself (`src/lib/countedEvents.ts`, the contract): `sponsor_click {sponsorship, page}`,
+  `integration_click {integration, source}`, `preset_open {preset, source: 'page'|'gallery'}` (a preset loaded
+  into the editor from its page or from the editor's Presets dialog), `utility_add {utility, source}` (one per utility
+  added, `ADD_SOURCES` says how: picker, quick_add, palette, magic, decode_all, suggestion, next_step, nested,
+  doc_page — a new way to add a step needs a source and a `countEvent` call) and `editor_run {source: 'editor'|'share',
+  steps: STEP_BUCKETS}` (`useEditorRunCount` in `ToolPage`: at most once per page load, the first result the visitor
+  asked for that stood 2 s; never for a pipeline re-running by itself on load, and not counted in embeds). The app sends them with `countEvent()`
   (`src/app/events/countEvent.ts`: `sendBeacon`, production host only, never under webdriver) to `POST /api/event`
   (`worker/events.ts`: same-origin only, rate-limited, strict allow-list parse), which writes one Workers Analytics
   Engine data point (index = event name, blob1/blob2 = its ids, nothing about the request) to the `sub_events`
   dataset (`EVENTS` binding, kept three months). A new event or field changes the contract, the report
-  (`scripts/events/report.ts`) and the privacy policy's "Clicks we count ourselves" together; ids only, never text.
+  (`scripts/events/report.ts`) and the privacy policy's "What we count ourselves" together; ids only, never text.
 - `npm run events [-- --days N | --month YYYY-MM]` prints the counts (needs `CLOUDFLARE_ACCOUNT_ID` and a
   `CLOUDFLARE_API_TOKEN` with Account Analytics: Read); `--month` is a sponsor's monthly click report. Counts are
   indicative (anyone can forge a same-origin header from a script); sponsors also see clicks under their UTM campaign.

@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { ToolProvider } from '@/app/ToolContext'
 import ToolPage from './ToolPage'
 import { HOME_HEADING } from '@/app/pages/seo'
+import { countEvent } from '@/app/events/countEvent'
 
 // CodeMirror and its language packs are dynamically imported by the I/O panels;
 // mock them the same way IOSection.test.tsx does so this test doesn't pull in a
@@ -28,6 +29,7 @@ vi.mock('@/app/extension/SaveToExtensionButton', () => ({ default: () => null })
 vi.mock('@/app/sponsors/ToolPromo', () => ({ default: () => null }))
 vi.mock('@/app/engine/EngineControls', () => ({ default: () => null }))
 vi.mock('./steps/BulkToggle', () => ({ default: () => null }))
+vi.mock('@/app/events/countEvent', () => ({ countEvent: vi.fn() }))
 vi.mock('@/components/UtilityPicker', () => ({
   default: ({ onPick }: { onPick: (id: string) => void }) => (
     <div data-testid="picker-stub"><button onClick={() => onPick('case')}>pick case</button></div>
@@ -104,5 +106,19 @@ describe('ToolPage toolbar accessibility', () => {
     const quick = screen.getByRole('combobox', { name: 'quick add a utility' })
     fireEvent.change(quick, { target: { value: 'case' } })
     expect(document.querySelectorAll('[data-step-id]')).toHaveLength(1)
+  })
+})
+
+describe('ToolPage counted events', () => {
+  it('counts each utility added, by id and by how it was added', () => {
+    vi.mocked(countEvent).mockClear()
+    render(<Harness />)
+    fireEvent.change(screen.getByRole('combobox', { name: 'quick add a utility' }), { target: { value: 'case' } })
+    fireEvent.click(pickerToggle())
+    fireEvent.click(screen.getByRole('button', { name: 'pick case' }))
+    expect(vi.mocked(countEvent).mock.calls.map(([e]) => e)).toEqual([
+      { name: 'utility_add', utility: 'case', source: 'quick_add' },
+      { name: 'utility_add', utility: 'case', source: 'picker' },
+    ])
   })
 })

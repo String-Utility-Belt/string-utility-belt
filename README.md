@@ -62,7 +62,8 @@ Open [stringutilitybelt.com](https://stringutilitybelt.com) — nothing to insta
 transformation runs in your browser (see the [privacy policy](https://stringutilitybelt.com/privacy/)
 for the few features that contact the server). The site sets no cookies and runs no tracking
 scripts: Cloudflare Web Analytics counts page views without cookies, the site's own server counts
-clicks on sponsor and tool links by id alone, neither ever receives what you paste, and the site's
+clicks on sponsor and tool links, utilities added and editor runs by id alone, neither ever receives
+what you paste, and the site's
 Content-Security-Policy blocks scripts from anywhere else. The how-to guide lives in the app
 itself: click **Docs** in the header, or go to [`/docs/`](https://stringutilitybelt.com/docs/). Each
 utility's settings and examples are on its own page, listed at

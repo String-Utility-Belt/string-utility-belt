@@ -25,6 +25,24 @@ export const CLICK_SOURCES = ['header', 'promo', 'promo_inline', 'promo_rail', '
 /** Where a preset was loaded into the editor: its own page, or the editor's Presets dialog. */
 export const PRESET_SOURCES = ['page', 'gallery'] as const
 
+/** Whose pipeline the editor ran: its own (the saved working pipeline), or a shared link's. */
+export const RUN_SOURCES = ['editor', 'share'] as const
+
+/** A pipeline's size, nested steps included, in buckets (see `stepBucket`). */
+export const STEP_BUCKETS = ['1', '2-3', '4-7', '8+'] as const
+
+export function stepBucket(steps: number): (typeof STEP_BUCKETS)[number] {
+  return steps <= 1 ? '1' : steps <= 3 ? '2-3' : steps <= 7 ? '4-7' : '8+'
+}
+
+/**
+ * How a utility was added to the pipeline: the utility picker, the quick-add list, the
+ * command palette, Magic's suggestions or its "decode all", the empty editor's suggested
+ * first steps, the suggested next step, a branch lane or "run on each" (`nested`), or a
+ * utility page's "Use in pipeline".
+ */
+export const ADD_SOURCES = ['picker', 'quick_add', 'palette', 'magic', 'decode_all', 'suggestion', 'next_step', 'nested', 'doc_page'] as const
+
 export type CountedEvent =
   /** A sponsor's link was followed, on a page `pageKey` names (`util/jwt_decode`). */
   | { name: 'sponsor_click'; sponsorship: string; page: string }
@@ -32,6 +50,10 @@ export type CountedEvent =
   | { name: 'integration_click'; integration: (typeof EVENT_INTEGRATIONS)[number]; source: (typeof CLICK_SOURCES)[number] }
   /** A preset was loaded into the pipeline editor. */
   | { name: 'preset_open'; preset: string; source: (typeof PRESET_SOURCES)[number] }
+  /** The editor produced a result the visitor asked for: at most once per page load. */
+  | { name: 'editor_run'; source: (typeof RUN_SOURCES)[number]; steps: (typeof STEP_BUCKETS)[number] }
+  /** A utility was added to the pipeline. */
+  | { name: 'utility_add'; utility: string; source: (typeof ADD_SOURCES)[number] }
 
 export type EventName = CountedEvent['name']
 
@@ -61,6 +83,14 @@ export function parseCountedEvent(raw: unknown): CountedEvent | null {
       return exactKeys(raw, ['name', 'preset', 'source']) && matches(ID, raw.preset) && oneOf(PRESET_SOURCES, raw.source)
         ? { name: raw.name, preset: raw.preset, source: raw.source }
         : null
+    case 'editor_run':
+      return exactKeys(raw, ['name', 'source', 'steps']) && oneOf(RUN_SOURCES, raw.source) && oneOf(STEP_BUCKETS, raw.steps)
+        ? { name: raw.name, source: raw.source, steps: raw.steps }
+        : null
+    case 'utility_add':
+      return exactKeys(raw, ['name', 'utility', 'source']) && matches(ID, raw.utility) && oneOf(ADD_SOURCES, raw.source)
+        ? { name: raw.name, utility: raw.utility, source: raw.source }
+        : null
     default:
       return null
   }
@@ -75,5 +105,7 @@ export function eventFields(e: CountedEvent): [string, string] {
     case 'sponsor_click': return [e.sponsorship, e.page]
     case 'integration_click': return [e.integration, e.source]
     case 'preset_open': return [e.preset, e.source]
+    case 'editor_run': return [e.source, e.steps]
+    case 'utility_add': return [e.utility, e.source]
   }
 }

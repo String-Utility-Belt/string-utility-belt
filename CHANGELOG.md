@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **The site counts how the pipeline editor is used.** Alongside sponsor, tool and preset clicks, the site's own
+  server now counts each utility added to a pipeline (by its id, and whether it came from the picker, the command
+  palette, Magic or a suggestion) and, at most once per visit, that the editor produced a result after you changed
+  something (whether the pipeline was your own or a shared link's, and roughly how many steps it had). Never your
+  input, output or the rest of the pipeline, and nothing about you; embeds count nothing. The privacy policy's "What
+  we count ourselves", the about page and the README say so.
+
 ## [1.16.4] - 2026-10-18
 
 ### Added

@@ -8,6 +8,7 @@ import { defaultParams } from '@/core/params'
 import { registry } from '@/app/registry'
 import { useTool } from '@/app/ToolContext'
 import { pushRecent } from '@/app/favorites'
+import { countEvent } from '@/app/events/countEvent'
 import { attachToolBridge, TOOL_COMMAND_EVENT, type ToolCommandDetail } from './commands'
 
 export default function ToolCommandBridge(): null {
@@ -53,6 +54,7 @@ export default function ToolCommandBridge(): null {
           if (!meta) break
           dispatch({ type: 'ADD_STEP', utilityId: meta.id, params: defaultParams(meta) })
           pushRecent(meta.id)
+          countEvent({ name: 'utility_add', utility: meta.id, source: 'palette' })
           break
         }
         default:

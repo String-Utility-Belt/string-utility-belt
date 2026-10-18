@@ -86,11 +86,24 @@ export function parseRows(answer: unknown): Row[] {
   }))
 }
 
-/** Each event's column headings, matching the blob order of `eventFields`. */
-const COLUMNS: Record<EventName, { title: string; first: string; second?: string; count: string }> = {
+/**
+ * Each event's column headings, matching the blob order of `eventFields`. `rollup` sums the
+ * table over the second field and lists that field's totals on one line instead (a utility
+ * per row, not a utility per row and source).
+ */
+const COLUMNS: Record<EventName, { title: string; first: string; second: string; count: string; rollup?: true }> = {
   sponsor_click: { title: 'Sponsor clicks', first: 'booking', second: 'page', count: 'clicks' },
   integration_click: { title: 'Clicks to our tools', first: 'tool', second: 'from', count: 'clicks' },
   preset_open: { title: 'Presets loaded into the editor', first: 'preset', second: 'from', count: 'loads' },
+  editor_run: { title: 'Page loads that ran the editor', first: 'pipeline', second: 'steps', count: 'runs' },
+  utility_add: { title: 'Utilities added to a pipeline', first: 'utility', second: 'from', count: 'adds', rollup: true },
+}
+
+/** Counts summed per key, largest first. */
+function totals(rows: Row[], key: (r: Row) => string): Array<[string, number]> {
+  const sums = new Map<string, number>()
+  for (const r of rows) sums.set(key(r), (sums.get(key(r)) ?? 0) + r.count)
+  return [...sums].sort((a, b) => b[1] - a[1])
 }
 
 function table(headings: string[], rows: string[][]): string {
@@ -106,8 +119,12 @@ export function formatReport(rows: Row[], period: Period): string {
     const total = own.reduce((n, r) => n + r.count, 0)
     out.push('', `${cols.title}: ${total}`)
     if (!own.length) continue
-    const headings = cols.second ? [cols.first, cols.second, cols.count] : [cols.first, cols.count]
-    out.push(table(headings, own.map(r => (cols.second ? [r.first, r.second, String(r.count)] : [r.first, String(r.count)]))))
+    if (cols.rollup) {
+      out.push(table([cols.first, cols.count], totals(own, r => r.first).map(([k, n]) => [k, String(n)])))
+      out.push(`By ${cols.second}: ${totals(own, r => r.second).map(([k, n]) => `${k} ${n}`).join(', ')}`)
+      continue
+    }
+    out.push(table([cols.first, cols.second, cols.count], own.map(r => [r.first, r.second, String(r.count)])))
   }
   const other = rows.filter(r => !(r.event in COLUMNS))
   if (other.length) out.push('', `Other events (from an older or newer build): ${other.map(r => `${r.event} ${r.count}`).join(', ')}`)

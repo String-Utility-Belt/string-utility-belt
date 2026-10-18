@@ -26,6 +26,8 @@ describe('POST /api/event', () => {
       [{ name: 'sponsor_click', sponsorship: 'acme-2026-11', page: 'presets/decode-saml-request' }, ['acme-2026-11', 'presets/decode-saml-request']],
       [{ name: 'integration_click', integration: 'mcp', source: 'promo_rail' }, ['mcp', 'promo_rail']],
       [{ name: 'preset_open', preset: 'decode-kubernetes-secret', source: 'gallery' }, ['decode-kubernetes-secret', 'gallery']],
+      [{ name: 'editor_run', source: 'share', steps: '2-3' }, ['share', '2-3']],
+      [{ name: 'utility_add', utility: 'base64_decode', source: 'decode_all' }, ['base64_decode', 'decode_all']],
     ] as const
     for (const [event, blobs] of events) {
       const res = await send(event)
@@ -45,6 +47,11 @@ describe('POST /api/event', () => {
     ['a page outside the sponsorable kinds', { name: 'sponsor_click', sponsorship: 'acme', page: 'p/N4Ig' }],
     ['an integration that does not exist', { name: 'integration_click', integration: 'firefox', source: 'header' }],
     ['an unknown source', { name: 'integration_click', integration: 'cli', source: 'email' }],
+    ['an exact step count', { name: 'editor_run', source: 'editor', steps: '5' }],
+    ['a run from an embed', { name: 'editor_run', source: 'embed', steps: '1' }],
+    ['the pipeline itself', { name: 'editor_run', source: 'editor', steps: '1', pipeline: 'base64_decode' }],
+    ['input as a utility id', { name: 'utility_add', utility: 'hello world', source: 'picker' }],
+    ['an unknown add source', { name: 'utility_add', utility: 'base64_decode', source: 'api' }],
     ['an array', [{ name: 'preset_open', preset: 'x', source: 'page' }]],
   ])('refuses %s without counting it', async (_, body) => {
     const { send, writeDataPoint } = setup()

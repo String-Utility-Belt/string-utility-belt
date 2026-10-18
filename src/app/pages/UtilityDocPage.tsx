@@ -23,6 +23,7 @@ import { postPath, postsAbout } from './utilityPosts'
 import PageSponsor from '@/app/sponsors/PageSponsor'
 import PagePromo from '@/app/sponsors/PagePromo'
 import RunElsewhere from '@/app/integrations/RunElsewhere'
+import { countEvent } from '@/app/events/countEvent'
 
 const ENV_NOTES: Record<UtilityEnv, string> = {
   dom: 'Needs the DOM (DOMParser/document), so it runs on the browser main thread only.',
@@ -176,7 +177,7 @@ function UtilityDocPageBody({ id, meta }: { id: string; meta: UtilityMeta }) {
   const useInPipeline = () => {
     const current = loadState()
     const step = { id: stepId(), utilityId: id, enabled: true, params: { ...playParams } }
-    saveState({ ...current, steps: [...current.steps, step] })
+    if (saveState({ ...current, steps: [...current.steps, step] })) countEvent({ name: 'utility_add', utility: id, source: 'doc_page' })
     setSaved(true)
     openTool()
   }

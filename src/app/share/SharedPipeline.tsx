@@ -80,7 +80,7 @@ export default function SharedPipeline({ payload }: { payload: string }) {
   const doc = decoded.doc!
   return (
     <ToolProvider key={payload} untrusted initialSteps={doc.steps} initialName={doc.name} initialInput={doc.input ?? ''}>
-      <ToolPage banner={
+      <ToolPage runSource="share" banner={
         <div className="grid gap-1.5 px-3.5 py-2.5 border rounded-lg bg-surface text-[13px]">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="min-w-0"><Share2 size={14} className="inline -mt-0.5 mr-1.5 text-acc" aria-hidden />Opened a shared pipeline{doc.name ? `: ${doc.name}` : ''}.</div>

@@ -8,13 +8,18 @@ import SaveToExtensionButton from '@/app/extension/SaveToExtensionButton'
 import IOSection from './IOSection'
 import StepsSection from './steps/StepsSection'
 import { HOME_HEADING } from '@/app/pages/seo'
+import { useEditorRunCount, type RunSource } from '@/app/events/useEditorRunCount'
 
 /** Longest pipeline name kept, as the library keeps it. */
 const MAX_NAME = 120
 
-/** The pipeline editor. Must be rendered inside <ToolProvider>. */
-export default function ToolPage({ banner }: { banner?: React.ReactNode }) {
-  const { state, dispatch } = useTool()
+/**
+ * The pipeline editor. Must be rendered inside <ToolProvider>. `runSource` says whose
+ * pipeline it opened with, for the `editor_run` count.
+ */
+export default function ToolPage({ banner, runSource = 'editor' }: { banner?: React.ReactNode; runSource?: RunSource }) {
+  const { state, dispatch, input, run, runHeld } = useTool()
+  useEditorRunCount(runSource, { steps: state.steps, input, out: run.result?.out, running: run.running, held: runHeld })
 
   const titleRow = (
     <div className="flex flex-wrap items-end justify-between gap-4">

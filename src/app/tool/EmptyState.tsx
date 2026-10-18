@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTool } from '@/app/ToolContext'
+import { countEvent } from '@/app/events/countEvent'
 import { isBytes } from '@/core/coerce'
 import type { Suggestion } from '@/core/detect'
 import { seededParams } from '@/app/magic/seed'
@@ -18,8 +19,10 @@ export default function EmptyState() {
   const { empty, tooLarge, suggestions } = useDecodeSuggestions(input, { limit: MAX_SUGGESTIONS })
   const n = suggestions?.length ?? 0
 
-  const pick = (s: Suggestion) =>
+  const pick = (s: Suggestion) => {
     dispatch({ type: 'ADD_STEP', utilityId: s.step.utilityId, params: seededParams(s.step) })
+    countEvent({ name: 'utility_add', utility: s.step.utilityId, source: 'suggestion' })
+  }
 
   let status: React.ReactNode
   if (empty) status = 'Paste something and we’ll suggest a pipeline.'
