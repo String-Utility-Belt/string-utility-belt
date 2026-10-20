@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **dst check** finds missing and repeated local times across a date range in an IANA time zone,
+  including standard-time changes, midnight transitions, half-hour shifts and skipped days. Supports
+  weekly schedules, exact UTC instants, and text or JSON output.
+
 ## [1.16.5] - 2026-10-18
 
 ### Changed

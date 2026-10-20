@@ -928,6 +928,38 @@ export const EXAMPLES: Record<string, UtilityExample[]> = {
       "output": "naive Zurich"
     }
   ],
+  "dst_check": [
+    {
+      "title": "02:30 repeats in Belgrade and disappears in spring",
+      "input": "02:30",
+      "params": {
+        "timeZone": "Europe/Belgrade",
+        "start": "2026-10-01",
+        "days": 200
+      },
+      "output": "2026-10-25 02:30  repeated  2026-10-25T00:30:00Z (UTC+02:00), 2026-10-25T01:30:00Z (UTC+01:00)\n2027-03-28 02:30  missing   clocks go forward 1 hour at 2027-03-28T01:00:00Z (UTC+01:00 → UTC+02:00)"
+    },
+    {
+      "title": "New York repeats 01:30 instead",
+      "input": "01:30",
+      "params": {
+        "timeZone": "America/New_York",
+        "start": "2026-10-01",
+        "days": 200
+      },
+      "output": "2026-11-01 01:30  repeated  2026-11-01T05:30:00Z (UTC-04:00), 2026-11-01T06:30:00Z (UTC-05:00)"
+    },
+    {
+      "title": "02:30 is missing, never repeated, in New York",
+      "input": "02:30",
+      "params": {
+        "timeZone": "America/New_York",
+        "start": "2026-10-01",
+        "days": 200
+      },
+      "output": "2027-03-14 02:30  missing   clocks go forward 1 hour at 2027-03-14T07:00:00Z (UTC-05:00 → UTC-04:00)"
+    }
+  ],
   "duration_humanize": [
     {
       "title": "seconds to human",
