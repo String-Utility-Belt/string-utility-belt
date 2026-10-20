@@ -1,10 +1,12 @@
 ---
-title: DST Check Online: Find Missing and Repeated Local Times
-description: Check when local times are skipped or repeated in an IANA time zone, with exact UTC instants, weekday filters, and examples for scheduled jobs.
+title: DST Checker Online: Missing & Repeated Local Times
+description: Free daylight saving time (DST) checker: find nonexistent or repeated local times for cron jobs, with exact UTC instants and time zone offsets.
 ---
 ## Why clocks skip or repeat times
 
-A local time does not always identify one moment. When a time zone moves its clocks forward, some wall-clock times never occur. When clocks move backward, a stretch of local times occurs twice. **dst check** finds those exceptions for the times you enter, one per line, over an inclusive calendar date range.
+This **daylight saving time (DST) checker** finds dates when a local time does not exist or occurs twice in an IANA time zone. Use it to check a daily or weekly job such as "02:30 Europe/Belgrade" before a clock change.
+
+A local time does not always identify one moment. When a time zone moves its clocks forward, some wall-clock times never occur. When clocks move backward, a stretch of local times occurs twice. The checker finds those exceptions for the times you enter, one per line, over an inclusive calendar date range.
 
 Enter `HH:MM` or `HH:MM:SS` using the 24-hour clock. Blank lines and surrounding whitespace are ignored. Choose an IANA zone such as `Europe/Belgrade`; the default is `Europe/London`. An empty start date means today in that zone. The default range is 366 days, with a maximum of 400, and the start date counts as day one.
 
@@ -17,7 +19,25 @@ input: 02:30
 output: 2027-03-28 02:30  missing   clocks go forward 1 hour at 2027-03-28T01:00:00Z (UTC+01:00 → UTC+02:00)
 ```
 
-## Reading the results
+## How to check a local time for DST conflicts
+
+1. Enter the job's local run time, such as `01:30`. Add other times on separate lines.
+2. Select the schedule's IANA time zone, such as `Europe/London`, rather than a fixed UTC offset. The zone identifies which clock-change rules to use.
+3. Set a start date and the number of calendar days to check. Choose a weekday if the job runs weekly.
+4. Read the missing or repeated dates, or select JSON to use the results in another step.
+
+For example, a London job at 01:30 encounters a repeated time on 25 October 2026. Both UTC instants below represent the same local time.
+
+```example
+title: check a London job when British Summer Time ends
+params: {"timeZone":"Europe/London","start":"2026-10-01","days":31}
+input: 01:30
+output: 2026-10-25 01:30  repeated  2026-10-25T00:30:00Z (UTC+01:00), 2026-10-25T01:30:00Z (UTC+00:00)
+```
+
+## Reading the results: nonexistent and ambiguous times
+
+A **nonexistent local time** falls in a forward clock change's gap and is reported as `missing`. An **ambiguous local time** falls in a backward clock change's overlap and is reported as `repeated`. These terms describe whether a local date and time can identify a UTC instant.
 
 Results are sorted by local date, then time. A **missing** result shows the size of the forward jump, the UTC instant of the change, and the offsets before and after it. A **repeated** result lists both possible UTC instants in chronological order, each with its offset. `Z` marks UTC; `UTC-05:00` means five hours behind UTC.
 
@@ -30,9 +50,9 @@ input: 02:30
 output: 2026-10-25 02:30  repeated  2026-10-25T00:30:00Z (UTC+02:00), 2026-10-25T01:30:00Z (UTC+01:00)
 ```
 
-Use [timestamp convert](/util/timestamp_convert/) to inspect an instant and [date format](/util/date_format/) to display it in another zone or pattern.
+Use [timestamp convert](/util/timestamp_convert/) to convert a UTC instant to a Unix timestamp and [date format](/util/date_format/) to display it in another time zone or pattern.
 
-## Checking scheduled jobs
+## Checking cron jobs across daylight saving time changes
 
 For a daily job, leave weekday set to `any`. For a weekly job, choose its local weekday. The filter applies to the affected local date, even when the transition happens at midnight on the next day. Enter several run times on separate lines to check them together.
 

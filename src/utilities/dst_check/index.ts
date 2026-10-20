@@ -91,10 +91,10 @@ const util: Utility = {
   id: 'dst_check',
   name: 'dst check',
   category: 'Date & Time',
-  description: 'Find local times that clocks skip or repeat in a time zone over a date range, including DST and standard-time changes.',
+  description: 'Find missing or repeated local times caused by daylight saving time (DST) and other clock changes, with exact UTC instants.',
   accepts: 'string',
   produces: ['string', 'json'],
-  tags: ['dst', 'daylight saving time', 'timezone', 'cron', 'clock change'],
+  tags: ['dst', 'daylight saving time', 'timezone', 'cron', 'clock change', 'dst checker', 'nonexistent time', 'ambiguous time', 'date', 'time', 'schedule'],
   params: {
     timeZone: { kind: 'string', label: 'time zone', default: 'Europe/London', placeholder: 'Europe/London' },
     start: { kind: 'date', label: 'start date', default: '', description: 'Empty means today in the selected time zone.' },

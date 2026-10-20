@@ -3053,7 +3053,7 @@ export const MANIFEST: UtilityMeta[] = [
     "id": "dst_check",
     "name": "dst check",
     "category": "Date & Time",
-    "description": "Find local times that clocks skip or repeat in a time zone over a date range, including DST and standard-time changes.",
+    "description": "Find missing or repeated local times caused by daylight saving time (DST) and other clock changes, with exact UTC instants.",
     "accepts": "string",
     "produces": [
       "string",
@@ -3110,7 +3110,13 @@ export const MANIFEST: UtilityMeta[] = [
       "daylight saving time",
       "timezone",
       "cron",
-      "clock change"
+      "clock change",
+      "dst checker",
+      "nonexistent time",
+      "ambiguous time",
+      "date",
+      "time",
+      "schedule"
     ],
     "aliases": [],
     "env": [],
