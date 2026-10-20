@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.17.0] - 2026-10-20
+
 ### Added
 
 - **dst check** finds missing and repeated local times across a date range in an IANA time zone,

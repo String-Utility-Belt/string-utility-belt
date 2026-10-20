@@ -1,7 +1,7 @@
 {
   "name": "string-utility-belt",
   "displayName": "String Utility Belt",
-  "version": "1.9.2",
+  "version": "1.10.0",
   "description": "Encode, decode, hash, encrypt, compress, convert and format text and data with String Utility Belt's utilities and multi-step pipelines, run on your computer by its MCP server.",
   "author": {
     "name": "String Utility Belt",
