@@ -70,6 +70,7 @@ export const HEADINGS: Record<string, string> = {
   "deflate_decompress": "DEFLATE Decompress",
   "detect_format": "Detect Format",
   "diacritics": "Remove Diacritics",
+  "dst_check": "DST Checker",
   "duration_humanize": "Duration Humanizer",
   "entropy": "Password Entropy Calculator",
   "env_to_json": ".env to JSON Converter",

@@ -3050,6 +3050,80 @@ export const MANIFEST: UtilityMeta[] = [
     "exampleCount": 2
   },
   {
+    "id": "dst_check",
+    "name": "dst check",
+    "category": "Date & Time",
+    "description": "Find missing or repeated local times caused by daylight saving time (DST) and other clock changes, with exact UTC instants.",
+    "accepts": "string",
+    "produces": [
+      "string",
+      "json"
+    ],
+    "params": {
+      "timeZone": {
+        "kind": "string",
+        "label": "time zone",
+        "default": "Europe/London",
+        "placeholder": "Europe/London"
+      },
+      "start": {
+        "kind": "date",
+        "label": "start date",
+        "default": "",
+        "description": "Empty means today in the selected time zone."
+      },
+      "days": {
+        "kind": "number",
+        "label": "days",
+        "default": 366,
+        "min": 1,
+        "max": 400,
+        "integer": true
+      },
+      "weekday": {
+        "kind": "select",
+        "label": "weekday",
+        "options": [
+          "any",
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+          "sunday"
+        ],
+        "default": "any"
+      },
+      "format": {
+        "kind": "select",
+        "label": "output",
+        "options": [
+          "text",
+          "json"
+        ],
+        "default": "text"
+      }
+    },
+    "tags": [
+      "dst",
+      "daylight saving time",
+      "timezone",
+      "cron",
+      "clock change",
+      "dst checker",
+      "nonexistent time",
+      "ambiguous time",
+      "date",
+      "time",
+      "schedule"
+    ],
+    "aliases": [],
+    "env": [],
+    "streamable": false,
+    "exampleCount": 3
+  },
+  {
     "id": "duration_humanize",
     "name": "humanize duration",
     "category": "Date & Time",

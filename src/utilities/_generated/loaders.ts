@@ -71,6 +71,7 @@ export const LOADERS: Record<string, () => Promise<{ default: Utility }>> = {
   "deflate_decompress": () => import('../deflate_decompress/index'),
   "detect_format": () => import('../detect_format/index'),
   "diacritics": () => import('../diacritics/index'),
+  "dst_check": () => import('../dst_check/index'),
   "duration_humanize": () => import('../duration_humanize/index'),
   "entropy": () => import('../entropy/index'),
   "env_to_json": () => import('../env_to_json/index'),
