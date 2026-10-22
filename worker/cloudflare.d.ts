@@ -47,6 +47,22 @@ interface SendEmail {
   send(message: EmailMessageBuilder): Promise<EmailSendResult>
 }
 
+/** The slice of D1 the worker uses: one prepared statement, bound and run. */
+interface D1PreparedStatement {
+  bind(...values: unknown[]): D1PreparedStatement
+  run(): Promise<unknown>
+}
+
+interface D1Database {
+  prepare(query: string): D1PreparedStatement
+}
+
+interface ScheduledController {
+  readonly scheduledTime: number
+  readonly cron: string
+}
+
 interface ExportedHandler<Env = unknown> {
   fetch?(request: Request, env: Env, ctx: ExecutionContext): Response | Promise<Response>
+  scheduled?(controller: ScheduledController, env: Env, ctx: ExecutionContext): void | Promise<void>
 }

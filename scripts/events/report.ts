@@ -95,6 +95,7 @@ const COLUMNS: Record<EventName, { title: string; first: string; second: string;
   sponsor_click: { title: 'Sponsor clicks', first: 'booking', second: 'page', count: 'clicks' },
   integration_click: { title: 'Clicks to our tools', first: 'tool', second: 'from', count: 'clicks' },
   preset_open: { title: 'Presets loaded into the editor', first: 'preset', second: 'from', count: 'loads' },
+  editor_open: { title: 'Page loads that opened the editor', first: 'pipeline', second: 'arrived by', count: 'opens' },
   editor_run: { title: 'Page loads that ran the editor', first: 'pipeline', second: 'steps', count: 'runs' },
   utility_add: { title: 'Utilities added to a pipeline', first: 'utility', second: 'from', count: 'adds', rollup: true },
 }
