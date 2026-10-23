@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **The site counts when the pipeline editor is opened.** At most once per visit, the site's own server now counts
+  that the editor was shown, and whether it was the page you loaded or a link on the site led there, so editor runs
+  can be compared with editor opens. Search-engine crawlers and headless browsers are no longer counted at all; your
+  browser checks this itself and sends nothing about it.
+- **Counted events are also kept in a database the site's dashboard can read live.** Each event the server counts is
+  written to a Cloudflare D1 table as well as Analytics Engine, with the same name and ids and nothing else, and rows
+  older than three months are deleted daily. The privacy policy's "What we count ourselves", the about page and the
+  README say so.
+
 ## [1.17.0] - 2026-10-20
 
 ### Added

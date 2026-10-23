@@ -15,6 +15,11 @@ export interface ApiEnv {
   /** Workers Analytics Engine dataset `POST /api/event` adds to (`wrangler.jsonc`); without it events are dropped. */
   EVENTS?: AnalyticsEngineDataset
   /**
+   * D1 database `sub-events`: the same events as rows, which a dashboard queries live through
+   * the Cloudflare connector (`migrations/` has the table); pruned daily by `scheduled`.
+   */
+  EVENTS_DB?: D1Database
+  /**
    * Email Service binding `POST /api/feedback` sends through, pinned to our own address
    * (`wrangler.jsonc`); without it the route answers 503 and the form offers a `mailto:` link.
    */
