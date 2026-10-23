@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.17.1] - 2026-10-23
+
 ### Changed
 
 - **The site counts when the pipeline editor is opened.** At most once per visit, the site's own server now counts
