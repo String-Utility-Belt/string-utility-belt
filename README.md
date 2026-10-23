@@ -3,7 +3,7 @@
 [![CI](https://github.com/String-Utility-Belt/string-utility-belt/actions/workflows/ci.yml/badge.svg)](https://github.com/String-Utility-Belt/string-utility-belt/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![npm: subelt](https://img.shields.io/npm/v/subelt?label=subelt)](https://www.npmjs.com/package/subelt)
-[![smithery badge](https://smithery.ai/badge/string-utility-belt/string-utility-belt)](https://smithery.ai/servers/string-utility-belt/string-utility-belt)
+[![LightNow capabilities](https://lightnow.ai/badge/com.stringutilitybelt/mcp)](https://lightnow.ai/servers/com.stringutilitybelt/mcp)
 [![Sponsor on GitHub](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/Murraylr)
 
 **[stringutilitybelt.com](https://stringutilitybelt.com)** · [Usage guide](https://stringutilitybelt.com/docs/) · [All utilities](https://stringutilitybelt.com/utilities/) · [Integrations](https://stringutilitybelt.com/integrations/)
