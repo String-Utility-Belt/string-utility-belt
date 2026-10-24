@@ -1,9 +1,14 @@
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { describe, it, expect, afterEach, vi } from 'vitest'
+import { describe, it, expect, afterEach, beforeAll, vi } from 'vitest'
 import App from './App'
+import { StepList } from '@/app/tool/stepListChunk'
 
 const STORAGE_KEY = 'string-utility-belt'
+
+// the tool loads its step list as a chunk of its own (main.tsx waits for it when there are
+// steps): loaded up front, it renders on the first pass
+beforeAll(() => StepList.preload())
 
 afterEach(() => {
   location.hash = ''
