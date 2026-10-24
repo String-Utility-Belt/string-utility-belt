@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.17.2] - 2026-10-24
+
 ### Changed
 
 - **The site loads less code up front.** The pipeline editor's step list (its step cards, settings editors and
