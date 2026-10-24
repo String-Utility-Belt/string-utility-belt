@@ -133,6 +133,11 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
   sandboxed iframe + worker), `library/` (named pipelines, the editor's preset gallery), `magic/` (auto-detect),
   `search/`, `commands/`, `pages/` (utility index/doc pages, embed, changelog), `pwa/`, `i18n/`, `theme/`.
 - Components in `src/components/` (`StepCard`, `UtilityPicker`, `ParamsEditor` + `params/*` per kind, `CopyAsMenu`, …).
+- The step list is a chunk of its own (`src/app/tool/stepListChunk.ts`): `StepList`, every step card and editor
+  under it, and framer-motion, ~50 KB gzip a visitor who never adds a step never loads. Entry code renders it
+  through that module's `StepList` (a `preloadable`), never by importing `tool/StepList` or `StepCard` directly.
+  `main.tsx` waits for it before mounting when the tool opens on steps; otherwise `StepsSection` fetches it on
+  the first pointer or key press. Tests that render the tool with steps call `StepList.preload()` in `beforeAll`.
 
 ### Routing (`src/lib/router.ts`)
 - Hash routes: `#/` home, `#/p/<payload>` shared pipeline, `#/embed/<payload>`, `#/utilities`,

@@ -1,15 +1,15 @@
 {
-  "notes": "Budgets are the `measured` figures below plus ~15% headroom, so ordinary chunk-hash churn does not fail CI. Re-measure after a real bundle-size change: `npm run build && npm run check:bundle` prints the current numbers, then update both `measured` and `budget` together (and `measuredAt`/`measuredCommit`). Entry JS counts the module entry plus any modulepreloaded chunks. At this measurement the entry chunk was ~22% generated utility manifest (src/utilities/_generated/manifest.ts), ~20% react-dom and ~17% framer-motion; the pre-refactor entry was 458 KB gzip. Entry CSS re-measured 2026-10-05 for Tailwind 4 (6714 -> 8365 B gzip: v4 emits @property registrations and color-mix fallbacks); only that figure changed. Entry CSS re-measured 2026-10-08 for the site redesign (8365 -> 11464 B gzip: the new design system's component classes, light/dark token set and per-component utilities); only that figure changed.",
+  "notes": "Budgets are the `measured` figures below plus ~15% headroom, so ordinary chunk-hash churn does not fail CI. Re-measure after a real bundle-size change: `npm run build && npm run check:bundle` prints the current numbers, then update both `measured` and `budget` together (and `measuredAt`/`measuredCommit`). Entry JS counts the module entry plus any modulepreloaded chunks. At this measurement the entry chunk was ~22% generated utility manifest (src/utilities/_generated/manifest.ts), ~20% react-dom and ~17% framer-motion; the pre-refactor entry was 458 KB gzip. Entry CSS re-measured 2026-10-05 for Tailwind 4 (6714 -> 8365 B gzip: v4 emits @property registrations and color-mix fallbacks); only that figure changed. Entry CSS re-measured 2026-10-08 for the site redesign (8365 -> 11464 B gzip: the new design system's component classes, light/dark token set and per-component utilities); only that figure changed. Entry JS re-measured 2026-10-24 for the lazy step list (213383 -> 161891 B gzip: StepList, the step cards and editors under it, and framer-motion now load as their own chunk, on the page's first pointer or key press, or before mounting when the tool opens on steps; src/app/tool/stepListChunk.ts); only that figure and its budget changed.",
   "measuredAt": "2026-09-24",
   "measuredCommit": "38a21c7 + uncommitted platform-wave working tree",
   "measured": {
-    "entryJsGzip": 200523,
+    "entryJsGzip": 161891,
     "entryCssGzip": 11464,
     "totalJsGzip": 1486839,
     "largestLazyChunkGzip": 102036
   },
   "budget": {
-    "entryJsGzip": 230000,
+    "entryJsGzip": 186000,
     "entryCssGzip": 13200,
     "totalJsGzip": 1710000,
     "largestLazyChunkGzip": 117500

@@ -4,7 +4,7 @@
  * presets) with the inline utility picker under it. Mounts the top-level selection
  * provider, so the toolbar's Select toggle and the list share one selection.
  */
-import React, { useMemo, useRef, useState } from 'react'
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { GitFork, Plus, Repeat } from 'lucide-react'
 import type { ValueType } from '@/types/utility'
 import type { Suggestion } from '@/core/detect'
@@ -23,7 +23,7 @@ import UtilityPicker from '@/components/UtilityPicker'
 import { suggestUtility } from '@/app/feedback/open'
 import EmptyState from '../EmptyState'
 import PipelineToolbar from '../PipelineToolbar'
-import StepList from '../StepList'
+import { StepList } from '../stepListChunk'
 import BulkToggle from './BulkToggle'
 import { SelectionProvider } from './SelectionContext'
 import SuggestionPill from './SuggestionPill'
@@ -39,6 +39,22 @@ export default function StepsSection() {
   const opener = useRef<HTMLElement | null>(null)
   const hasSteps = state.steps.length > 0
   const quickOptions = useMemo(() => [{ label: 'Quick add…', value: '' }, ...utilityOptionGroups()], [])
+
+  // the step list is a chunk of its own (stepListChunk.ts): fetch it on the first pointer or
+  // key press, so it is there by the time a first step is added
+  useEffect(() => {
+    const preload = () => {
+      document.removeEventListener('pointerdown', preload, true)
+      document.removeEventListener('keydown', preload, true)
+      StepList.preload().catch(() => { /* retried when the list renders, which shows the error */ })
+    }
+    document.addEventListener('pointerdown', preload, true)
+    document.addEventListener('keydown', preload, true)
+    return () => {
+      document.removeEventListener('pointerdown', preload, true)
+      document.removeEventListener('keydown', preload, true)
+    }
+  }, [])
 
   const openPicker = () => {
     opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
@@ -82,7 +98,11 @@ export default function StepsSection() {
           <BulkToggle />
         </PipelineToolbar>
 
-        {hasSteps ? <StepList steps={state.steps} /> : <EmptyState />}
+        {hasSteps ? (
+          <Suspense fallback={<p role="status" className="m-0 mb-3 pl-11 text-[13px] text-muted">Loading steps…</p>}>
+            <StepList steps={state.steps} />
+          </Suspense>
+        ) : <EmptyState />}
 
         <div className="grid grid-cols-[32px_minmax(0,1fr)] gap-x-3">
           <div className="flex justify-center" aria-hidden="true">

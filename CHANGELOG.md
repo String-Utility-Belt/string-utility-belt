@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **The site loads less code up front.** The pipeline editor's step list (its step cards, settings editors and
+  drag-to-reorder) now loads when you first click or press a key, or straight away when you open a pipeline that
+  has steps, rather than on every page. The code a page loads before it starts is about a quarter smaller.
+
 ## [1.17.1] - 2026-10-23
 
 ### Changed
