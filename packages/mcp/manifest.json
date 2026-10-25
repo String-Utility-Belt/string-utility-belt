@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "@string-utility-belt/mcp",
   "display_name": "String Utility Belt",
-  "version": "1.10.1",
+  "version": "1.10.2",
   "description": "MCP server exposing String Utility Belt's utilities and pipelines as tools for AI agents.",
   "author": {
     "name": "String Utility Belt",
