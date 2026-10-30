@@ -123,13 +123,13 @@ utilities, presets and fixes coming. Companies can also [sponsor a page on the s
 ## Contributing
 
 Contributions are welcome — bug reports, utility ideas and pull requests. Start with
-
-## Badges
-[![M8ven Verified](https://m8ven.ai/badge/mcp/string-utility-belt/string-utility-belt?variant=verified)](https://m8ven.ai/mcp/string-utility-belt/string-utility-belt?s=readme)
 [CONTRIBUTING.md](CONTRIBUTING.md) (setup, adding a utility, PR checklist) and the
 [Code of Conduct](CODE_OF_CONDUCT.md). [CLAUDE.md](CLAUDE.md) is the detailed architecture reference.
 
 Found a security issue? Please report it privately — see [SECURITY.md](SECURITY.md).
+
+## Badges
+[![M8ven Verified](https://m8ven.ai/badge/mcp/string-utility-belt-string-utility-belt-jzop5p?variant=verified&v=adcae2efcc7382625d0c5882387a4d57)](https://m8ven.ai/mcp/string-utility-belt-string-utility-belt-jzop5p?s=readme)
 
 ## License
 
