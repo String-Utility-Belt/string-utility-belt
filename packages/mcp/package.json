@@ -1,7 +1,7 @@
 {
   "name": "@string-utility-belt/mcp",
   "description": "MCP server exposing String Utility Belt's utilities and pipelines as tools for AI agents.",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "mcpName": "com.stringutilitybelt/mcp",
   "author": "String Utility Belt",
   "license": "MIT",
