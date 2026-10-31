@@ -84,11 +84,14 @@ describe('MCP server metadata', () => {
   })
 
   describe('tools', () => {
-    // Anthropic's directory requires both; Claude decides from the hint whether a call needs confirmation.
-    it('each have a title and say whether they are read-only or destructive', () => {
+    // Anthropic's directory requires a title and a hint; OpenAI's rejects a tool missing any of the four hints.
+    // Claude decides from the hints whether a call needs confirmation.
+    it('each have a title and all four behaviour hints', () => {
       for (const tool of tools) {
         expect(tool.title, tool.name).toBeTruthy()
-        expect(tool.annotations?.readOnlyHint ?? tool.annotations?.destructiveHint, tool.name).toBeTypeOf('boolean')
+        for (const hint of ['readOnlyHint', 'destructiveHint', 'idempotentHint', 'openWorldHint'] as const) {
+          expect(tool.annotations?.[hint], `${tool.name}.${hint}`).toBeTypeOf('boolean')
+        }
       }
     })
 
