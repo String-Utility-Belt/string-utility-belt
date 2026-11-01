@@ -1,20 +1,16 @@
 import type { Utility } from '@/types/utility'
 import { isBytes } from '../helpers'
 
-/**
- * The `brotli` package ships no type declarations, so describe the single
- * function we rely on: `decompress(buffer, outputSize?)`.
- */
-type BrotliDecompressFn = (buffer: Uint8Array, outputSize?: number) => Uint8Array | null
+/** brotli 2.x is ESM only: `brotli/decompress` has a named `decompress` export and its own types. */
+type BrotliDecompressFn = typeof import('brotli/decompress').decompress
 
 // Cached dynamic import — the pipeline re-runs on every keystroke, and a
 // top-level static import would drag the decoder into the initial bundle.
 let _brotli: BrotliDecompressFn | null = null
 const getBrotli = async (): Promise<BrotliDecompressFn> => {
   if (!_brotli) {
-    // @ts-expect-error the `brotli` package ships no type declarations
-    const mod = await import('brotli/decompress')
-    _brotli = ((mod as { default?: unknown }).default ?? mod) as BrotliDecompressFn
+    const { decompress } = await import('brotli/decompress')
+    _brotli = decompress
   }
   return _brotli
 }
