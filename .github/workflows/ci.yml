@@ -70,7 +70,7 @@ jobs:
       # prove the Worker bundles with wrangler's esbuild (no deploy); it needs the
       # site in dist/ because wrangler.jsonc serves it as the assets directory
       - run: npx wrangler deploy --dry-run --outdir worker-dry
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist
@@ -99,13 +99,13 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist
       - run: npx playwright install --with-deps chromium firefox
       - run: npx playwright test
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
