@@ -132,6 +132,8 @@ function ogTemplate({ name, category, description }: OgCardOptions): SatoriNode 
       style: {
         width: `${WIDTH}px`,
         height: `${HEIGHT}px`,
+        // satori >= 0.63 lays out content-box like CSS; keep the padding inside the card
+        boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
