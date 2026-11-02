@@ -1,10 +1,14 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
+import { describe, it, expect, vi, afterEach, beforeAll } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ToolProvider, useTool } from '@/app/ToolContext'
 import { listEntries } from '@/app/library/storage'
 import BulkToggle from './steps/BulkToggle'
 import StepsSection from './steps/StepsSection'
+import { StepList } from './stepListChunk'
+
+// StepsSection loads the list as a chunk of its own: loaded up front, it renders on the first pass
+beforeAll(() => StepList.preload())
 
 // Real framer-motion drag physics can't be simulated in jsdom (no real layout).
 // The stub keeps the same prop contract StepList relies on — `values`/`onReorder`

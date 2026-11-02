@@ -25,8 +25,11 @@ export const CLICK_SOURCES = ['header', 'promo', 'promo_inline', 'promo_rail', '
 /** Where a preset was loaded into the editor: its own page, or the editor's Presets dialog. */
 export const PRESET_SOURCES = ['page', 'gallery'] as const
 
-/** Whose pipeline the editor ran: its own (the saved working pipeline), or a shared link's. */
+/** Whose pipeline the editor opened with or ran: its own (the saved working pipeline), or a shared link's. */
 export const RUN_SOURCES = ['editor', 'share'] as const
+
+/** How a page load reached the editor: it was the page that loaded, or a link on the site led there without a reload. */
+export const OPEN_ARRIVALS = ['load', 'link'] as const
 
 /** A pipeline's size, nested steps included, in buckets (see `stepBucket`). */
 export const STEP_BUCKETS = ['1', '2-3', '4-7', '8+'] as const
@@ -52,6 +55,8 @@ export type CountedEvent =
   | { name: 'preset_open'; preset: string; source: (typeof PRESET_SOURCES)[number] }
   /** The editor produced a result the visitor asked for: at most once per page load. */
   | { name: 'editor_run'; source: (typeof RUN_SOURCES)[number]; steps: (typeof STEP_BUCKETS)[number] }
+  /** The editor was shown: at most once per page load. */
+  | { name: 'editor_open'; source: (typeof RUN_SOURCES)[number]; arrival: (typeof OPEN_ARRIVALS)[number] }
   /** A utility was added to the pipeline. */
   | { name: 'utility_add'; utility: string; source: (typeof ADD_SOURCES)[number] }
 
@@ -87,6 +92,10 @@ export function parseCountedEvent(raw: unknown): CountedEvent | null {
       return exactKeys(raw, ['name', 'source', 'steps']) && oneOf(RUN_SOURCES, raw.source) && oneOf(STEP_BUCKETS, raw.steps)
         ? { name: raw.name, source: raw.source, steps: raw.steps }
         : null
+    case 'editor_open':
+      return exactKeys(raw, ['name', 'source', 'arrival']) && oneOf(RUN_SOURCES, raw.source) && oneOf(OPEN_ARRIVALS, raw.arrival)
+        ? { name: raw.name, source: raw.source, arrival: raw.arrival }
+        : null
     case 'utility_add':
       return exactKeys(raw, ['name', 'utility', 'source']) && matches(ID, raw.utility) && oneOf(ADD_SOURCES, raw.source)
         ? { name: raw.name, utility: raw.utility, source: raw.source }
@@ -106,6 +115,7 @@ export function eventFields(e: CountedEvent): [string, string] {
     case 'integration_click': return [e.integration, e.source]
     case 'preset_open': return [e.preset, e.source]
     case 'editor_run': return [e.source, e.steps]
+    case 'editor_open': return [e.source, e.arrival]
     case 'utility_add': return [e.utility, e.source]
   }
 }

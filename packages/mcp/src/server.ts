@@ -183,7 +183,7 @@ export function createServer(opts: ServerOptions = {}): McpServer {
       'A category that does not exist matches nothing rather than failing, so take one from `categories`. ' +
       'There is no paging: when `total` exceeds the items returned, raise `limit` or narrow the query. ' +
       'Reads the bundled catalog only: no network access and no rate limit.',
-    annotations: { readOnlyHint: true, openWorldHint: false },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     inputSchema: {
       category: z.string().optional().describe('Category to filter to (case-insensitive), e.g. "Encoding" or "Hashing".'),
       query: z.string().optional().describe(
@@ -210,7 +210,7 @@ export function createServer(opts: ServerOptions = {}): McpServer {
       'case-sensitive utility id: names and aliases are not resolved, so look those up with list_utilities ' +
       'first. An unknown id returns isError ("unknown utility: <id>"). When `unavailable` is set, run_utility ' +
       'and run_pipeline refuse the utility.',
-    annotations: { readOnlyHint: true, openWorldHint: false },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     inputSchema: {
       id: z.string().describe('Utility id, as returned by list_utilities (e.g. "base64_encode").'),
     },
@@ -250,7 +250,7 @@ export function createServer(opts: ServerOptions = {}): McpServer {
       `rejected. ${limitsNote} A failing utility returns isError with the error message. Utilities that run ` +
       'arbitrary user JavaScript (e.g. "custom_js") are refused, and the few that need a browser DOM parser ' +
       '(e.g. "xml_to_json", "html_table_to_csv") fail here.',
-    annotations: { readOnlyHint: true, openWorldHint: false },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     inputSchema: {
       id: z.string().describe('Utility id (see list_utilities / describe_utility).'),
       input: z.string().describe('The value to run the utility on.'),
@@ -277,7 +277,7 @@ export function createServer(opts: ServerOptions = {}): McpServer {
       `more than ${MAX_PIPELINE_STEPS} steps (nested steps counted), unknown utility ids, enabled steps with ` +
       'invalid params, and any step that would run arbitrary user JavaScript (e.g. "custom_js") — LLM-driven ' +
       `code execution is out of scope. ${limitsNote}`,
-    annotations: { readOnlyHint: true, openWorldHint: false },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     inputSchema: {
       steps: z.array(z.record(z.string(), z.unknown())).optional().describe(
         'Pipeline steps (v3 schema). Each entry is either a utility step ' +
@@ -317,7 +317,7 @@ export function createServer(opts: ServerOptions = {}): McpServer {
       'treat anything below about 0.45 as a weak guess. Use inputEncoding "base64"/"hex" only to deliver ' +
       'binary data such as gzip bytes: it is decoded before detection, so a base64 string you want identified ' +
       'must stay "text" (the default). Empty input yields an empty list.',
-    annotations: { readOnlyHint: true, openWorldHint: false },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     inputSchema: {
       input: z.string().describe('The value to inspect.'),
       inputEncoding: z.enum(['text', 'base64', 'hex']).optional().describe('How to decode `input` first. Default "text".'),

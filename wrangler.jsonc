@@ -27,6 +27,20 @@
 	"analytics_engine_datasets": [
 		{ "binding": "EVENTS", "dataset": "sub_events" }
 	],
+	// ...and adds the same event as a row here, so a dashboard can query the counts live (D1 is
+	// what the Cloudflare connector reads; Analytics Engine is not). The daily cron below deletes
+	// rows older than 92 days, the three months the privacy policy promises. Schema: migrations/.
+	"d1_databases": [
+		{
+			"binding": "EVENTS_DB",
+			"database_name": "sub-events",
+			"database_id": "509071c0-29b7-4689-a436-d799da3495cf",
+			"migrations_dir": "migrations"
+		}
+	],
+	"triggers": {
+		"crons": ["17 3 * * *"]
+	},
 	// POST /api/feedback (worker/feedback.ts) emails visitors' messages through this binding, which
 	// can send to this one address and no other. It needs Email Routing on the zone, with this
 	// address added and verified under Email Routing > Destination addresses, before a deploy.

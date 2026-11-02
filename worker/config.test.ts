@@ -45,6 +45,11 @@ describe('wrangler.jsonc', () => {
     expect(config.analytics_engine_datasets).toContainEqual({ binding: 'EVENTS', dataset: 'sub_events' })
   })
 
+  it('binds the events database and runs the daily prune that keeps it to three months', () => {
+    expect(config.d1_databases).toContainEqual(expect.objectContaining({ binding: 'EVENTS_DB', database_name: 'sub-events', migrations_dir: 'migrations' }))
+    expect(config.triggers.crons).toHaveLength(1)
+  })
+
   it('binds the feedback email sender to our own address and no other (worker/feedback.ts)', () => {
     // pinned: even a bug in the route cannot make it email anyone else
     expect(config.send_email).toEqual([{ name: 'FEEDBACK', destination_address: FEEDBACK_ADDRESS }])

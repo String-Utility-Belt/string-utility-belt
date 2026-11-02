@@ -16,13 +16,19 @@ type Same<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false
 const integrationsMatch: Same<(typeof EVENT_INTEGRATIONS)[number], IntegrationId> = true
 void integrationsMatch
 
-/** Whether a page on `hostname` counts events: the production site, not driven by automation. */
-export function counts(hostname: string, webdriver: boolean | undefined): boolean {
-  return PRODUCTION_HOSTS.includes(hostname) && !webdriver
+/**
+ * Crawlers and audit tools that run the page's scripts (Googlebot renders it, and would
+ * otherwise "open the editor" on every crawl). Checked here only; the user agent is never sent.
+ */
+const AUTOMATED_AGENT = /bot\/|crawl|spider|slurp|headless|lighthouse|pagespeed/i
+
+/** Whether a page on `hostname` counts events: the production site, not driven by automation or a crawler. */
+export function counts(hostname: string, webdriver: boolean | undefined, userAgent = ''): boolean {
+  return PRODUCTION_HOSTS.includes(hostname) && !webdriver && !AUTOMATED_AGENT.test(userAgent)
 }
 
 export function countEvent(event: CountedEvent): void {
-  if (typeof window !== 'undefined' && counts(window.location.hostname, navigator.webdriver)) sendEvent(event)
+  if (typeof window !== 'undefined' && counts(window.location.hostname, navigator.webdriver, navigator.userAgent)) sendEvent(event)
 }
 
 /** The transport alone, wherever the page is (`countEvent` decides whether to call it). */

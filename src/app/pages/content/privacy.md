@@ -5,7 +5,7 @@ description: How String Utility Belt handles data: your text is processed in you
 
 # Privacy Policy
 
-*Last updated: 18 October 2026*
+*Last updated: 22 October 2026*
 
 String Utility Belt ("we", "us") runs the website at stringutilitybelt.com and publishes the String Utility Belt browser extension, VS Code extension, command-line tool (`subelt`), MCP server and code library. This policy explains what information is collected when you use the site or these tools, why, and the choices you have. Questions about it can be sent to [contact@stringutilitybelt.com](mailto:contact@stringutilitybelt.com).
 
@@ -67,7 +67,7 @@ Cloudflare, our host, counts page views and measures how fast pages load, using 
 
 ### What we count ourselves
 
-When you follow a sponsor's link, follow a link to one of our own tools (the browser or VS Code extension, the command-line tool or the MCP server), load a preset into the pipeline editor, add a utility to a pipeline, or first get a result from the editor after you change the pipeline or its input (counted at most once each time you open the site), the page tells our server, which adds one to a count. The count records only which link, preset or utility it was and how or where on the site it happened, for example "sponsor booking acme-2026-11, on the JWT decoder's page", "the MCP server, from the site header", "Base64 decode, added from Magic" or "the editor ran a shared pipeline of 2–3 steps". It never includes what you typed, your input or output, or the rest of your pipeline, and no cookie, identifier, IP address or browser details are stored with it. The counts are kept in Cloudflare Workers Analytics Engine for three months. We use them to see which of our pages, utilities and tools are useful, and to report to a sponsor how often their link was followed.
+When you follow a sponsor's link, follow a link to one of our own tools (the browser or VS Code extension, the command-line tool or the MCP server), load a preset into the pipeline editor, add a utility to a pipeline, open the pipeline editor, or first get a result from the editor after you change the pipeline or its input (opening and getting a result are each counted at most once each time you open the site), the page tells our server, which adds one to a count. The count records only which link, preset or utility it was and how or where on the site it happened, for example "sponsor booking acme-2026-11, on the JWT decoder's page", "the MCP server, from the site header", "Base64 decode, added from Magic", "the editor opened from a link on the site" or "the editor ran a shared pipeline of 2–3 steps". It never includes what you typed, your input or output, or the rest of your pipeline, and no cookie, identifier, IP address or browser details are stored with it. Your browser checks its own browser name to skip counting for search-engine crawlers, but never sends it. The counts are kept in Cloudflare Workers Analytics Engine and in a Cloudflare D1 database, each for three months, after which they are deleted. We use them to see which of our pages, utilities and tools are useful, and to report to a sponsor how often their link was followed.
 
 ### Fonts
 

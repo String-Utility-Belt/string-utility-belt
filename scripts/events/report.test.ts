@@ -61,12 +61,15 @@ describe('formatReport', () => {
       data: [
         { event: 'editor_run', first: 'editor', second: '1', count: 9 },
         { event: 'editor_run', first: 'share', second: '2-3', count: 2 },
+        { event: 'editor_open', first: 'editor', second: 'link', count: 30 },
         { event: 'utility_add', first: 'base64_decode', second: 'picker', count: 4 },
         { event: 'utility_add', first: 'json_format', second: 'palette', count: 5 },
         { event: 'utility_add', first: 'base64_decode', second: 'decode_all', count: 3 },
       ],
     })
     const text = formatReport(rows, parsePeriod(['--days', '7'], NOW))
+    expect(text).toContain('Page loads that opened the editor: 30')
+    expect(text).toMatch(/editor\s+link\s+30/)
     expect(text).toContain('Page loads that ran the editor: 11')
     expect(text).toMatch(/share\s+2-3\s+2/)
     expect(text).toContain('Utilities added to a pipeline: 12')

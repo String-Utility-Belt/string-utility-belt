@@ -3,7 +3,7 @@
 [![CI](https://github.com/String-Utility-Belt/string-utility-belt/actions/workflows/ci.yml/badge.svg)](https://github.com/String-Utility-Belt/string-utility-belt/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![npm: subelt](https://img.shields.io/npm/v/subelt?label=subelt)](https://www.npmjs.com/package/subelt)
-[![LightNow capabilities](https://lightnow.ai/badge/com.stringutilitybelt/mcp)](https://lightnow.ai/servers/com.stringutilitybelt/mcp)
+[![smithery badge](https://smithery.ai/badge/string-utility-belt/string-utility-belt)](https://smithery.ai/servers/string-utility-belt/string-utility-belt)
 [![Sponsor on GitHub](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/Murraylr)
 
 **[stringutilitybelt.com](https://stringutilitybelt.com)** · [Usage guide](https://stringutilitybelt.com/docs/) · [All utilities](https://stringutilitybelt.com/utilities/) · [Integrations](https://stringutilitybelt.com/integrations/)
@@ -62,7 +62,7 @@ Open [stringutilitybelt.com](https://stringutilitybelt.com) — nothing to insta
 transformation runs in your browser (see the [privacy policy](https://stringutilitybelt.com/privacy/)
 for the few features that contact the server). The site sets no cookies and runs no tracking
 scripts: Cloudflare Web Analytics counts page views without cookies, the site's own server counts
-clicks on sponsor and tool links, utilities added and editor runs by id alone, neither ever receives
+clicks on sponsor and tool links, utilities added, and editor opens and runs by id alone, neither ever receives
 what you paste, and the site's
 Content-Security-Policy blocks scripts from anywhere else. The how-to guide lives in the app
 itself: click **Docs** in the header, or go to [`/docs/`](https://stringutilitybelt.com/docs/). Each
@@ -127,6 +127,10 @@ Contributions are welcome — bug reports, utility ideas and pull requests. Star
 [Code of Conduct](CODE_OF_CONDUCT.md). [CLAUDE.md](CLAUDE.md) is the detailed architecture reference.
 
 Found a security issue? Please report it privately — see [SECURITY.md](SECURITY.md).
+
+## Badges
+[![M8ven Verified](https://m8ven.ai/badge/mcp/string-utility-belt-string-utility-belt-jzop5p?variant=verified&v=adcae2efcc7382625d0c5882387a4d57)](https://m8ven.ai/mcp/string-utility-belt-string-utility-belt-jzop5p?s=readme)
+[![LightNow capabilities](https://lightnow.ai/badge/com.stringutilitybelt/mcp)](https://lightnow.ai/servers/com.stringutilitybelt/mcp)
 
 ## License
 

@@ -14,6 +14,19 @@ describe('counts', () => {
     expect(counts('stringutilitybelt.com', true)).toBe(false)
     for (const host of ['localhost', '127.0.0.1', 'string-utility-belt.example.workers.dev']) expect(counts(host, false)).toBe(false)
   })
+
+  it('never counts crawlers or audit tools that run the page, but counts ordinary browsers', () => {
+    const chrome = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36'
+    expect(counts('stringutilitybelt.com', false, chrome)).toBe(true)
+    // a phone whose model name ends in "bot" is still a person
+    expect(counts('stringutilitybelt.com', false, 'Mozilla/5.0 (Linux; Android 12; Cubot X30) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Mobile Safari/537.36')).toBe(true)
+    for (const agent of [
+      'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+      'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36 (compatible; bingbot/2.0)',
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Mobile Safari/537.36 Chrome-Lighthouse',
+    ]) expect(counts('stringutilitybelt.com', false, agent)).toBe(false)
+  })
 })
 
 describe('countEvent', () => {

@@ -1,9 +1,13 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { ToolProvider } from '@/app/ToolContext'
 import ToolPage from './ToolPage'
+import { StepList } from './stepListChunk'
 import { HOME_HEADING } from '@/app/pages/seo'
 import { countEvent } from '@/app/events/countEvent'
+
+// the step list is a chunk of its own: loaded up front, it renders on the first pass
+beforeAll(() => StepList.preload())
 
 // CodeMirror and its language packs are dynamically imported by the I/O panels;
 // mock them the same way IOSection.test.tsx does so this test doesn't pull in a
