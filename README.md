@@ -130,6 +130,7 @@ Found a security issue? Please report it privately — see [SECURITY.md](SECURIT
 
 ## Badges
 [![M8ven Verified](https://m8ven.ai/badge/mcp/string-utility-belt-string-utility-belt-jzop5p?variant=verified&v=adcae2efcc7382625d0c5882387a4d57)](https://m8ven.ai/mcp/string-utility-belt-string-utility-belt-jzop5p?s=readme)
+[![LightNow capabilities](https://lightnow.ai/badge/com.stringutilitybelt/mcp)](https://lightnow.ai/servers/com.stringutilitybelt/mcp)
 
 ## License
 
