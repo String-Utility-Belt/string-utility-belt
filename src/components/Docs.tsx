@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { ArrowRight } from 'lucide-react'
-import { DOCS_DESCRIPTION, DOCS_TITLE } from '@/app/pages/seo'
+import { DOCS_DESCRIPTION, DOCS_HEADING, DOCS_TITLE } from '@/app/pages/seo'
 import { useDocumentMeta } from '@/app/pages/useDocumentMeta'
 import PagePromo from '@/app/sponsors/PagePromo'
 import { MAX_EACH_ITEMS } from '@/core/runner'
@@ -102,11 +102,10 @@ export default function Docs() {
 
       <div className="grid gap-7 min-w-0">
         <header className="grid gap-2.5 pb-6 border-b">
-          <h1 className="page-title">How to use String Utility Belt</h1>
+          <h1 className="page-title">{DOCS_HEADING}</h1>
           <p className="m-0 text-base leading-[26px] text-muted text-pretty">
-            Your text runs through a <strong className="font-semibold text-fg">pipeline</strong>, a list of steps in order.
-            Each step applies one utility to the output of the step before it, and the <strong className="font-semibold text-fg">result</strong> panel
-            shows what the last step produced.
+            String utility chaining passes each tool's output to the next step in a <strong className="font-semibold text-fg">pipeline</strong>.
+            Combine decoding, formatting and cleanup tools, preview intermediate results, and save your sequence to use again.
           </p>
           <a className="cta justify-self-start mt-1.5 h-[34px] text-[13.5px]" href="/">
             Open the tool<ArrowRight size={13} aria-hidden="true" />

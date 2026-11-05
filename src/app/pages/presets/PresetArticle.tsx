@@ -14,7 +14,7 @@ import { itemNoun } from '@/core/split'
 import { PRESET_CATEGORIES, PRESETS_PATH, presetPath, type Preset, type PresetMeta, type PresetSample } from '@/presets/types'
 import type { Preview, SkipTrace, StepTrace } from '@/presets/trace'
 import { utilityPath } from '../related'
-import { PRESETS_HEADING } from '../seo'
+import { DOCS_HEADING, PRESETS_HEADING } from '../seo'
 import { changedParams, describeString, nameOf, revealInvisible, stepCountText, stepTitle, stringPairs, type UtilityLookup } from './presetHelpers'
 
 
@@ -286,6 +286,10 @@ export function PresetWidget(props: PresetWidgetProps) {
         <span className="text-[12.5px] text-muted">
           {stepCountText(stepCount)}, all editable. It runs in your browser, so nothing you paste is uploaded.
         </span>
+        <p className="m-0 w-full text-[12.5px] text-muted">
+          Open this preset in the editor to add or reorder tools, then save or share your pipeline.
+          {' '}<a className="underline underline-offset-[3px]" href="/docs/">{DOCS_HEADING}</a>.
+        </p>
       </div>
       {extension}
     </section>
@@ -476,9 +480,13 @@ export function PresetsIndex({ presets, promo }: { presets: PresetMeta[]; promo?
       <header className="grid gap-2 max-w-[640px]">
         <h1 className="page-title">{PRESETS_HEADING}</h1>
         <p className="page-lead">
-          Ready-made pipelines for jobs one tool can’t do alone: layered formats, messy pasted text, data in the wrong
-          shape. Every step shows its real output, and you can open the whole thing in the editor to change it.
+          Explore tool chaining with ready-made pipelines for decoding, formatting and cleaning text.
+          Open any preset to add or reorder steps, then save or share your own pipeline.
         </p>
+        <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          <a className="underline underline-offset-[3px]" href="/">Build your own pipeline</a>
+          <a className="underline underline-offset-[3px]" href="/docs/">{DOCS_HEADING}</a>
+        </div>
       </header>
       {groups.map((g, i) => {
         const id = `presets-${g.category.replace(/\W+/g, '-').toLowerCase()}`

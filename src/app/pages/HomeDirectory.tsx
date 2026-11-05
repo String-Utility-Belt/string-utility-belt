@@ -2,7 +2,7 @@ import React from 'react'
 import { registry, type UtilityMeta } from '@/app/registry'
 import { presetPath } from '@/presets/types'
 import { utilityPath } from './related'
-import { POPULAR_UTILITY_IDS, displayName } from './seo'
+import { HOME_PRESETS_LEAD, POPULAR_UTILITY_IDS, displayName } from './seo'
 import { PRESET_INDEX } from '@/presets/_generated/index'
 import { featuredPresets } from './presets/presetHelpers'
 
@@ -58,7 +58,7 @@ export default function HomeDirectory() {
         <Block
           id="home-presets-h"
           title="Presets"
-          intro="Ready-made pipelines for jobs one tool can't do alone. Each one shows every step with its output."
+          intro={HOME_PRESETS_LEAD}
           more={{ href: '/presets/', label: `Browse all ${PRESET_INDEX.length} presets` }}
           entries={presets.map(r => ({ href: presetPath(r.slug), name: r.name, description: r.summary }))}
           minWidth="wide"

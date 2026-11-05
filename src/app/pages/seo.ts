@@ -24,19 +24,22 @@ export function pageTitle(title: string): string {
 /** A utility name as a heading: legacy ids-as-names (`base64_encode`) read better spaced. */
 export const displayName = (name: string): string => name.replace(/_/g, ' ')
 
-export const HOME_TITLE = `Free Online String & Text Tools | ${SITE_NAME}`
+// The requested homepage title deliberately retains the full product name.
+export const HOME_TITLE = `Online String Utility Pipeline Builder | ${SITE_NAME}`
 
 /**
  * Index pages' `<h1>`s, shared by the app and the pre-render: the term each page ranks
- * for rather than a bare label ("Presets"). The home page's is visually hidden: the
- * editor's own pipeline name is the visible title there.
+ * for rather than a bare label ("Presets").
  */
-export const HOME_HEADING = `${SITE_NAME}: free online string and text tools`
+export const HOME_HEADING = 'Online string utility pipeline builder'
 export const UTILITIES_HEADING = 'All text and string tools'
 export const PRESETS_HEADING = 'Text pipeline presets'
 
 export const homeDescription = (count: number): string =>
-  `${count} free string and text tools that run in your browser: encode, decode, hash, format and convert text: Base64, URL, JSON, SHA-256 and more.`
+  `Chain ${count} string utilities into reusable pipelines. Preview each step, save and share your tool chains, and process text locally in your browser.`
+
+export const HOME_PRESETS_LEAD =
+  'Start with a ready-made pipeline, inspect every step, then edit, save or share your own tool chain.'
 
 export const utilitiesTitle = (count: number): string => pageTitle(`${count} Free Online Text & String Tools`)
 
@@ -51,7 +54,8 @@ export const CHANGELOG_DESCRIPTION =
   `Release history for ${SITE_NAME}: each version of the site, the date it shipped, and the new utilities, presets, features and fixes in it.`
 
 /** The usage guide (`Docs`, pre-rendered at `/docs/`). */
-export const DOCS_TITLE = pageTitle('How to use')
+export const DOCS_HEADING = 'How to chain text tools into a pipeline'
+export const DOCS_TITLE = pageTitle('How to Chain Text Tools into a Pipeline')
 export const DOCS_DESCRIPTION =
   "Learn to chain text utilities into a pipeline, configure and reorder steps, preview each step's output, and copy, download or share the result."
 

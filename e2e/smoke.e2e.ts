@@ -41,7 +41,7 @@ const UPPER_STEP = { id: 'u1', utilityId: 'case', params: { mode: 'upper' } }
 test.describe('smoke', () => {
   test('home page renders the tool under the app title', async ({ page }) => {
     await page.goto('/')
-    await expect(page).toHaveTitle('Free Online String & Text Tools | String Utility Belt')
+    await expect(page).toHaveTitle('Online String Utility Pipeline Builder | String Utility Belt')
     // wait for the app to mount so errors thrown while rendering are caught by the fixture
     await expect(page.locator('#pipeline-input')).toBeVisible()
   })

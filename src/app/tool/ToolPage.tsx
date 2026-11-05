@@ -7,7 +7,8 @@ import PresetsButton from '@/app/library/PresetsButton'
 import SaveToExtensionButton from '@/app/extension/SaveToExtensionButton'
 import IOSection from './IOSection'
 import StepsSection from './steps/StepsSection'
-import { HOME_HEADING } from '@/app/pages/seo'
+import PipelineIntro from '@/app/pages/PipelineIntro'
+import { registry } from '@/app/registry'
 import { useEditorRunCount, type RunSource } from '@/app/events/useEditorRunCount'
 import { useEditorOpenCount } from '@/app/events/useEditorOpenCount'
 
@@ -26,7 +27,6 @@ export default function ToolPage({ banner, runSource = 'editor' }: { banner?: Re
   const titleRow = (
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div className="grid gap-1 min-w-[240px] flex-1">
-        <h1 className="sr-only">{HOME_HEADING}</h1>
         <input
           className="w-full min-w-0 p-0 bg-transparent border-0 border-b border-transparent outline-hidden focus:border-line-2 text-2xl leading-[30px] font-semibold tracking-[-0.02em]"
           aria-label="Pipeline name"
@@ -37,10 +37,6 @@ export default function ToolPage({ banner, runSource = 'editor' }: { banner?: Re
           value={state.name ?? ''}
           onChange={e => dispatch({ type: 'SET_META', name: e.target.value || undefined, libraryId: state.libraryId })}
         />
-        <p className="m-0 text-[13px] text-muted text-pretty">
-          Paste some text, add steps, and watch what each one does to it. It all runs in your browser, so nothing you
-          paste gets uploaded.
-        </p>
       </div>
       <div className="flex flex-wrap gap-1.5">
         <PresetsButton />
@@ -55,6 +51,7 @@ export default function ToolPage({ banner, runSource = 'editor' }: { banner?: Re
     <>
       <ToolCommandBridge />
       {banner}
+      <PipelineIntro count={registry.list().length} />
       <IOSection header={titleRow}>
         <StepsSection />
       </IOSection>
