@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.17.6] - 2026-11-05
+
 ### Changed
 
 - The homepage now introduces tool chaining, saved pipelines, addons, and local browser processing.
