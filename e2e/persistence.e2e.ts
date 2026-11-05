@@ -58,7 +58,7 @@ test.describe('persistence', () => {
 
     // Move focus to a non-text-field element before using the keyboard shortcut —
     // Ctrl+Z inside a text field must not fire the app's own undo.
-    await page.getByText('Paste some text, add steps').click()
+    await page.getByRole('heading', { level: 1 }).click()
 
     // Undo #2 (Ctrl+Z): removes the second step entirely.
     await page.keyboard.press('Control+z')
