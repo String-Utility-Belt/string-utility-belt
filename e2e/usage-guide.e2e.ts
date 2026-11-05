@@ -6,7 +6,7 @@
 import { test, expect } from '@playwright/test'
 import { isSameDocument, markDocument } from './utils'
 
-const HEADING = 'How to use String Utility Belt'
+const HEADING = 'How to chain text tools into a pipeline'
 
 test.describe('usage guide', () => {
   test('/docs/ is served pre-rendered, then rendered by the app with the same title', async ({ page, request }) => {
@@ -18,7 +18,7 @@ test.describe('usage guide', () => {
 
     await page.goto('/docs/')
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(HEADING)
-    await expect(page).toHaveTitle('How to use | String Utility Belt')
+    await expect(page).toHaveTitle('How to Chain Text Tools into a Pipeline')
     await expect(page.getByRole('navigation', { name: 'main' }).getByRole('link', { name: 'Docs' }))
       .toHaveAttribute('aria-current', 'page')
   })

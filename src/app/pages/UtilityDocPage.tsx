@@ -18,6 +18,7 @@ import { PRESET_INDEX } from '@/presets/_generated/index'
 import { presetsUsing } from './presets/presetHelpers'
 import { presetPath } from '@/presets/types'
 import { SITE_NAME, displayName, pageTitle } from './seo'
+import UtilityPipelineLink from './UtilityPipelineLink'
 import { utilityHeading } from './utilityHeading'
 import { postPath, postsAbout } from './utilityPosts'
 import PageSponsor from '@/app/sponsors/PageSponsor'
@@ -236,6 +237,8 @@ function UtilityDocPageBody({ id, meta }: { id: string; meta: UtilityMeta }) {
         {/* in the header, never in the playground below it */}
         <PageSponsor page={{ kind: 'utility', id }} className="mt-2.5 max-w-[560px]" />
       </header>
+
+      <UtilityPipelineLink />
 
       <div className="grid gap-10 lg:grid-cols-3 items-start min-w-0">
         <div className="grid gap-10 min-w-0 lg:col-span-2">

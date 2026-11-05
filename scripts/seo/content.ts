@@ -8,7 +8,9 @@ import { escapeHtml } from './html'
 import type { BlogPostMeta } from './blog'
 import { guideHeading } from '../../src/app/pages/guide'
 import { utilityPath } from '../../src/app/pages/related'
-import { HOME_HEADING, POPULAR_UTILITY_IDS, SITE_NAME, UTILITIES_HEADING, displayName } from '../../src/app/pages/seo'
+import { HOME_PRESETS_LEAD, POPULAR_UTILITY_IDS, SITE_NAME, UTILITIES_HEADING, displayName } from '../../src/app/pages/seo'
+import PipelineIntro from '../../src/app/pages/PipelineIntro'
+import UtilityPipelineLink from '../../src/app/pages/UtilityPipelineLink'
 import { utilityHeading } from '../../src/app/pages/utilityHeading'
 import { postPath, postsAbout } from '../../src/app/pages/utilityPosts'
 import Docs from '../../src/components/Docs'
@@ -202,6 +204,7 @@ export function renderUtilityContent(meta: UtilityMeta, examples: UtilityExample
       <p>accepts <code>${escapeHtml(typesOf(meta.accepts))}</code> → produces <code>${escapeHtml(typesOf(meta.produces))}</code></p>
       ${renderSponsor(extras.sponsor)}
     </header>
+    ${renderToStaticMarkup(createElement(UtilityPipelineLink))}
     ${renderToStaticMarkup(createElement(RunElsewhere, { meta, input: '', params: defaultParams(meta) }))}
     ${guideHtml}
     ${paramsHtml}
@@ -244,7 +247,7 @@ export function renderHomeContent(manifest: UtilityMeta[], presets: PresetMeta[]
   const presetsHtml = presets.length === 0 ? '' : `
     <section>
       <h2>Presets</h2>
-      <p>Ready-made pipelines for jobs one tool can't do alone. Each shows every step with its output.</p>
+      <p>${escapeHtml(HOME_PRESETS_LEAD)}</p>
       <ul>
         ${presets.map(r => `<li><a href="${escapeHtml(presetPath(r.slug))}">${escapeHtml(r.name)}</a> — ${escapeHtml(r.summary)}</li>`).join('')}
       </ul>
@@ -252,10 +255,7 @@ export function renderHomeContent(manifest: UtilityMeta[], presets: PresetMeta[]
     </section>`
   return `
   <article>
-    <header>
-      <h1>${escapeHtml(HOME_HEADING)}</h1>
-      <p>Efficiently chain string utilities, preview every step, and export/share your pipeline.</p>
-    </header>
+    ${renderToStaticMarkup(createElement(PipelineIntro, { count: manifest.length }))}
     ${presetsHtml}
     <section>
       <h2>Popular tools</h2>

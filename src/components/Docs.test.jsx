@@ -6,7 +6,7 @@ import { DOCS_DESCRIPTION, DOCS_TITLE } from '@/app/pages/seo'
 describe('<Docs />', () => {
   it('renders the usage guide', () => {
     render(<Docs />)
-    expect(screen.getByRole('heading', { name: /how to use string utility belt/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /how to chain text tools into a pipeline/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Build a pipeline' })).toBeInTheDocument()
   })
 

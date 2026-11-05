@@ -212,7 +212,7 @@ describe('buildSeo over a built dist/', () => {
 
   it('gives the home page its title, RSS discovery, canonical, default OG and site-name JSON-LD', () => {
     const doc = html(read(dist, 'index.html'))
-    expect(doc.title).toBe('Free Online String & Text Tools | String Utility Belt')
+    expect(doc.title).toBe('Online String Utility Pipeline Builder | String Utility Belt')
     expect(doc.querySelector('link[rel="alternate"][type="application/rss+xml"]')?.getAttribute('href')).toBe(`${SITE}/rss.xml`)
     expect(doc.querySelectorAll('link[rel="canonical"]')).toHaveLength(1)
     expect(doc.querySelector('meta[property="og:image"]')?.getAttribute('content')).toBe(`${SITE}/og/default.png`)
@@ -260,7 +260,7 @@ describe('buildSeo over a built dist/', () => {
       ],
     })])
     const main = doc.querySelector('#root main')!
-    expect([...main.querySelectorAll('h1')].map(h => h.textContent)).toEqual(['How to use String Utility Belt'])
+    expect([...main.querySelectorAll('h1')].map(h => h.textContent)).toEqual(['How to chain text tools into a pipeline'])
     expect(main.querySelector('section#utilities h2')?.textContent).toBe('Utility reference')
     // crawlable paths only: no #/ route links left in the static page
     const hrefs = [...doc.querySelectorAll('#root a')].map(a => a.getAttribute('href'))

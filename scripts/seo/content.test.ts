@@ -203,7 +203,7 @@ describe('renderHomeContent', () => {
 describe('renderDocsContent', () => {
   it('renders the usage guide component: one heading, every section, crawlable path links only', () => {
     const doc = new DOMParser().parseFromString(renderDocsContent(), 'text/html')
-    expect([...doc.querySelectorAll('h1')].map(h => h.textContent)).toEqual(['How to use String Utility Belt'])
+    expect([...doc.querySelectorAll('h1')].map(h => h.textContent)).toEqual(['How to chain text tools into a pipeline'])
     const sections = [...doc.querySelectorAll('section[id]')].map(s => s.id)
     expect(sections).toEqual(expect.arrayContaining(['pipeline', 'steps', 'output', 'utilities']))
     // the section nav's entries point at its sections
