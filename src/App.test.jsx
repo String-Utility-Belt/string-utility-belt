@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, afterEach, beforeAll, vi } from 'vitest'
 import App from './App'
 import { StepList } from '@/app/tool/stepListChunk'
+import { DOCS_HEADING } from '@/app/pages/seo'
 
 const STORAGE_KEY = 'string-utility-belt'
 
@@ -26,7 +27,7 @@ describe('<App />', () => {
   it('renders the usage guide at /docs/, its nav link marked as the current page', async () => {
     history.replaceState(null, '', '/docs/')
     render(<App />)
-    expect(await screen.findByRole('heading', { name: /how to use string utility belt/i })).toBeTruthy()
+    expect(await screen.findByRole('heading', { name: DOCS_HEADING })).toBeTruthy()
     const nav = screen.getByRole('link', { name: 'Docs' })
     expect(nav).toHaveAttribute('href', '/docs/')
     expect(nav).toHaveAttribute('aria-current', 'page')
@@ -36,7 +37,7 @@ describe('<App />', () => {
   it('still renders the usage guide at the old #/docs', async () => {
     location.hash = '#/docs'
     render(<App />)
-    expect(await screen.findByRole('heading', { name: /how to use string utility belt/i })).toBeTruthy()
+    expect(await screen.findByRole('heading', { name: DOCS_HEADING })).toBeTruthy()
     expect(screen.getByRole('link', { name: 'Docs' })).toHaveAttribute('aria-current', 'page')
   })
 
@@ -46,7 +47,7 @@ describe('<App />', () => {
       render(<App />)
       fireEvent.click(screen.getByRole('link', { name: 'Docs' }))
       expect(location.pathname).toBe('/docs/')
-      expect(await screen.findByRole('heading', { name: /how to use string utility belt/i })).toBeTruthy()
+      expect(await screen.findByRole('heading', { name: DOCS_HEADING })).toBeTruthy()
       fireEvent.click(screen.getByRole('link', { name: /utilities index/i }))
       expect(location.pathname).toBe('/utilities/')
       expect(await screen.findByRole('heading', { level: 1, name: 'All text and string tools' })).toBeTruthy()

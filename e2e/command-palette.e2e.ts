@@ -3,8 +3,12 @@ import { test, expect } from '@playwright/test'
 import { result, setInput } from './utils'
 
 test.describe('command palette', () => {
-  test('Ctrl+K opens it; typing a utility name and Enter adds that step', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await page.goto('/')
+    await expect(page.locator('#pipeline-input')).toBeVisible()
+  })
+
+  test('Ctrl+K opens it; typing a utility name and Enter adds that step', async ({ page }) => {
     await expect(page.locator('[data-step-id]')).toHaveCount(0)
 
     await page.keyboard.press('Control+k')
@@ -25,7 +29,6 @@ test.describe('command palette', () => {
   })
 
   test('Escape closes the palette', async ({ page }) => {
-    await page.goto('/')
     await page.keyboard.press('Control+k')
     const palette = page.getByRole('dialog', { name: 'Command palette' })
     await expect(palette).toBeVisible()
@@ -34,9 +37,8 @@ test.describe('command palette', () => {
   })
 
   test('"?" opens keyboard shortcuts help; Escape closes it', async ({ page }) => {
-    await page.goto('/')
     // move focus off any text field first: '?' is ignored while typing
-    await page.getByText('Paste some text, add steps').click()
+    await page.getByRole('heading', { level: 1 }).click()
 
     await page.keyboard.press('?')
     const help = page.getByRole('dialog', { name: 'Keyboard shortcuts' })
