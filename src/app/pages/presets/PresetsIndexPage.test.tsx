@@ -13,10 +13,17 @@ describe('PresetsIndexPage', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Text pipeline presets' })).toBeTruthy()
     const headings = screen.getAllByRole('heading', { level: 2 }).map(h => h.textContent)
     expect(headings).toEqual(PRESET_CATEGORIES.filter(c => PRESET_INDEX.some(r => r.category === c)))
+    // one section and one link scan per category, not per preset: a role query walks its whole
+    // container, and there are 30+ presets
+    const links = new Map<string, HTMLElement[]>()
+    for (const category of new Set(PRESET_INDEX.map(r => r.category))) {
+      const section = screen.getByRole('heading', { level: 2, name: category }).closest('section')!
+      links.set(category, within(section).getAllByRole('link'))
+    }
     for (const r of PRESET_INDEX) {
-      const section = screen.getByRole('heading', { level: 2, name: r.category }).closest('section')!
-      expect(within(section).getByRole('link', { name: new RegExp(r.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }).getAttribute('href'))
-        .toBe(`/presets/${r.slug}/`)
+      const matches = links.get(r.category)!.filter(a => a.textContent?.includes(r.name))
+      expect(matches, r.slug).toHaveLength(1)
+      expect(matches[0].getAttribute('href')).toBe(`/presets/${r.slug}/`)
     }
   })
 

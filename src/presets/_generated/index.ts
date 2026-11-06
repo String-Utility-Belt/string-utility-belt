@@ -3,6 +3,72 @@ import type { PresetMeta } from '../types'
 
 export const PRESET_INDEX: PresetMeta[] = [
   {
+    "slug": "base64-to-hex",
+    "name": "Convert Base64 to hex",
+    "summary": "Paste a Base64 value and get the same bytes as lowercase hexadecimal: a hash from a Digest header, a key from a config file or plain text, whether or not the bytes are valid UTF-8.",
+    "category": "Web & APIs",
+    "utilityIds": [
+      "get_bytes",
+      "hex_encode"
+    ],
+    "chain": [
+      "Base64 to bytes",
+      "bytes to hex"
+    ],
+    "stepCount": 2,
+    "published": "2026-11-06"
+  },
+  {
+    "slug": "base64-to-json",
+    "name": "Decode Base64 to formatted JSON",
+    "summary": "Paste a Base64 blob that hides a JSON document, such as a Pub/Sub message body, a .dockerconfigjson value or a config passed through an environment variable, and read it indented, one field per line.",
+    "category": "Web & APIs",
+    "utilityIds": [
+      "base64_decode",
+      "json_pretty"
+    ],
+    "chain": [
+      "decode the Base64",
+      "format the JSON"
+    ],
+    "stepCount": 2,
+    "published": "2026-11-06"
+  },
+  {
+    "slug": "bulk-base64-decode",
+    "name": "Decode a list of Base64 values line by line",
+    "summary": "Paste a column of Base64 values, a JSON array of them or a quoted CSV column and get every value decoded on its own line, with headers, blank lines and Windows line endings kept so the rows still line up.",
+    "category": "Data & Spreadsheets",
+    "utilityIds": [
+      "base64_decode",
+      "replace"
+    ],
+    "chain": [
+      "strip quotes and padding",
+      "decode each line"
+    ],
+    "stepCount": 2,
+    "published": "2026-11-06"
+  },
+  {
+    "slug": "bulk-md5-hash",
+    "name": "MD5-hash every line of a list",
+    "summary": "Paste a list of values, one per line, and get the MD5 of each on the same row, with hidden characters and stray spaces removed first so every hash is the hash of the value you can see.",
+    "category": "Data & Spreadsheets",
+    "utilityIds": [
+      "md5",
+      "remove_invisible",
+      "trim_lines"
+    ],
+    "chain": [
+      "remove hidden characters",
+      "trim each line",
+      "MD5 each line"
+    ],
+    "stepCount": 3,
+    "published": "2026-11-06"
+  },
+  {
     "slug": "bulk-utm-link-builder",
     "name": "Add UTM parameters to a list of URLs",
     "summary": "Paste a list of links, spreadsheet cells, a draft or HTML and get every URL tagged with the same utm_source, utm_medium and utm_campaign: old tags replaced, ? or & chosen per link, #anchors kept working.",
@@ -105,6 +171,23 @@ export const PRESET_INDEX: PresetMeta[] = [
     ],
     "stepCount": 3,
     "published": "2026-10-08"
+  },
+  {
+    "slug": "decode-basic-auth-header",
+    "name": "Decode a Basic auth header",
+    "summary": "Paste an Authorization: Basic header, the curl command or log line that carries it, or the bare token, and read the user name and password it encodes, split at the first colon as RFC 7617 defines.",
+    "category": "Web & APIs",
+    "utilityIds": [
+      "base64_decode",
+      "replace"
+    ],
+    "chain": [
+      "keep only the token",
+      "decode the token",
+      "name the two parts"
+    ],
+    "stepCount": 3,
+    "published": "2026-11-06"
   },
   {
     "slug": "decode-cloudwatch-logs-data",
@@ -292,6 +375,24 @@ export const PRESET_INDEX: PresetMeta[] = [
     "published": "2026-10-08"
   },
   {
+    "slug": "extract-ip-addresses-from-text",
+    "name": "Extract IP addresses from text and count them",
+    "summary": "Paste a log, an email or any text and get every IPv4 address in it, each once, with how many times it appears, most frequent first and ties in address order, as a tab-separated list for a spreadsheet or a block list.",
+    "category": "DevOps & Config",
+    "utilityIds": [
+      "extract_preset",
+      "line_sort",
+      "uniq_count"
+    ],
+    "chain": [
+      "find every IPv4 address",
+      "sort the addresses",
+      "count each address"
+    ],
+    "stepCount": 3,
+    "published": "2026-11-06"
+  },
+  {
     "slug": "extract-unique-emails-from-text",
     "name": "Extract unique email addresses from text",
     "summary": "Paste an email thread, a CSV export or a contact page and get each address once: matched in any surrounding text, lower-cased so case variants count as one, sorted, and with no-reply senders left out.",
@@ -370,6 +471,24 @@ export const PRESET_INDEX: PresetMeta[] = [
     ],
     "stepCount": 4,
     "published": "2026-10-08"
+  },
+  {
+    "slug": "hex-to-base64",
+    "name": "Convert hex to Base64",
+    "summary": "Paste hexadecimal bytes as sha256sum, an openssl fingerprint, a C array or a hex dump print them and get the same bytes as standard Base64, ready for a Digest header, an SRI hash or a JSON field.",
+    "category": "Web & APIs",
+    "utilityIds": [
+      "base64_encode",
+      "hex_decode",
+      "replace"
+    ],
+    "chain": [
+      "keep only the hex digits",
+      "hex to bytes",
+      "bytes to Base64"
+    ],
+    "stepCount": 3,
+    "published": "2026-11-06"
   },
   {
     "slug": "nested-json-to-csv",
@@ -463,5 +582,53 @@ export const PRESET_INDEX: PresetMeta[] = [
     ],
     "stepCount": 4,
     "published": "2026-10-07"
+  },
+  {
+    "slug": "url-decode-base64",
+    "name": "Decode a URL-encoded Base64 value",
+    "summary": "Paste a Base64 value copied out of a URL, with its = written as %3D and its + and / as %2B and %2F, and read the text inside: the percent-encoding is undone first, then the Base64.",
+    "category": "Web & APIs",
+    "utilityIds": [
+      "base64_decode",
+      "url_decode"
+    ],
+    "chain": [
+      "undo the percent-encoding",
+      "decode the Base64"
+    ],
+    "stepCount": 2,
+    "published": "2026-11-06"
+  },
+  {
+    "slug": "url-decode-json",
+    "name": "Decode URL-encoded JSON and format it",
+    "summary": "Paste a JSON value as it appears in a query string or a cookie, all %7B, %22 and %2C, and read it as indented JSON: the percent-encoding is undone, then the document is parsed and pretty-printed.",
+    "category": "Web & APIs",
+    "utilityIds": [
+      "json_pretty",
+      "url_decode"
+    ],
+    "chain": [
+      "undo the percent-encoding",
+      "format the JSON"
+    ],
+    "stepCount": 2,
+    "published": "2026-11-06"
+  },
+  {
+    "slug": "yaml-to-env",
+    "name": "Convert YAML to a .env file",
+    "summary": "Paste a YAML config and get one KEY=value line per setting: nested keys joined with underscores, list items numbered, names upper-cased, values quoted only when needed, ready for Docker Compose, dotenv or CI.",
+    "category": "DevOps & Config",
+    "utilityIds": [
+      "json_to_env",
+      "yaml_to_json"
+    ],
+    "chain": [
+      "parse the YAML",
+      "write KEY=value lines"
+    ],
+    "stepCount": 2,
+    "published": "2026-11-06"
   }
 ]
