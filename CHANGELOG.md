@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Fifteen utility pages now lead their search title, heading and description with the phrase people type for
+  them, for example "Validate JSON", "SQL pretty printer", "Levenshtein distance calculator", "remove invisible
+  characters", "pronounceable password generator" and "semantic JSON diff". Six weeks of Search Console data
+  showed a page ranking for the phrase its title opens with and not for other phrasings of the same page.
+
 ## [1.17.7] - 2026-11-06
 
 ### Changed
