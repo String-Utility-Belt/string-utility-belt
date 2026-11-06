@@ -1,6 +1,6 @@
 ---
-title: Password Generator: Random, Pronounceable & Passphrase
-description: Generate strong random passwords, pronounceable passwords, or word-based passphrases online, with character-class and ambiguous-character controls.
+title: Pronounceable Password Generator: Random & Passphrase Modes
+description: Generate pronounceable passwords, strong random passwords or word-based passphrases online, with character-class and ambiguous-character controls.
 ---
 ## What is a password generator?
 

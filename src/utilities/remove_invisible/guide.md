@@ -1,6 +1,6 @@
 ---
-title: Invisible Character Remover: Find Hidden Unicode
-description: Find zero-width, bidi, control and variation-selector characters in text. Remove them, reveal them as U+XXXX markers, or list every one with its name.
+title: Remove Invisible Characters Online: Hidden Unicode, AI Text
+description: Remove invisible characters from ChatGPT output or any pasted text: zero-width, bidi, control and variation-selector marks, or reveal each as U+XXXX.
 ---
 ## What are invisible characters?
 

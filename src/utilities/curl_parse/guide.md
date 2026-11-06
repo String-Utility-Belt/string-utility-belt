@@ -1,6 +1,6 @@
 ---
-title: Curl Command to JSON Converter Online
-description: Parse a curl command into structured JSON online: method, URL, headers, body, auth and form fields, with shell quoting handled for you.
+title: Curl to JSON Converter Online: Parse a Curl Command
+description: Convert a curl command to JSON online: method, URL, headers, body, auth and form fields parsed out, with shell quoting handled for you.
 ---
 ## What does curl parse do?
 

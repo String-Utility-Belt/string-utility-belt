@@ -1,5 +1,5 @@
 ---
-title: JSON Validator Online: Check JSON Syntax
+title: Validate JSON Online: Check Syntax, See the Exact Error
 description: Validate JSON syntax online and see the exact error, line, column and source excerpt; optionally allow JSON5-style comments and trailing commas.
 ---
 ## What does a JSON validator check?

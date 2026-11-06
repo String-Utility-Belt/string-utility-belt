@@ -1,6 +1,6 @@
 ---
-title: JSON String Unescape: Decode JSON Escape Sequences
-description: Decode a JSON-escaped string back to plain text, resolving \n, \t, \", \\ and \uXXXX escape sequences.
+title: Unescape JSON String Online: Decode Escape Sequences
+description: Unescape a JSON string online: decode \n, \t, \", \\ and \uXXXX escape sequences back to plain text, such as the escaped JSON inside a log line.
 ---
 ## What does unescaping a JSON string mean?
 
