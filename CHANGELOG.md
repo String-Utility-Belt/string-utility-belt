@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.18.0] - 2026-11-06
+
 ### Added
 
 - **Ten presets for the two- and three-step jobs people search for.** Convert Base64 to hex
