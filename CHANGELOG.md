@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Ten presets for the two- and three-step jobs people search for.** Convert Base64 to hex
+  (`/presets/base64-to-hex/`) and hex to Base64 (`/presets/hex-to-base64/`); decode a URL-encoded Base64 value
+  (`/presets/url-decode-base64/`) or URL-encoded JSON (`/presets/url-decode-json/`); decode Base64 to formatted JSON
+  (`/presets/base64-to-json/`); decode a Basic auth header to its user name and password
+  (`/presets/decode-basic-auth-header/`); convert YAML to a .env file (`/presets/yaml-to-env/`); decode a list of
+  Base64 values line by line (`/presets/bulk-base64-decode/`); MD5-hash every line of a list
+  (`/presets/bulk-md5-hash/`); and extract the IP addresses in a text and count them
+  (`/presets/extract-ip-addresses-from-text/`). Each page shows its chain step by step with worked examples and opens
+  in the editor, where the pipeline can be changed, saved and reused.
+
 ## [1.17.7] - 2026-11-06
 
 ### Changed
