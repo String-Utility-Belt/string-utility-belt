@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.17.7] - 2026-11-06
+
 ### Changed
 
 - **The site counts page loads that find the browser extension.** When the String Utility Belt extension answers the
