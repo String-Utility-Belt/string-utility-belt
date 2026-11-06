@@ -75,11 +75,21 @@ describe('PresetGallery', () => {
   it('is a labelled dialog listing every preset under its category, with a link to its page', () => {
     render(<Harness />)
     const dialog = screen.getByRole('dialog', { name: 'Presets' })
+    // one region and one heading scan per category, not per preset, and no visibility checks on the
+    // per-card queries (nothing in the dialog is hidden): a role query walks its whole container and
+    // asks jsdom for computed styles, and there are 30+ presets
+    const cards = new Map<string, HTMLElement>()
+    for (const category of new Set(PRESET_INDEX.map(p => p.category))) {
+      const section = within(dialog).getByRole('region', { name: category })
+      for (const h of within(section).getAllByRole('heading', { level: 4, hidden: true })) {
+        cards.set(`${category}\n${h.textContent}`, h.closest('li') as HTMLElement)
+      }
+    }
     for (const preset of PRESET_INDEX) {
-      const section = within(dialog).getByRole('region', { name: preset.category })
-      const card = within(section).getByRole('heading', { name: preset.name }).closest('li') as HTMLElement
-      expect(within(card).getByRole('button', { name: `Try it: ${preset.name}` })).toBeEnabled()
-      expect(within(card).getByRole('link', { name: `How it works: ${preset.name}` })).toHaveAttribute('href', presetPath(preset.slug))
+      const card = cards.get(`${preset.category}\n${preset.name}`)
+      expect(card, preset.slug).toBeDefined()
+      expect(within(card!).getByRole('button', { name: `Try it: ${preset.name}`, hidden: true })).toBeEnabled()
+      expect(within(card!).getByRole('link', { name: `How it works: ${preset.name}`, hidden: true })).toHaveAttribute('href', presetPath(preset.slug))
     }
     expect(within(dialog).getAllByRole('listitem')).toHaveLength(PRESET_INDEX.length)
   })
