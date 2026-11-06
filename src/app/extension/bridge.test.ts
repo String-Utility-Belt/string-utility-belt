@@ -3,9 +3,13 @@ import { renderHook, waitFor } from '@testing-library/react'
 import { APP_SOURCE, BRIDGE_PROTOCOL, LEGACY_STEP_TYPES, STORE_EXTENSION_ID } from '@/core/extensionBridge'
 import { __resetExtensionBridgeForTests, extensionIds, getExtension, sendToExtension, useExtension, useExtensionStatus } from './bridge'
 import { installFakeExtension } from './fakeExtension'
+import { countExtensionDetected } from '@/app/events/extensionDetected'
+
+vi.mock('@/app/events/extensionDetected', () => ({ countExtensionDetected: vi.fn() }))
 
 beforeEach(() => {
   __resetExtensionBridgeForTests()
+  vi.mocked(countExtensionDetected).mockClear()
 })
 
 afterEach(() => {
@@ -48,6 +52,32 @@ describe('extension presence', () => {
     await waitFor(() => expect(fake.sent).toHaveLength(1))
     await new Promise(r => setTimeout(r, 0))
     expect(getExtension()).toBeNull()
+  })
+})
+
+describe('counting the extension', () => {
+  it('counts an answering extension once per page load, with its version', async () => {
+    installFakeExtension({ version: '1.5.0' })
+    const first = renderHook(() => useExtension())
+    const second = renderHook(() => useExtensionStatus())
+    await waitFor(() => expect(first.result.current?.version).toBe('1.5.0'))
+    await sendToExtension({ type: 'add-favorites', utilityIds: [] })
+    expect(second.result.current).toMatchObject({ version: '1.5.0' })
+    expect(vi.mocked(countExtensionDetected).mock.calls).toEqual([['1.5.0']])
+  })
+
+  it('counts nothing when no extension answers', async () => {
+    const fake = installFakeExtension({ id: 'some-other-extension' })
+    const { result } = renderHook(() => useExtensionStatus())
+    await waitFor(() => expect(result.current).toBe('absent'))
+    expect(fake.sent).toHaveLength(1)
+    expect(countExtensionDetected).not.toHaveBeenCalled()
+  })
+
+  it('counts nothing when the page has no chrome.runtime', async () => {
+    renderHook(() => useExtension())
+    await sendToExtension({ type: 'add-favorites', utilityIds: [] })
+    expect(countExtensionDetected).not.toHaveBeenCalled()
   })
 })
 

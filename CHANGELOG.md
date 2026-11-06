@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **The site counts page loads that find the browser extension.** When the String Utility Belt extension answers the
+  page's existing check (the one that offers "save to extension"), the site's own server counts it once for that page
+  load, with the extension's version and the kind of page (editor, utility, preset or other) and nothing else. The
+  extension itself still sends nothing. The privacy policy's "What we count ourselves", the about page and the README
+  say so.
+
 ## [1.17.6] - 2026-11-05
 
 ### Changed

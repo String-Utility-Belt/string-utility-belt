@@ -46,6 +46,12 @@ export function stepBucket(steps: number): (typeof STEP_BUCKETS)[number] {
  */
 export const ADD_SOURCES = ['picker', 'quick_add', 'palette', 'magic', 'decode_all', 'suggestion', 'next_step', 'nested', 'doc_page'] as const
 
+/**
+ * What kind of page found the browser extension: the editor (home or a shared pipeline), a
+ * utility's page or the utility index, a preset's page or the preset index, or any other page.
+ */
+export const PAGE_KINDS = ['editor', 'utility', 'preset', 'other'] as const
+
 export type CountedEvent =
   /** A sponsor's link was followed, on a page `pageKey` names (`util/jwt_decode`). */
   | { name: 'sponsor_click'; sponsorship: string; page: string }
@@ -59,12 +65,16 @@ export type CountedEvent =
   | { name: 'editor_open'; source: (typeof RUN_SOURCES)[number]; arrival: (typeof OPEN_ARRIVALS)[number] }
   /** A utility was added to the pipeline. */
   | { name: 'utility_add'; utility: string; source: (typeof ADD_SOURCES)[number] }
+  /** The browser extension answered the page's ping: at most once per page load. */
+  | { name: 'extension_detected'; version: string; page: (typeof PAGE_KINDS)[number] }
 
 export type EventName = CountedEvent['name']
 
 /** A utility id, preset slug or booking id: lowercase, no spaces, never free text. */
 const ID = /^[a-z0-9][a-z0-9_-]{0,79}$/
 const PAGE = /^(?:util|presets|blog)\/[a-z0-9][a-z0-9_-]{0,79}$/
+/** An extension version as Chrome writes it: one to four dot-separated integers. */
+const VERSION = /^\d{1,5}(?:\.\d{1,5}){0,3}$/
 
 const isObject = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
 const oneOf = <T extends string>(list: readonly T[], v: unknown): v is T => typeof v === 'string' && (list as readonly string[]).includes(v)
@@ -100,6 +110,10 @@ export function parseCountedEvent(raw: unknown): CountedEvent | null {
       return exactKeys(raw, ['name', 'utility', 'source']) && matches(ID, raw.utility) && oneOf(ADD_SOURCES, raw.source)
         ? { name: raw.name, utility: raw.utility, source: raw.source }
         : null
+    case 'extension_detected':
+      return exactKeys(raw, ['name', 'version', 'page']) && matches(VERSION, raw.version) && oneOf(PAGE_KINDS, raw.page)
+        ? { name: raw.name, version: raw.version, page: raw.page }
+        : null
     default:
       return null
   }
@@ -117,5 +131,6 @@ export function eventFields(e: CountedEvent): [string, string] {
     case 'editor_run': return [e.source, e.steps]
     case 'editor_open': return [e.source, e.arrival]
     case 'utility_add': return [e.utility, e.source]
+    case 'extension_detected': return [e.version, e.page]
   }
 }

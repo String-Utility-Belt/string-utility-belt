@@ -98,6 +98,7 @@ const COLUMNS: Record<EventName, { title: string; first: string; second: string;
   editor_open: { title: 'Page loads that opened the editor', first: 'pipeline', second: 'arrived by', count: 'opens' },
   editor_run: { title: 'Page loads that ran the editor', first: 'pipeline', second: 'steps', count: 'runs' },
   utility_add: { title: 'Utilities added to a pipeline', first: 'utility', second: 'from', count: 'adds', rollup: true },
+  extension_detected: { title: 'Page loads from a browser with the extension', first: 'version', second: 'page', count: 'loads' },
 }
 
 /** Counts summed per key, largest first. */

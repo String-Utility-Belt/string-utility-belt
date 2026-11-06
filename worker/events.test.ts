@@ -49,6 +49,8 @@ describe('POST /api/event', () => {
       [{ name: 'editor_run', source: 'share', steps: '2-3' }, ['share', '2-3']],
       [{ name: 'editor_open', source: 'editor', arrival: 'link' }, ['editor', 'link']],
       [{ name: 'utility_add', utility: 'base64_decode', source: 'decode_all' }, ['base64_decode', 'decode_all']],
+      [{ name: 'extension_detected', version: '1.5.0', page: 'editor' }, ['1.5.0', 'editor']],
+      [{ name: 'extension_detected', version: '2.0.10.3', page: 'other' }, ['2.0.10.3', 'other']],
     ] as const
     for (const [event, blobs] of events) {
       const res = await send(event)
@@ -75,6 +77,10 @@ describe('POST /api/event', () => {
     ['the pipeline itself', { name: 'editor_run', source: 'editor', steps: '1', pipeline: 'base64_decode' }],
     ['input as a utility id', { name: 'utility_add', utility: 'hello world', source: 'picker' }],
     ['an unknown add source', { name: 'utility_add', utility: 'base64_decode', source: 'api' }],
+    ['a version that is not dotted numbers', { name: 'extension_detected', version: '1.5.0-beta', page: 'editor' }],
+    ['a version with five parts', { name: 'extension_detected', version: '1.2.3.4.5', page: 'editor' }],
+    ['a page path instead of a page kind', { name: 'extension_detected', version: '1.5.0', page: 'util/base64_decode' }],
+    ['the extension id with the detection', { name: 'extension_detected', version: '1.5.0', page: 'editor', id: 'onmlbgadajghegkcpkkhlmmognihjfbh' }],
     ['an array', [{ name: 'preset_open', preset: 'x', source: 'page' }]],
   ])('refuses %s without counting it', async (_, body) => {
     const { send, writeDataPoint } = setup()
