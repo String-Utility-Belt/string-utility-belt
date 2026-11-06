@@ -3,13 +3,15 @@
  * The extension lists the site's origins in `externally_connectable`, which is
  * what gives pages here `chrome.runtime.sendMessage(extensionId, …)`. The app
  * pings the store extension's id (then any `VITE_EXTENSION_IDS`, for unpacked
- * builds) and offers "save to extension" once one answers.
+ * builds) and offers "save to extension" once one answers. An answer is also counted
+ * (`extension_detected`, version and kind of page only), once per page load.
  */
 import { useSyncExternalStore } from 'react'
 import {
   APP_SOURCE, BRIDGE_PROTOCOL, STORE_EXTENSION_ID, helloStepTypes, isBridgeResult, isExtensionHello,
   type AppMessage, type AppRequest, type BridgeResult,
 } from '@/core/extensionBridge'
+import { countExtensionDetected } from '@/app/events/extensionDetected'
 
 export interface ExtensionInfo {
   id: string
@@ -81,6 +83,7 @@ function detect(): Promise<void> {
         const hello = await call(id, { source: APP_SOURCE, protocol: BRIDGE_PROTOCOL, type: 'ping' }, PING_TIMEOUT_MS)
         if (!isExtensionHello(hello)) continue
         extension = { id, version: hello.version, stepTypes: helloStepTypes(hello) }
+        countExtensionDetected(hello.version)
         break
       }
     }
