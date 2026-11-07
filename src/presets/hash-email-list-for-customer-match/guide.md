@@ -25,6 +25,12 @@ Meta asks for the same trimming and lowercasing but not the Gmail rule. Leave ou
 
 Email suppression lists exchanged between senders, such as an advertiser's opt-out list sent to an affiliate, are often MD5 hashes of lowercased addresses. Open the preset in the editor, leave out the Gmail step, and replace the hash step inside step 4 with [MD5](/util/md5/). Compare against the other party's list only after you both normalize the same way.
 
+## Hashed emails and mobile advertising IDs
+
+A search for "hashed email to MAID" is looking for a conversion that does not exist. SHA-256 is one-way, and a mobile advertising ID (Apple's IDFA, Google's advertising ID on Android) names a device, not a mailbox, so nothing in the hash points to a phone. The join happens inside the ad platform, not in your data. Google keeps the hashed form of every Google account's email address and compares your hashes with those; a match adds the account to the audience, and the ads reach that person where the account is signed in. Meta compares your hashes with its own hashed records in the same way. In both cases the result is an audience you can target, never a list of device IDs handed back to you.
+
+If you already hold device IDs, upload them as device IDs. Google Ads takes a Mobile Device ID list only on its own, unhashed, as the single column of its file; Meta's customer lists take them in a `madid` column beside the email columns. What this page does is the hashing: the part of the match that has to happen before the list leaves your systems.
+
 ## Limits and privacy
 
 - Paste the email column only. A line such as `Jane <jane@example.com>`, a row with several addresses, or a CSV row with other columns is not hashed: it is left as text, with its spaces removed and lowercased, so you can spot and fix it.

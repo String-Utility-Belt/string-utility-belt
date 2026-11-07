@@ -13,6 +13,7 @@ import path from 'node:path'
 import { UTILITIES } from './index'
 import { parseGuide } from '../app/pages/guide'
 import { checkGuide } from './guideCheck'
+import { PRESET_INDEX } from '../presets/_generated/index'
 
 const DIR = path.join(process.cwd(), 'src', 'utilities')
 const readGuide = (id: string): string | null => {
@@ -20,11 +21,12 @@ const readGuide = (id: string): string | null => {
   return existsSync(file) ? readFileSync(file, 'utf8') : null
 }
 const ids = new Set(UTILITIES.map(u => u.id))
+const presetSlugs = new Set(PRESET_INDEX.map(p => p.slug))
 
 describe('utility guides', () => {
   for (const u of UTILITIES) {
     it(`${u.id} guide`, async () => {
-      expect(await checkGuide(u, readGuide(u.id), ids)).toEqual([])
+      expect(await checkGuide(u, readGuide(u.id), ids, presetSlugs)).toEqual([])
     })
   }
 

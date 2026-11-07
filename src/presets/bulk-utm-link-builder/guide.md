@@ -1,6 +1,6 @@
 ---
 title: Bulk UTM Builder: Tag a List of URLs at Once
-description: Add utm_source, utm_medium and utm_campaign to many links at once, with old tags replaced, ? or & picked per URL and #anchors kept working.
+description: A bulk UTM generator: add utm_source, utm_medium and utm_campaign to many links at once, with old tags replaced, ? or & picked per URL and #anchors kept.
 ---
 
 ## Why pasting ?utm_source on the end breaks some links
@@ -13,7 +13,7 @@ UTM tags are ordinary query parameters that analytics tools read when someone ar
 
 ## Why the steps run in this order
 
-[extract matches](/util/extract_preset/) comes first so that every later step sees one link per line, whether you pasted a list, spreadsheet rows copied on Windows, a paragraph of text or HTML.
+A bulk UTM generator has to get all three cases right, which is why this is a chain of steps rather than one find-and-replace. [extract matches](/util/extract_preset/) comes first so that every later step sees one link per line, whether you pasted a list, spreadsheet rows copied on Windows, a paragraph of text or HTML.
 
 The second step removes the old `utm_` pairs, one link at a time. [unescape HTML](/util/unescape_html/) first turns `&amp;` back into `&`: HTML source usually writes the ampersands in an href that way, and a query parser would read `amp;utm_medium` as a single name. It decodes only the handful of escapes HTML requires, so a parameter such as `&region=` is left alone, where a full entity decoder would read `&reg` as ®. Then [normalize query params](/util/query_params_normalize/) drops every parameter whose name matches `utm_*`, in any capitalization, along with the `?` or `&` it leaves behind. Its sorting, deduplicating and lowercasing options are switched off, so the parameters you keep stay in their order and spelling. Its drop list takes more names, separated by commas: add `fbclid,gclid` to remove those click ids too. [deduplicate lines](/util/line_dedupe/) has to come after this step: until the old tags are gone, `/pricing` and `/pricing?utm_campaign=summer_2026` look like two different links, and you would get the same tagged link twice.
 

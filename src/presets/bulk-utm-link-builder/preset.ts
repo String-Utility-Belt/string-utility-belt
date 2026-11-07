@@ -17,7 +17,7 @@ const preset: Preset = {
   category: 'Writing & Marketing',
   primaryQuery: 'bulk utm builder',
   published: '2026-10-07',
-  updated: '2026-10-08',
+  updated: '2026-11-06',
   related: ['clean-chatgpt-text'],
   steps: [
     step('extract', 'extract_preset', { type: ['urls'], unique: false, sort: false, separator: '\n', count: false },

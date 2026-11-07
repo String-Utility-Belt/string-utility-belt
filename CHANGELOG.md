@@ -18,6 +18,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   (`/presets/extract-ip-addresses-from-text/`). Each page shows its chain step by step with worked examples and opens
   in the editor, where the pipeline can be changed, saved and reused.
 
+### Changed
+
+- **Preset and utility pages say what people search for.** Six preset titles now carry the phrase searchers
+  type (`kubectl get secret decode`, SAML decoder, Flask session cookie online, tracking parameters in bulk, decode
+  stringified JSON, Kubernetes Secret from env file), and fifteen more presets and seventeen utility pages carry the
+  variant phrasings in their descriptions. The Customer Match page explains why a hashed email cannot become a mobile
+  advertising ID and where the match happens; the curl-to-PowerShell page names Invoke-WebRequest beside
+  Invoke-RestMethod; the Unicode text style page shows how styling fits a pipeline and how to undo it; and utility
+  guides can now link preset pages.
+
 ## [1.17.7] - 2026-11-06
 
 ### Changed

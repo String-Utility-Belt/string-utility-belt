@@ -7,8 +7,9 @@ const preset: Preset = {
   summary:
     'Paste a Secret from kubectl get secret -o yaml or -o json and read every value under data in plain text, with the keys kept, instead of decoding each one with base64 by hand.',
   category: 'DevOps & Config',
-  primaryQuery: 'decode kubernetes secret',
+  primaryQuery: 'kubectl get secret decode',
   published: '2026-10-07',
+  updated: '2026-11-06',
   related: ['env-file-to-kubernetes-secret', 'decode-helm-release-secret', 'spring-boot-yaml-to-env-vars'],
   steps: [
     step('to-json', 'yaml_to_json', { indent: 2, allDocuments: false },

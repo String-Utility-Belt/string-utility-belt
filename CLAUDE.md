@@ -79,7 +79,7 @@ npm run readme:demo       # re-record .github/readme/demo.gif from dist/ (after 
 - Every utility has `src/utilities/<id>/guide.md`: frontmatter `title` (the page `<title>`, ≤ 60 chars) and
   `description` (meta description, 80–160), then `##` sections with ```` ```example ```` blocks. Format and
   parser: `src/app/pages/guide.ts`. Rules: `src/utilities/guideCheck.ts`, enforced by `guides.test.ts`
-  (every example is executed like a golden example; links must be `/util/<id>/` paths to real utilities).
+  (every example is executed like a golden example; links must be `/util/<id>/` paths to real utilities or `/presets/<slug>/` paths to real presets).
   A control character in an example value (other than tab and line breaks) is written as its Control Picture (`␛`, `␀`,
   DEL `␡`), which the parser reads back as the character; a raw one fails the check.
 - Not bundled as JS: `scripts/vite-plugin-guides.ts` serves them at `/guides/<id>.md` in dev and emits

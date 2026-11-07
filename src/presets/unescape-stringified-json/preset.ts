@@ -15,8 +15,9 @@ const preset: Preset = {
   summary:
     'Paste JSON full of backslashes, quoted or not, stringified once or twice, and get indented JSON back. Text that is already valid JSON is only pretty-printed.',
   category: 'Frontend',
-  primaryQuery: 'unescape stringified json',
+  primaryQuery: 'decode stringified json',
   published: '2026-10-07',
+  updated: '2026-11-06',
   related: ['nested-json-to-csv', 'decode-cloudwatch-logs-data'],
   steps: [
     step('trim', 'trim', {},

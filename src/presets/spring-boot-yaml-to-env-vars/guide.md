@@ -11,6 +11,8 @@ The dash rule is where a plain flattener goes wrong. [json to .env](/util/json_t
 
 The second trap is the multi-document file. Many services keep profile overrides after a `---` line, and Spring applies those only when the profile is active. Treating the whole file as one configuration gives either duplicate names or a profile's values in every environment.
 
+For a YAML file that is not a Spring Boot configuration, the [YAML to env converter](/presets/yaml-to-env/) preset makes plain `KEY=value` lines without Spring's naming rules.
+
 ## What each step does, and why in this order
 
 [yaml to json](/util/yaml_to_json/) parses the file with "always emit an array" switched on, so a file with or without profile sections arrives as a list of documents, and [jsonpath query](/util/jsonpath/) keeps `$[0]`, the base configuration. To see a profile's overrides instead, change it to `$[1]` and delete the `SPRING_CONFIG_ACTIVATE_ONPROFILE` line from the result: that is the document's activation condition, not a setting.

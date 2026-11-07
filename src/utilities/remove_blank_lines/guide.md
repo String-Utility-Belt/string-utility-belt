@@ -1,6 +1,6 @@
 ---
 title: Remove Blank Lines Online: Strip Empty Lines from Text
-description: Remove every empty or whitespace-only line from text online, collapsing a document down to only the lines that actually contain content.
+description: Remove blank lines online: delete every empty or whitespace-only line from text or code, compacting a document down to only the lines that contain content.
 ---
 ## What does this tool do?
 

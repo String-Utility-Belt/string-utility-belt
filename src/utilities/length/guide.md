@@ -1,6 +1,6 @@
 ---
 title: String Length Calculator: Count Characters Online
-description: Calculate the length of any text online, counted the way JavaScript strings measure it, including how emoji and accents affect the total.
+description: Check string length online: count characters the way JavaScript measures them, and see how emoji and accented letters change the total.
 ---
 ## What does this tool do?
 
@@ -54,4 +54,5 @@ This utility has no configurable options; it always reports the plain UTF-16 len
 - This is a **code-unit** count, not a count of what a person would call "characters." Every character outside the Basic Multilingual Plane counts as 2 rather than 1, and an emoji built from several code points counts all of them: a skin-toned thumbs-up or a flag is 4.
 - If your text uses decomposed accented letters (a base letter followed by a separate combining accent mark, rather than a single precomposed character), each accent adds its own extra unit to the length even though nothing extra is visible. Run [normalize](/util/normalize/) with NFC first if you want visually-equivalent text to report the same length.
 - For a full breakdown of characters, words, and lines together instead of a single number, use [count](/util/count/). For an inventory of exactly which characters make up the text and how often each appears, see [char_frequency](/util/char_frequency/).
+- For the size in bytes rather than characters, which is what a database column or a header limit usually means, [text statistics](/util/text_stats/) reports UTF-8 and UTF-16 byte counts next to the character count.
 - Because this always returns a number as text, it slots cleanly into any pipeline step that expects a string value, including ones further down the chain that parse it back into a number.

@@ -1,6 +1,6 @@
 ---
 title: Columnar Transposition Cipher Decoder Online
-description: Decrypt columnar transposition ciphertext back to plaintext using the same key and padding it was encrypted with.
+description: Decrypt columnar transposition cipher text online with the key and padding it was encrypted with, plus what to try when the key is unknown.
 ---
 ## What does this tool decrypt?
 
@@ -64,3 +64,4 @@ output:
 - Getting the key wrong doesn't usually throw an error. It silently produces a different, garbled rearrangement, since any non-empty key is technically valid. Check the output for readability, not just the absence of an error.
 - If the ciphertext was encoded with a padded grid, decoding it with an empty pad character (or vice versa) leaves stray pad characters in the output, or strips real trailing text. Pad settings must match exactly on both ends.
 - Only trailing pad characters are ever removed, and never more of them than the key length allows, so decoding never accidentally eats real message text from the middle or the start.
+- There is no solver for a message without the key, but the editor's branch step is a quick way to try several: give it one lane per candidate key, each running this step, and the merged output shows every candidate at once, so the readable one stands out. For a double columnar transposition, run the step twice, with the second key first.

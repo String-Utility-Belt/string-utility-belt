@@ -1,6 +1,6 @@
 ---
-title: Unescape Stringified JSON: Strip Backslashes and Format
-description: Turn JSON full of backslashes back into indented JSON, quoted or not, stringified once or twice. Text that is already valid JSON is only reformatted.
+title: Decode Stringified JSON Online: Unescape and Pretty-Print
+description: Decode stringified JSON into indented JSON: backslashes removed, outer quotes stripped, one or two layers undone, and valid JSON only reformatted.
 ---
 
 ## Why one unescape or one formatter is not enough
@@ -11,7 +11,7 @@ A formatter that only parses and re-indents does not help. Given `{\"id\":42}` i
 
 ## What each step does, and why in this order
 
-[trim](/util/trim/) runs first because the unescape step strips the outer quotes only when they are the very first and last characters, and a value copied from a terminal often ends with a newline. [code string unescape](/util/code_string_unescape/), set to JSON, then removes one layer: it drops the surrounding quotes if there are any and decodes `\"`, `\\`, `\n`, `\uXXXX` and the other escapes listed in [RFC 8259](https://www.rfc-editor.org/rfc/rfc8259#section-7), rejecting any escape JSON does not define.
+To decode stringified JSON properly, remove exactly as many layers as it has and then format what is left. [trim](/util/trim/) runs first because the unescape step strips the outer quotes only when they are the very first and last characters, and a value copied from a terminal often ends with a newline. [code string unescape](/util/code_string_unescape/), set to JSON, then removes one layer: it drops the surrounding quotes if there are any and decodes `\"`, `\\`, `\n`, `\uXXXX` and the other escapes listed in [RFC 8259](https://www.rfc-editor.org/rfc/rfc8259#section-7), rejecting any escape JSON does not define.
 
 The same step appears twice, each guarded by a condition: it runs only when the text starts with a quote (double or single, escaped or not) or a backslash follows its opening `{` or `[`. An object or array that is already valid JSON never has a backslash in that position, so it skips both, and the second copy runs only when one pass was not enough. The worked example needs both passes, the Docker log field and the Lambda body need one, and already-valid JSON needs none. The single quote is there for strings copied from Node's or Python's REPL, which show the result of `JSON.stringify` or `json.dumps` in single quotes: `'{"id": 42}'`.
 

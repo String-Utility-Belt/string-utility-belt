@@ -27,6 +27,7 @@ const preset: Preset = {
   category: 'Writing & Marketing',
   primaryQuery: 'remove line breaks from pdf text',
   published: '2026-10-07',
+  updated: '2026-11-06',
   related: ['clean-chatgpt-text'],
   steps: [
     step('eol', 'normalize_line_endings', { mode: 'lf', finalNewline: 'keep' },

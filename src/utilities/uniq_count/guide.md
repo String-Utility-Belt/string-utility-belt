@@ -1,6 +1,6 @@
 ---
 title: Uniq Count Online: Count Duplicate Lines (uniq -c)
-description: Count how many times each line appears in your text, sorted by frequency or alphabetically, as tab-separated text or JSON, like uniq -c.
+description: Count duplicate lines online: how many times each line appears, sorted by frequency or alphabetically, as tab-separated text or JSON, like uniq -c.
 ---
 ## What does counting duplicate lines do?
 
@@ -121,6 +121,7 @@ output: 2 | a
   within running prose instead of whole lines, see [word frequency](/util/word_frequency/).
 - Pairing with [line set operations](/util/set_operations/): that tool tells you which lines two lists
   share or don't, while this one tells you how often each line repeats within a single list.
+- Counting duplicates in a list or in rows pasted from a spreadsheet column, one value per line.
 
 ## Tips and pitfalls
 

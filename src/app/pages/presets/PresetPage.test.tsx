@@ -84,7 +84,7 @@ describe('PresetPage', () => {
     render(<PresetPage slug={SLUG} />)
     await screen.findByRole('heading', { level: 1, name: preset.name })
     expect(document.title).toMatch(/^Excel Column to SQL IN Clause/)
-    expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toMatch(/^Paste a column from Excel/)
+    expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toMatch(/^Convert a column to a comma separated list with single quotes/)
   })
 
   it("starts from the build's embedded trace without running anything, and runs once the input changes", async () => {

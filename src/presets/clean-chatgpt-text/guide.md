@@ -1,6 +1,6 @@
 ---
 title: Remove ChatGPT Formatting, Em Dashes & Hidden Characters
-description: Turn a ChatGPT answer into clean plain text: Markdown symbols removed, list numbers and bullets kept, em dashes, curly quotes and hidden spaces fixed.
+description: Free online ChatGPT text cleaner: remove ChatGPT formatting from text, keep list numbers and bullets, and fix em dashes, curly quotes and hidden spaces.
 ---
 
 ## Why pasted ChatGPT text is full of asterisks
@@ -10,6 +10,8 @@ ChatGPT writes its answers in Markdown, and the chat window renders it. Paste an
 Each layer needs its own fix. [strip markdown](/util/markdown_strip/) removes the syntax, but list markers are syntax too, so numbered steps lose their numbers. A dash or quote converter leaves the asterisks, and an invisible-character remover leaves everything you can see.
 
 Hidden spaces are sometimes called a ChatGPT watermark, but word processors, `&nbsp;` in web pages and French typography produce the same characters. The reasons to remove them are practical: a no-break space stops a line from wrapping, and a zero-width space makes search and find-and-replace miss text that looks identical.
+
+As a ChatGPT text cleaner, this preset handles all of those at once: paste the answer, copy the plain text, and paste that into Word, Google Docs or wherever the asterisks showed up.
 
 ## Why the steps run in this order
 
