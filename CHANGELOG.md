@@ -20,6 +20,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   (`/presets/extract-ip-addresses-from-text/`). Each page shows its chain step by step with worked examples and opens
   in the editor, where the pipeline can be changed, saved and reused.
 
+### Changed
+
+- Fifteen utility pages now lead their search title, heading and description with the phrase people type for
+  them, for example "Validate JSON", "SQL pretty printer", "Levenshtein distance calculator", "remove invisible
+  characters", "pronounceable password generator" and "semantic JSON diff". Six weeks of Search Console data
+  showed a page ranking for the phrase its title opens with and not for other phrasings of the same page.
+
 ## [1.17.7] - 2026-11-06
 
 ### Changed

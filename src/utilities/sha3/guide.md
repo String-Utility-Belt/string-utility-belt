@@ -1,6 +1,6 @@
 ---
-title: SHA-3 & Keccak-256 Hash Generator Online
-description: Compute SHA-3 or Keccak digests at 224, 256, 384, or 512 bits, including Keccak-256, the hash used by Ethereum.
+title: Keccak-256 & SHA-3 Hash Generator Online
+description: Compute Keccak-256, the hash Ethereum uses, or SHA-3 digests at 224, 256, 384 or 512 bits online, from text or bytes.
 ---
 ## What is SHA-3?
 

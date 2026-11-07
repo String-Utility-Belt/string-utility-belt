@@ -1,6 +1,6 @@
 ---
-title: Shell Quote & Escape Online: Bash, PowerShell, cmd
-description: Quote or escape text so it survives a shell as a single argument, for POSIX bash/sh, PowerShell or Windows cmd.exe, with per-flavor edge cases handled.
+title: Shell Escape Online: Quote for Bash, PowerShell and cmd
+description: Escape or quote text online so it survives a shell as a single argument: POSIX bash/sh, PowerShell or Windows cmd.exe, with per-flavor edge cases handled.
 ---
 ## Why does shell quoting matter?
 
