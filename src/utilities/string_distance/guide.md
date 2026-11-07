@@ -1,6 +1,6 @@
 ---
-title: String Distance Calculator: Levenshtein & More Online
-description: Compare two strings with Levenshtein, Damerau-Levenshtein, Jaro-Winkler, Dice, Jaccard, cosine, or LCS distance and similarity scores.
+title: Levenshtein Distance Calculator: Edit Distance Online
+description: Calculate the Levenshtein distance between two strings online, or Damerau-Levenshtein, Jaro-Winkler, Dice, Jaccard, cosine and LCS similarity scores.
 ---
 ## What is string distance?
 

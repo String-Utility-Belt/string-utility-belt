@@ -1,6 +1,6 @@
 ---
-title: Smart Quotes Converter: Curly Quotes Online
-description: Convert straight quotes to typographic curly quotes online, or the reverse. Also handles em/en dashes and ellipses, in English, German, French, or Polish style.
+title: Smart Quotes to Straight Quotes (and Back) Online
+description: Convert smart quotes to straight quotes online, or straight to curly. Em/en dashes and ellipses too, in English, German, French or Polish style.
 ---
 ## What are smart quotes?
 

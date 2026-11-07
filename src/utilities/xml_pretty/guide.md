@@ -1,6 +1,6 @@
 ---
-title: XML Formatter Online: Pretty Print and Indent XML
-description: Pretty-print and re-indent XML online with a configurable indent width. Comments, CDATA, processing instructions and the doctype stay intact.
+title: Indent XML Online: XML Formatter and Pretty Printer
+description: Indent and pretty-print XML online with a configurable indent width. Comments, CDATA, processing instructions and the doctype stay intact.
 ---
 ## What is XML pretty printing?
 

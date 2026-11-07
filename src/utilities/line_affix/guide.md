@@ -1,6 +1,6 @@
 ---
-title: Add Prefix or Suffix to Lines Online
-description: Add a prefix and suffix to every line of text online, skip blank lines automatically, and optionally join it all onto one line.
+title: Add Prefix to Each Line Online: Prefix, Suffix or Quotes
+description: Add a prefix to each line of text online, a suffix, or both, such as quotes around every line; skip blank lines automatically or join all onto one line.
 ---
 ## What does adding a prefix or suffix to lines do?
 

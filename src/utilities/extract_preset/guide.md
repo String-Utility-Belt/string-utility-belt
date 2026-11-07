@@ -1,6 +1,6 @@
 ---
-title: Extract URLs, Emails & Patterns Online: Text Scraper
-description: Pull URLs, emails, phone numbers, dates, hex colors, UUIDs, and 14 more built-in patterns out of any text, with dedupe, sort, and count.
+title: Extract URLs from Text Online: Emails, IPs & More
+description: Extract every URL, email address, IP, phone number, date, hex color or UUID from any text online, plus more built-in patterns, with dedupe, sort and count.
 ---
 ## What does this tool extract?
 

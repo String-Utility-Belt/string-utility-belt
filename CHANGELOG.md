@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.18.0] - 2026-11-06
+
 ### Added
 
 - **Ten presets for the two- and three-step jobs people search for.** Convert Base64 to hex
@@ -27,6 +29,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   advertising ID and where the match happens; the curl-to-PowerShell page names Invoke-WebRequest beside
   Invoke-RestMethod; the Unicode text style page shows how styling fits a pipeline and how to undo it; and utility
   guides can now link preset pages.
+- Fifteen utility pages now lead their search title, heading and description with the phrase people type for
+  them, for example "Validate JSON", "SQL pretty printer", "Levenshtein distance calculator", "remove invisible
+  characters", "pronounceable password generator" and "semantic JSON diff". Six weeks of Search Console data
+  showed a page ranking for the phrase its title opens with and not for other phrasings of the same page.
 
 ## [1.17.7] - 2026-11-06
 

@@ -1,6 +1,6 @@
 ---
-title: JSON to .env Converter Online
-description: Flatten a JSON object into .env KEY=value lines online, with upper-casing, a custom delimiter, and automatic quoting.
+title: JSON to .env Converter: Environment Variables Online
+description: Convert JSON to .env environment variables online: nested keys flattened to KEY=value lines, with optional upper-casing, custom delimiter and auto-quoting.
 ---
 ## What does converting JSON to .env do?
 

@@ -1,6 +1,6 @@
 ---
-title: JSON Diff Online: Compare Two JSON Documents
-description: Compare two JSON documents online and get an added/removed/changed summary, an RFC 6902 JSON Patch, or a unified line diff.
+title: Semantic JSON Diff Online: Compare Two JSON Documents
+description: Compare two JSON documents online by value, ignoring key order and whitespace: an added/removed/changed summary, an RFC 6902 JSON Patch, or a unified line diff.
 ---
 ## What does comparing JSON structurally mean?
 

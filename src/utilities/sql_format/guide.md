@@ -1,6 +1,6 @@
 ---
-title: SQL Formatter Online: Pretty Print SQL Queries
-description: Format and beautify SQL online for eight dialects, with configurable keyword case, indent width and blank lines between statements.
+title: SQL Pretty Printer Online: Format SQL Queries
+description: Pretty print and format SQL online for eight dialects, with configurable keyword case, indent width and blank lines between statements.
 ---
 ## What is SQL formatting?
 
