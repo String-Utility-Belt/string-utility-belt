@@ -9,6 +9,7 @@ const preset: Preset = {
   category: 'Data & Spreadsheets',
   primaryQuery: 'nested json to csv',
   published: '2026-10-07',
+  updated: '2026-11-06',
   related: ['unescape-stringified-json', 'excel-column-to-sql-in-clause'],
   steps: [
     step('rows', 'jsonpath', { path: '$.data[*]', mode: 'values', indent: 2 },

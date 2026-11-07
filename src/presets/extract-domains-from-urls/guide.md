@@ -17,7 +17,7 @@ The last step removes a leading `www.` from every hostname, so `www.example.com`
 
 ## A hostname, not the registrable domain
 
-The result is the full hostname: `shop.example.co.uk` stays `shop.example.co.uk`. Reducing it to the part a company registers, `example.co.uk`, needs the Public Suffix List, which knows that `co.uk` is a suffix like `com`. There is no Public Suffix List utility here. In Python, the `tldextract` package does it; in a spreadsheet, a formula that keeps the last two labels gets most `.com` and `.org` sites right and every `.co.uk` site wrong.
+The result is the full hostname: `shop.example.co.uk` stays `shop.example.co.uk`. Reducing it to the part a company registers, `example.co.uk`, needs the Public Suffix List, which knows that `co.uk` is a suffix like `com`. There is no Public Suffix List utility here. In Python, the `tldextract` package does it; in a spreadsheet, a formula that keeps the last two labels gets most `.com` and `.org` sites right and every `.co.uk` site wrong. In the editor that shortcut is one more step: a [find and replace](/util/replace/) with the pattern `^.*\.([^.\n]+\.[^.\n]+)$`, the replacement `$1` and the flags `gm` keeps the last two labels of each hostname, so it extracts the registrable domain of `.com`-style hosts, and the wrong part of `shop.example.co.uk` or an IP address.
 
 ## Limits
 

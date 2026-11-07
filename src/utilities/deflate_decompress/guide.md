@@ -1,6 +1,6 @@
 ---
 title: DEFLATE Decompress Online: zlib and Raw Inflate
-description: Decompress DEFLATE data online (zlib-wrapped or raw, auto-detected by default) to text or bytes, with the zlib Adler-32 checksum verified.
+description: Deflate online decoder: inflate zlib-wrapped or raw DEFLATE data, auto-detected by default, to text or bytes, with the zlib Adler-32 checksum verified.
 ---
 ## What is DEFLATE decompression?
 
@@ -70,6 +70,8 @@ output: Hello, zlib!
   or Base64.
 - Decompressing bytes captured as hex or Base64 text (from a debugger, a log line, or a network
   capture) without a separate decode pass.
+- Checking what a zlib or pako deflate call produced, pasted from a console as hex or Base64, to
+  confirm it used the wrapper the receiver expects.
 
 ## Tips and pitfalls
 

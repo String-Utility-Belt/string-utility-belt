@@ -1,13 +1,13 @@
 ---
-title: Remove Tracking Parameters From a List of URLs
-description: Strip utm_ tags, fbclid, gclid, srsltid and other click ids from many links at once, keeping the parameters each page needs, their order and any #anchor.
+title: Remove Tracking Parameters From URLs in Bulk
+description: Remove UTM parameters from URLs in bulk: strip utm_ tags, fbclid, gclid, srsltid and other click ids from many links at once, keeping what each page needs.
 ---
 
 ## Where tracked links come from
 
 Links pile up tracking parameters wherever they travel. A page shared from Facebook gains `fbclid`, a click on a Google ad gains `gclid`, `gbraid` and `gad_source`, a product found through Google Shopping gains `srsltid`, and every newsletter adds `utm_source`, `utm_medium` and `utm_campaign` plus the email platform's own ids, such as HubSpot's `_hsenc`, Mailchimp's `mc_eid` or Klaviyo's `_kx`. None of them changes the page. They identify the visit or the person.
 
-That matters when the links themselves are the data. A content audit or a sitemap check lists the same page five times under five campaign tags. Analytics exports split one landing page into dozens of rows. A link pasted into documentation, a chat or a redirect map carries a click id that belongs to someone else's visit, sometimes their email address in encoded form. Removing the parameters by hand means reading every query string and knowing which names are trackers and which ones the page needs, such as `variant=41`, `page=2` or `q=waterproof+jacket`.
+That matters when the links themselves are the data. A content audit or a sitemap check lists the same page five times under five campaign tags. Analytics exports split one landing page into dozens of rows. A link pasted into documentation, a chat or a redirect map carries a click id that belongs to someone else's visit, sometimes their email address in encoded form. Removing the parameters by hand means reading every query string and knowing which names are trackers and which ones the page needs, such as `variant=41`, `page=2` or `q=waterproof+jacket`. A one-link cleaner handles one of these at a time; this preset removes UTM parameters from URLs in bulk, one link per line, and the other trackers with them.
 
 ## What each step does
 

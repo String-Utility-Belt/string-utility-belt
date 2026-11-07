@@ -7,8 +7,9 @@ const preset: Preset = {
   summary:
     'Paste a .env file and get a Secret manifest with every value Base64-encoded under data, ready for kubectl apply, with quotes, export prefixes, comments and multi-line values handled.',
   category: 'DevOps & Config',
-  primaryQuery: 'env file to kubernetes secret',
+  primaryQuery: 'kubernetes secret from env file',
   published: '2026-10-08',
+  updated: '2026-11-06',
   related: ['decode-kubernetes-secret', 'spring-boot-yaml-to-env-vars'],
   steps: [
     step('parse', 'env_to_json', { typed: false, expand: false, indent: 2 },

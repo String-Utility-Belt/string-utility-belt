@@ -90,7 +90,7 @@ export const PRESET_INDEX: PresetMeta[] = [
     ],
     "stepCount": 5,
     "published": "2026-10-07",
-    "updated": "2026-10-08"
+    "updated": "2026-11-06"
   },
   {
     "slug": "clean-chatgpt-text",
@@ -114,7 +114,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "straighten quotes"
     ],
     "stepCount": 6,
-    "published": "2026-10-07"
+    "published": "2026-10-07",
+    "updated": "2026-11-06"
   },
   {
     "slug": "clean-text-pasted-from-word",
@@ -141,7 +142,7 @@ export const PRESET_INDEX: PresetMeta[] = [
   {
     "slug": "convert-curl-to-powershell",
     "name": "Convert a curl command to PowerShell",
-    "summary": "Paste a curl command from API docs or Chrome's \"Copy as cURL\" and get the same request as a PowerShell Invoke-RestMethod command: headers, body, auth and flags carried over, every value quoted for PowerShell.",
+    "summary": "Paste a curl command from API docs or Chrome's \"Copy as cURL\" and get the same request as a PowerShell Invoke-RestMethod or Invoke-WebRequest command: headers, body, auth and flags carried over, every value quoted.",
     "category": "Web & APIs",
     "utilityIds": [
       "curl_parse",
@@ -152,7 +153,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "write Invoke-RestMethod"
     ],
     "stepCount": 2,
-    "published": "2026-10-12"
+    "published": "2026-10-12",
+    "updated": "2026-11-06"
   },
   {
     "slug": "convert-unix-timestamps-in-json",
@@ -230,7 +232,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "json pretty"
     ],
     "stepCount": 4,
-    "published": "2026-10-07"
+    "published": "2026-10-07",
+    "updated": "2026-11-06"
   },
   {
     "slug": "decode-helm-release-secret",
@@ -272,7 +275,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "one JSON array"
     ],
     "stepCount": 3,
-    "published": "2026-10-08"
+    "published": "2026-10-08",
+    "updated": "2026-11-06"
   },
   {
     "slug": "decode-kubernetes-secret",
@@ -290,7 +294,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "decode every value"
     ],
     "stepCount": 3,
-    "published": "2026-10-07"
+    "published": "2026-10-07",
+    "updated": "2026-11-06"
   },
   {
     "slug": "decode-saml-request",
@@ -312,7 +317,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "xml pretty"
     ],
     "stepCount": 5,
-    "published": "2026-10-07"
+    "published": "2026-10-07",
+    "updated": "2026-11-06"
   },
   {
     "slug": "env-file-to-kubernetes-secret",
@@ -332,12 +338,13 @@ export const PRESET_INDEX: PresetMeta[] = [
       "json to yaml"
     ],
     "stepCount": 4,
-    "published": "2026-10-08"
+    "published": "2026-10-08",
+    "updated": "2026-11-06"
   },
   {
     "slug": "excel-column-to-sql-in-clause",
     "name": "Turn an Excel column into a SQL IN clause",
-    "summary": "Paste a column copied from Excel or Google Sheets and get a ready-to-run IN (…) list: whitespace trimmed, duplicates dropped, and every value escaped and quoted for your SQL dialect.",
+    "summary": "Convert a column copied from Excel or Google Sheets into a comma separated list with single quotes, ready to run as IN (…): whitespace trimmed, duplicates dropped, and every value escaped for your SQL dialect.",
     "category": "Data & Spreadsheets",
     "utilityIds": [
       "line_affix",
@@ -354,7 +361,7 @@ export const PRESET_INDEX: PresetMeta[] = [
     ],
     "stepCount": 5,
     "published": "2026-10-07",
-    "updated": "2026-10-08"
+    "updated": "2026-11-06"
   },
   {
     "slug": "extract-domains-from-urls",
@@ -372,7 +379,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "drop www."
     ],
     "stepCount": 2,
-    "published": "2026-10-08"
+    "published": "2026-10-08",
+    "updated": "2026-11-06"
   },
   {
     "slug": "extract-ip-addresses-from-text",
@@ -408,7 +416,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "leave out no-reply senders"
     ],
     "stepCount": 3,
-    "published": "2026-10-09"
+    "published": "2026-10-09",
+    "updated": "2026-11-06"
   },
   {
     "slug": "fix-bash-bad-interpreter",
@@ -451,7 +460,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "collapse whitespace"
     ],
     "stepCount": 6,
-    "published": "2026-10-07"
+    "published": "2026-10-07",
+    "updated": "2026-11-06"
   },
   {
     "slug": "hash-email-list-for-customer-match",
@@ -470,7 +480,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "SHA-256 every address"
     ],
     "stepCount": 4,
-    "published": "2026-10-08"
+    "published": "2026-10-08",
+    "updated": "2026-11-06"
   },
   {
     "slug": "hex-to-base64",
@@ -506,7 +517,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "csv normalize headers"
     ],
     "stepCount": 3,
-    "published": "2026-10-07"
+    "published": "2026-10-07",
+    "updated": "2026-11-06"
   },
   {
     "slug": "parse-user-agents-from-access-log",
@@ -542,7 +554,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "clean every link"
     ],
     "stepCount": 2,
-    "published": "2026-10-08"
+    "published": "2026-10-08",
+    "updated": "2026-11-06"
   },
   {
     "slug": "spring-boot-yaml-to-env-vars",
@@ -562,7 +575,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       ".env and Kubernetes env:"
     ],
     "stepCount": 4,
-    "published": "2026-10-07"
+    "published": "2026-10-07",
+    "updated": "2026-11-06"
   },
   {
     "slug": "unescape-stringified-json",
@@ -581,7 +595,8 @@ export const PRESET_INDEX: PresetMeta[] = [
       "json pretty"
     ],
     "stepCount": 4,
-    "published": "2026-10-07"
+    "published": "2026-10-07",
+    "updated": "2026-11-06"
   },
   {
     "slug": "url-decode-base64",

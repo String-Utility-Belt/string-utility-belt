@@ -1,6 +1,6 @@
 ---
 title: Word Frequency Counter: Most Common Words Online
-description: Count how often each word appears in text online, with options for stop words, minimum length, punctuation, and table, JSON, or CSV output.
+description: Free online word frequency counter: see the most common words in any text, with stop-word and minimum-length filters and table, JSON or CSV output.
 ---
 ## What does this tool do?
 
@@ -78,6 +78,7 @@ dddd  1
 - Building a quick keyword list or a word cloud's input data.
 - Comparing vocabulary between two pieces of text, using the CSV or JSON output for further processing.
 - Spotting overused words in a piece of writing before editing it.
+- Finding the most common words in a PDF, a Google Doc or a web page: paste its text, or chain this step after [strip HTML tags](/util/strip_html_tags/) for page source.
 
 ## Tips and pitfalls
 

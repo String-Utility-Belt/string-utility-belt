@@ -1,11 +1,11 @@
 ---
 title: Nested JSON to CSV: Flatten API Responses Into Columns
-description: Turn a nested JSON API response into CSV: pick the records out of the envelope, spread nested objects and arrays into columns, get snake_case headers.
+description: Flatten nested JSON to CSV online: pick the records out of an API response's envelope, spread nested objects and arrays into columns and get snake_case headers.
 ---
 
 ## Why a plain JSON-to-CSV conversion falls short
 
-A CSV file is a flat grid, and the JSON an API returns rarely is. The records you want usually sit one level down, in a `data`, `results` or `items` array next to paging details such as `meta` or `links`. A converter that expects an array of records sees one object instead, and typically writes a single very wide row (`data[0].id`, `data[1].id`, `meta.page`) or puts the whole array into one cell. Nested objects such as `total` need flattening too, and the flattened names (`total.amount`, `items[0].sku`) make awkward column names in SQL or a dataframe.
+A CSV file is a flat grid, and the JSON an API returns rarely is. The records you want usually sit one level down, in a `data`, `results` or `items` array next to paging details such as `meta` or `links`. A converter that expects an array of records sees one object instead, and typically writes a single very wide row (`data[0].id`, `data[1].id`, `meta.page`) or puts the whole array into one cell. Nested objects such as `total` need flattening too, and the flattened names (`total.amount`, `items[0].sku`) make awkward column names in SQL or a dataframe. A plain nested JSON to CSV converter usually handles one of these layers, not all three.
 
 So the order matters: select the records first, or the envelope is flattened along with them, and rename the headers last, once flattening has created the final column names.
 

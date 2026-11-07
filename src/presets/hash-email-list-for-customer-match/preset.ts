@@ -9,7 +9,8 @@ const preset: Preset = {
   category: 'Writing & Marketing',
   primaryQuery: 'hash emails for customer match',
   published: '2026-10-08',
-  related: ['bulk-utm-link-builder'],
+  updated: '2026-11-06',
+  related: ['bulk-utm-link-builder', 'extract-unique-emails-from-text'],
   steps: [
     step('spaces', 'replace', { pattern: '(?:[^\\S\\r\\n]|["\\u200B-\\u200D\\u2060])+', replacement: '', regex: true, flags: 'g' },
       'Deletes spaces, tabs, non-breaking and zero-width spaces, and the double quotes a CSV export wraps cells in, while keeping line breaks. One stray character gives a completely different hash that never matches.',

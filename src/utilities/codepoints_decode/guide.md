@@ -1,6 +1,6 @@
 ---
 title: Code Points to Text: Convert U+XXXX to Characters
-description: Turn a list of Unicode code points (U+XXXX, 0xXXXX, \u{...}, or plain numbers) back into readable text.
+description: Convert Unicode code points to text: turn a list of U+XXXX, 0xXXXX, \u{...} or plain decimal or hex numbers back into the characters they stand for.
 ---
 ## What does this tool do?
 

@@ -12,6 +12,7 @@ const preset: Preset = {
   category: 'Web & APIs',
   primaryQuery: 'decode multiple jwt tokens',
   published: '2026-10-08',
+  updated: '2026-11-06',
   related: ['decode-flask-session-cookie', 'decode-saml-request'],
   steps: [
     step('find-tokens', 'extract_preset', { type: ['jwt'], unique: true },

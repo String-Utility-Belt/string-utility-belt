@@ -24,7 +24,8 @@ const preset: Preset = {
   category: 'DevOps & Config',
   primaryQuery: 'spring boot application.yml to environment variables',
   published: '2026-10-07',
-  related: ['decode-helm-release-secret', 'fix-bash-bad-interpreter'],
+  updated: '2026-11-06',
+  related: ['yaml-to-env', 'decode-helm-release-secret', 'fix-bash-bad-interpreter'],
   steps: [
     step('parse', 'yaml_to_json', { indent: 2, allDocuments: true },
       'Parses the YAML into JSON so the keys can be walked. Always emitting an array means a file without --- sections arrives in the same shape as one with profile documents.',

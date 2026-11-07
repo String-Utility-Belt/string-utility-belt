@@ -5,10 +5,11 @@ const preset: Preset = {
   slug: 'convert-curl-to-powershell',
   name: 'Convert a curl command to PowerShell',
   summary:
-    'Paste a curl command from API docs or Chrome\'s "Copy as cURL" and get the same request as a PowerShell Invoke-RestMethod command: headers, body, auth and flags carried over, every value quoted for PowerShell.',
+    'Paste a curl command from API docs or Chrome\'s "Copy as cURL" and get the same request as a PowerShell Invoke-RestMethod or Invoke-WebRequest command: headers, body, auth and flags carried over, every value quoted.',
   category: 'Web & APIs',
   primaryQuery: 'curl to powershell',
   published: '2026-10-12',
+  updated: '2026-11-06',
   related: ['decode-jwts-in-log-file'],
   steps: [
     step('parse', 'curl_parse', {},

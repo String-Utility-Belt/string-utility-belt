@@ -1,11 +1,11 @@
 ---
-title: Convert a .env File to a Kubernetes Secret Manifest
-description: Paste a .env file and get a Kubernetes Secret in YAML, every value Base64-encoded under data, with quotes, comments, export and multi-line values handled.
+title: Kubernetes Secret From Env File: .env to Secret Manifest
+description: Kubernetes Secret from env file: paste a .env and get a manifest with every value Base64-encoded under data, quotes, comments and multi-line values handled.
 ---
 
 ## Why kubectl --from-env-file is not enough
 
-The quick route from a `.env` file to a Secret is `kubectl create secret generic app-env --from-env-file=.env --dry-run=client -o yaml`. It reads every line as `KEY=value` and nothing more, which is not how the file was written for the tools that normally read it. Checked with kubectl 1.37:
+The quick route from a `.env` file to a Secret, the kubectl create secret from env file command most guides give, is `kubectl create secret generic app-env --from-env-file=.env --dry-run=client -o yaml`. It reads every line as `KEY=value` and nothing more, which is not how the file was written for the tools that normally read it. Checked with kubectl 1.37:
 
 - Quotes stay in the value. `DATABASE_URL="postgres://…"` is stored with both quote marks, and the connection string your app reads starts with `"`.
 - An inline comment becomes part of the value: `REDIS_URL=redis://cache:6379/0  # session store` stores the comment and the spaces before it. Trailing whitespace is kept too.

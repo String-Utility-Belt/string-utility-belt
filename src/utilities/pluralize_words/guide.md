@@ -1,6 +1,6 @@
 ---
 title: Pluralize Words Online: Singular to Plural Converter
-description: Pluralize or singularize English words online across a whole phrase, only the last word, or each line, and pick the form automatically from a count.
+description: Singular to plural converter, and back: pluralize or singularize English words in a phrase, only the last word or each line, or pick the form from a count.
 ---
 ## What does this tool do?
 

@@ -1,6 +1,6 @@
 ---
 title: Remove Line Breaks From PDF Text and Rejoin Hyphens
-description: Join the broken lines in text copied from a PDF, rejoin words hyphenated at line ends, drop page numbers and expand fi and fl ligatures, in your browser.
+description: Remove line breaks from text copied from PDF files, rejoin words hyphenated at line ends, drop page numbers and expand fi and fl ligatures, in your browser.
 ---
 
 ## Why text copied from a PDF breaks mid-sentence

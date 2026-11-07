@@ -1,6 +1,6 @@
 ---
 title: Decode Every JWT in a Log, HAR or curl Trace at Once
-description: Paste a log, a HAR export or a curl -v trace and read the payload of every JSON Web Token in it, each once, with iat, exp and auth_time as dates.
+description: Decode multiple JWT tokens at once: paste a log, HAR export or curl -v trace and read every token's payload, each once, with iat and exp shown as dates.
 ---
 
 ## Debugging with more than one token

@@ -1,6 +1,6 @@
 ---
 title: Extract Unique Email Addresses From Any Text
-description: Paste a thread, CSV or web page and get every email address once: case variants merged, the list sorted, and no-reply senders left out.
+description: Extract email addresses from a thread, CSV or web page online and get each one once: case variants merged, the list sorted, and no-reply senders left out.
 ---
 
 ## Why finding the addresses is the easy part

@@ -1,6 +1,6 @@
 ---
 title: Remove Duplicate Lines Online: Line Deduplicator
-description: Remove duplicate lines from text online, keeping the first occurrence of each. Optional case-insensitive matching, like the Unix uniq command.
+description: Remove duplicate lines online, keeping the first copy of each in place: works on any list or text, with optional case-insensitive matching, like Unix uniq.
 ---
 ## What does deduplicating lines do?
 
@@ -63,6 +63,7 @@ output:
 - Cleaning up a list of URLs, email addresses, or log lines that contains repeats.
 - Deduplicating a word or tag list before further processing.
 - Removing accidental repeated rows after concatenating several files or exports together.
+- Deduplicating rows copied from a spreadsheet column, which paste as one line per row.
 
 ## Tips and pitfalls
 

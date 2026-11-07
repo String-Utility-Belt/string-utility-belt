@@ -5,11 +5,11 @@ const preset: Preset = {
   slug: 'excel-column-to-sql-in-clause',
   name: 'Turn an Excel column into a SQL IN clause',
   summary:
-    'Paste a column copied from Excel or Google Sheets and get a ready-to-run IN (…) list: whitespace trimmed, duplicates dropped, and every value escaped and quoted for your SQL dialect.',
+    'Convert a column copied from Excel or Google Sheets into a comma separated list with single quotes, ready to run as IN (…): whitespace trimmed, duplicates dropped, and every value escaped for your SQL dialect.',
   category: 'Data & Spreadsheets',
   primaryQuery: 'excel column to sql in clause',
   published: '2026-10-07',
-  updated: '2026-10-08',
+  updated: '2026-11-06',
   related: ['nested-json-to-csv'],
   steps: [
     step('trim', 'trim_lines', { side: 'both', characters: '' },

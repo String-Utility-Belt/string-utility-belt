@@ -1,6 +1,6 @@
 ---
 title: Excel Column to SQL IN Clause: Quoted, Deduped, Escaped
-description: Paste a column from Excel or Google Sheets and get a valid SQL IN (...) list with values trimmed, duplicates removed and apostrophes escaped.
+description: Convert a column to a comma separated list with single quotes: paste it from Excel or Google Sheets and get a valid SQL IN (...) list, deduped and escaped.
 ---
 
 ## Why a quick find-and-replace is not enough
@@ -13,7 +13,7 @@ Each of those problems needs its own step, and the order matters. Trimming has t
 
 The [trim each line](/util/trim_lines/) step removes leading and trailing whitespace from every cell, tabs and non-breaking spaces included. Every step splits lines on Windows (CRLF) and Unix line endings alike, so a column copied on Windows works the same way. [Deduplicate lines](/util/line_dedupe/) keeps the first occurrence of each value and drops later repeats. It compares exactly, so `SKU-abc` and `SKU-ABC` both stay: on a case-sensitive collation (PostgreSQL by default) they are different keys, and merging them would quietly drop rows from your result.
 
-The third step runs [SQL escape](/util/sql_escape/) on each line on its own: it doubles each single quote, the standard SQL way to put an apostrophe inside a string literal, and wraps the value in single quotes. Run over the whole column at once, it would put one pair of quotes around everything. [Prefix / suffix lines](/util/line_affix/) then joins the quoted values with commas, skipping blank lines, and a second copy of it wraps the whole list in `IN (` and `)`. Change that last step's prefix to `WHERE email IN (` and the output becomes a complete clause.
+The third step runs [SQL escape](/util/sql_escape/) on each line on its own: it doubles each single quote, the standard SQL way to put an apostrophe inside a string literal, and wraps the value in single quotes. Run over the whole column at once, it would put one pair of quotes around everything. [Prefix / suffix lines](/util/line_affix/) then joins the quoted values with commas, skipping blank lines, and a second copy of it wraps the whole list in `IN (` and `)`. Change that last step's prefix to `WHERE email IN (` and the output becomes a complete clause. The same steps convert a column to a comma separated list with single quotes for any other use: delete the last step to drop the `IN (` and `)`, change the join step's separator to a space for a space-separated list, or untick wrap in quotes in step 3 and add a [prefix / suffix lines](/util/line_affix/) step after it with a double quote on each side for double-quoted values.
 
 ## Things to check before you run the query
 

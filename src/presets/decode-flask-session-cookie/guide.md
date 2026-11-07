@@ -1,11 +1,11 @@
 ---
-title: Decode a Flask Session Cookie to Readable JSON
-description: Paste a Flask session cookie, or the Cookie or Set-Cookie header carrying it, and read the session data as JSON, including compressed .eJ cookies.
+title: Decode a Flask Session Cookie Online to Readable JSON
+description: Flask session cookie decoder: paste the cookie, or the Cookie or Set-Cookie header carrying it, and read the session data as JSON, even compressed .eJ cookies.
 ---
 
 ## What is inside the cookie
 
-Flask's default session interface keeps the whole session in the cookie. It is signed with the app's `SECRET_KEY`, so the server can tell if it was changed, but not encrypted: anyone who holds the cookie can read it. Decoding it is a routine step when a login, a flash message or a CSRF check misbehaves in your own app. Copy the value from your browser's developer tools (Application > Cookies in Chrome, Storage > Cookies in Firefox).
+Flask's default session interface keeps the whole session in the cookie. It is signed with the app's `SECRET_KEY`, so the server can tell if it was changed, but not encrypted: anyone who holds the cookie can read it. There is nothing to decrypt and no secret key to find: reading it takes only the steps below, and the key matters only for checking the signature. Decoding it is a routine step when a login, a flash message or a CSRF check misbehaves in your own app. Copy the value from your browser's developer tools (Application > Cookies in Chrome, Storage > Cookies in Firefox).
 
 The value is produced by itsdangerous and has three parts separated by dots: `payload.timestamp.signature`. The payload is the session as compact JSON, encoded as URL-safe Base64 without padding. When zlib compression makes the payload at least two bytes shorter, itsdangerous compresses it and marks it with a leading dot. That is why a compressed Flask session cookie begins with `.eJ`: a zlib stream at the default compression level starts with the bytes 78 9C, which Base64 encodes as `eJ`.
 

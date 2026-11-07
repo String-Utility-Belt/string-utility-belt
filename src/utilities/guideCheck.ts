@@ -44,13 +44,15 @@ export function proseLines(source: string): string[] {
 }
 
 const show = (s: string) => JSON.stringify(s)
+const NO_PRESETS: ReadonlySet<string> = new Set()
 
 /**
  * Every problem with one utility's guide, as readable messages (empty when it
- * passes). `utilityIds` are the ids a guide may link to. Worked examples run
+ * passes). `utilityIds` are the utilities a guide may link to as `/util/<id>/` and
+ * `presetSlugs` the presets it may link to as `/presets/<slug>/`. Worked examples run
  * exactly as the golden `examples` test runs a utility's own examples.
  */
-export async function checkGuide(u: Utility, source: string | null, utilityIds: ReadonlySet<string>): Promise<string[]> {
+export async function checkGuide(u: Utility, source: string | null, utilityIds: ReadonlySet<string>, presetSlugs: ReadonlySet<string> = NO_PRESETS): Promise<string[]> {
   if (source === null) return [`missing: create src/utilities/${u.id}/guide.md`]
   const problems: string[] = []
   const guide = parseGuide(source)
@@ -85,9 +87,11 @@ export async function checkGuide(u: Utility, source: string | null, utilityIds: 
   const prose = lines.join('\n').replace(/`[^`\n]*`/g, '')
   for (const [, href] of prose.matchAll(/\]\(([^)\s]+)\)/g)) {
     const util = /^\/util\/([^/]+)\/$/.exec(href)
+    const preset = /^\/presets\/([^/]+)\/$/.exec(href)
     if (util) { if (!utilityIds.has(util[1])) problems.push(`link ${href}: no utility "${util[1]}"`) }
+    else if (preset) { if (!presetSlugs.has(preset[1])) problems.push(`link ${href}: no preset "${preset[1]}"`) }
     else if (href.startsWith('#')) problems.push(`link ${href}: use /util/<id>/ paths, not #/ routes (search engines drop fragments)`)
-    else if (!href.startsWith('https://')) problems.push(`link ${href}: link other utilities as /util/<id>/, or use an https:// URL`)
+    else if (!href.startsWith('https://')) problems.push(`link ${href}: link other utilities as /util/<id>/, a preset as /presets/<slug>/, or use an https:// URL`)
   }
 
   problems.push(...guide.errors)
