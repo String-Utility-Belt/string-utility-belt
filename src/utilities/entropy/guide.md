@@ -1,6 +1,6 @@
 ---
 title: Password Entropy Calculator: Shannon Entropy Online
-description: Calculate Shannon entropy per character and in total, plus a rough length × charset password-strength score and crack-time estimate.
+description: Shannon entropy calculator for any string: bits per character and in total, plus a length × charset password-strength score and crack-time estimate, online.
 ---
 ## What is entropy, and what is password entropy?
 

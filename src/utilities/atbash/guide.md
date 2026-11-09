@@ -1,6 +1,6 @@
 ---
 title: Atbash Cipher Online: Encode & Decode Mirror Text
-description: Encode or decode text with the Atbash cipher, the ancient mirror-alphabet substitution where A becomes Z and Z becomes A.
+description: Decode Atbash cipher text or encode your own online: the mirror-alphabet substitution where A becomes Z and Z becomes A, the same step in both directions.
 ---
 ## What is the Atbash cipher?
 

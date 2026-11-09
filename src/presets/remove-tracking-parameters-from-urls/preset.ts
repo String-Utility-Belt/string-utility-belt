@@ -32,6 +32,7 @@ const preset: Preset = {
   category: 'Writing & Marketing',
   primaryQuery: 'remove tracking parameters from urls',
   published: '2026-10-08',
+  updated: '2026-11-06',
   related: ['bulk-utm-link-builder', 'extract-domains-from-urls'],
   steps: [
     step('unescape', 'unescape_html', {},

@@ -1,13 +1,13 @@
 ---
-title: Decode a Kubernetes Secret and Read Every Value
-description: Paste a Secret from kubectl get secret -o yaml or -o json and see every data value decoded from Base64 into plain text, with its key kept.
+title: kubectl get secret decode: Read a Kubernetes Secret Online
+description: Decode a Kubernetes Secret online: paste kubectl get secret -o yaml or -o json output and read every Base64 data value as plain text under its key.
 ---
 
 ## Why the values in a Secret look scrambled
 
 A Kubernetes Secret keeps its payload under `data`, and the API server returns every value there Base64-encoded. That is an encoding, not encryption: anyone who can read the Secret can read the values, they just cannot do it at a glance. When you are checking which database host a pod is pointed at, or whether a rotated password actually landed, the encoded form gets in the way. The usual answer is to copy one value at a time into `base64 --decode`, which is slow for a Secret with a dozen keys and easy to get wrong when a value ends in padding or wraps across lines in a terminal.
 
-This preset decodes the whole map in one go. Paste the Secret as `kubectl get secret <name> -o yaml` prints it, or the JSON from `-o json`, and every value comes back as readable text under its original key.
+This preset decodes the whole map in one go, with no `kubectl get secret … -o jsonpath` and `base64 --decode` to type for each key. Paste the Secret as `kubectl get secret <name> -o yaml` prints it, or the JSON from `-o json`, and every value comes back as readable text under its original key.
 
 ## What each step does
 

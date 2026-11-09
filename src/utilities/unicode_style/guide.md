@@ -1,6 +1,6 @@
 ---
 title: Unicode Text Style Generator: Fancy Fonts Online
-description: Restyle text online with Unicode look-alike characters: bold, italic, script, fraktur, bubble, fullwidth, upside-down, small caps, and glitchy zalgo text.
+description: Make fancy Unicode text to copy and paste anywhere: bold, italic, script, fraktur, bubble, fullwidth, upside-down, small caps and zalgo, 18 styles in all.
 ---
 ## What is Unicode text styling?
 
@@ -75,6 +75,12 @@ output:
 - Stylized display names, bios, and social media posts where real text formatting is not available.
 - Emphasis or a "glitch" aesthetic in messages, without using Markdown or HTML formatting.
 - Quick visual variety for headers or labels pasted into plain-text tools.
+
+## Styled text in a pipeline
+
+Styling is one step, so it combines with the others. A pipeline that runs [trim](/util/trim/), then [change case](/util/case/) in title case, then this step in bold turns a pasted line into a styled heading in one go, and saving it keeps the style, the case and the order for next time. The browser extension runs a saved pipeline on selected text from the right-click menu, so the same styling is there on any site without opening the editor. To see what the step produced, add [unicode code point converter](/util/codepoints_encode/) or [unicode code point inspector](/util/unicode_inspect/) after it: every styled letter is a separate code point, which is why the text survives a copy and paste but not a search.
+
+The way back is a pipeline too. [unicode normalize](/util/normalize/) with the NFKC form turns bold, italic, fraktur, double-struck, monospace, fullwidth, bubble, square, superscript and subscript text back into plain letters, because Unicode lists those characters as compatibility forms of the originals; small caps, filled bubbles and upside-down text have no such mapping and stay as they are. [remove diacritics](/util/diacritics/) strips the combining marks that strikethrough, underline and zalgo add. Text that arrived with look-alike characters by accident, such as curly quotes and odd spaces from a word processor, is the job of the [clean up text pasted from Word](/presets/clean-text-pasted-from-word/) preset.
 
 ## Tips and pitfalls
 

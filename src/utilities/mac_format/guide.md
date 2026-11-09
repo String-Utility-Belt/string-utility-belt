@@ -1,6 +1,6 @@
 ---
 title: MAC Address Formatter: Colon, Dash and Cisco Style
-description: Reformat a MAC address as colon, dash, dot, bare or Cisco style, and check its OUI, multicast and locally-administered bits online.
+description: MAC address format converter: rewrite addresses in colon, dash, dot, bare or Cisco style, in bulk one per line, and check the OUI and multicast bits online.
 ---
 ## What is a MAC address?
 
@@ -96,7 +96,7 @@ output:
 
 ## Common uses
 
-- Normalizing MAC addresses from different log sources (some colon-separated, some Cisco-style) into one consistent format.
+- Normalizing MAC addresses in bulk from different log sources (some colon-separated, some Cisco-style) into one consistent format, one address per line, straight from a spreadsheet column.
 - Checking whether an address is locally administered. That is a strong signal it's a virtual NIC, container interface, or a privacy-randomized address rather than genuine factory hardware.
 - Pulling out a device's OUI (the first three bytes) to look up its manufacturer in the IEEE registry. This is meaningful only when the locally-administered bit is 0.
 - Validating a batch of MAC addresses and flagging the malformed ones.

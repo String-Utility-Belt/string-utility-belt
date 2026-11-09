@@ -1,13 +1,13 @@
 ---
-title: Decode SAMLRequest and SAMLResponse to Readable XML
-description: Paste a SAML redirect URL, a POST form body, a cURL command or a bare SAMLRequest or SAMLResponse value and read it as indented XML, in your browser.
+title: SAML Decoder: Decode SAMLRequest and SAMLResponse to XML
+description: Decode a SAML request online: paste a redirect URL, POST form body, cURL command or a bare SAMLRequest or SAMLResponse value and read it as indented XML.
 ---
 
 ## Why a SAML message takes several steps to read
 
 In SAML 2.0 browser single sign-on, the service provider's request and the identity provider's response both travel through the browser, so when a login fails you can capture them in the network panel (in Chrome DevTools, tick Preserve log first: the flow spans several page loads), but not read them. The HTTP-Redirect binding, which service providers commonly use for an AuthnRequest, compresses the XML with raw DEFLATE (RFC 1951, no zlib header), Base64-encodes the result and URL-encodes that into a `SAMLRequest` query parameter. The HTTP-POST binding, the usual way identity providers deliver a Response, skips the compression: the XML is Base64-encoded into a hidden form field named `SAMLResponse`, and the browser URL-encodes the field when it submits the form. Both are defined in the OASIS [SAML 2.0 bindings specification](https://docs.oasis-open.org/security/saml/v2.0/saml-bindings-2.0-os.pdf).
 
-So one decoder is not enough. A Base64 decoder turns a redirect value into binary noise, because what it decoded is still compressed; an inflate tool that expects a zlib header rejects the raw stream. And the parameter name does not tell you the binding: a `LogoutResponse` sent by redirect is a compressed `SAMLResponse`.
+So one decoder is not enough. A Base64 decoder turns a redirect value into binary noise, because what it decoded is still compressed; an inflate tool that expects a zlib header rejects the raw stream. And the parameter name does not tell you the binding: a `LogoutResponse` sent by redirect is a compressed `SAMLResponse`. That is why this SAML decoder is a chain: a URL decode, a Base64 decode, a raw deflate when the bytes need it and a pretty print of the XML, with each step's output visible on its own.
 
 ## What each step does, and why in this order
 
@@ -25,7 +25,7 @@ In a Response, read the `StatusCode` first. A top-level value other than `urn:oa
 
 It decodes only the first SAML parameter in the input and checks no signatures. On a signed redirect request the signature is not in the XML but in the `Signature` parameter, computed over the URL-encoded `SAMLRequest`, `RelayState` and `SigAlg` parameters. Pretty-printing changes whitespace, and line breaks inside long text values such as an `X509Certificate` become spaces, so never feed the formatted output to a signature check. An `EncryptedAssertion` stays encrypted, as reading it takes the service provider's private key, and a `SAMLart` parameter (Artifact binding) is only a reference to a message fetched server to server.
 
-It does not parse HTML: from the auto-submitting form of the POST binding, copy just the `value` attribute. If the SAML URL is itself URL-encoded inside another URL, as in a `returnTo` parameter, add a second url decode step at the start. If the inflate step fails on a redirect value, the sender may have written a zlib-wrapped stream (the default of Python's `zlib.compress` and Java's `Deflater`), which a receiver that follows the binding will usually reject too; set the step's format to auto to read it anyway. Decoding runs in your browser, so the message and the personal data in it are not sent to a server.
+It does not parse HTML: from the auto-submitting form of the POST binding, copy just the `value` attribute. If the SAML URL is itself URL-encoded inside another URL, as in a `returnTo` parameter, add a second url decode step at the start. If the inflate step fails on a redirect value, the sender may have written a zlib-wrapped stream (the default of Python's `zlib.compress` and Java's `Deflater`), which a receiver that follows the binding will usually reject too; set the step's format to auto to read it anyway. Unlike a SAML decoder browser extension, it needs no install and takes a value from any source, but it only decodes what you paste and does not capture messages as they pass. Decoding runs in your browser, so the message and the personal data in it are not sent to a server.
 
 ## The same decode on the command line
 

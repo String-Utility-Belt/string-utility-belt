@@ -9,6 +9,7 @@ const preset: Preset = {
   category: 'Data & Spreadsheets',
   primaryQuery: 'extract domain from url list',
   published: '2026-10-08',
+  updated: '2026-11-06',
   related: ['remove-tracking-parameters-from-urls', 'bulk-utm-link-builder'],
   steps: [
     each('host-each', { mode: 'lines' }, [

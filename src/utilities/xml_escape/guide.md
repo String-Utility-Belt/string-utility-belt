@@ -1,6 +1,6 @@
 ---
 title: XML Escape Online: Encode Text for XML Documents
-description: Escape text for XML using the five predefined entities, with options to skip quotes or also escape non-ASCII characters as numeric references.
+description: XML escape characters online: encode &, <, >, quotes and apostrophes as the five predefined entities, or non-ASCII characters as numeric references too.
 ---
 ## What does escaping text for XML mean?
 
@@ -71,7 +71,7 @@ XML 1.0 defines a strict set of characters that are legal anywhere in a document
 
 ## Tips and pitfalls
 
-- To reverse this encoding, use [XML unescape](/util/xml_unescape/), which resolves the same five entities plus `&#decimal;` / `&#xHEX;` references.
+- To reverse this encoding, or to remove escape characters from XML text you received, use [XML unescape](/util/xml_unescape/), which resolves the same five entities plus `&#decimal;` / `&#xHEX;` references.
 - XML's entity set is a subset of HTML's. If you need the wider HTML named-entity table (`&eacute;`, `&copy;`, and about 270 others), use [HTML entity encode](/util/html_entity_encode/) instead; its named output is not valid XML without a DTD declaring those names.
 - Because `&`, `<`, `>` and carriage returns are always escaped whatever the options, round-tripping through this tool and [XML unescape](/util/xml_unescape/) reproduces the original text exactly, including its original line endings.
 - If your text is going into JSON instead of XML, use [JSON escape](/util/json_escape/). The escaping rules are unrelated.

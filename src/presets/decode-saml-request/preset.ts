@@ -14,8 +14,9 @@ const preset: Preset = {
   summary:
     'Paste a SAML redirect URL, a POST form body, a copied cURL command or a bare SAMLRequest or SAMLResponse value and read the message as indented XML, deflated (Redirect binding) or not (POST).',
   category: 'Web & APIs',
-  primaryQuery: 'decode saml request',
+  primaryQuery: 'saml decoder',
   published: '2026-10-07',
+  updated: '2026-11-06',
   related: ['decode-flask-session-cookie', 'decode-helm-release-secret'],
   steps: [
     step('extract', 'sed', { script: EXTRACT, perLine: false },

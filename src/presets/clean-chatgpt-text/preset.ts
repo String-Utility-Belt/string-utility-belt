@@ -23,6 +23,7 @@ const preset: Preset = {
   category: 'Writing & Marketing',
   primaryQuery: 'remove chatgpt formatting',
   published: '2026-10-07',
+  updated: '2026-11-06',
   related: ['fix-pdf-line-breaks', 'fix-bash-bad-interpreter'],
   steps: [
     step('hidden', 'remove_invisible', { mode: 'remove' },

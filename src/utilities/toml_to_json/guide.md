@@ -1,6 +1,6 @@
 ---
 title: TOML to JSON Converter: Parse TOML Online
-description: Convert TOML config files to JSON online. Handles tables, array-of-tables, dotted keys and dates, with a configurable indent or minified output.
+description: Convert TOML to JSON online or from the CLI: tables, array-of-tables, dotted keys and dates handled, with a configurable indent or minified output.
 ---
 ## What is TOML to JSON conversion?
 
@@ -68,6 +68,7 @@ A document that holds only comments parses to an empty object `{}` rather than a
 - Reading values out of a `Cargo.toml`, `pyproject.toml` or `.streamlit/config.toml` file in a JavaScript build step.
 - Comparing a TOML config against a JSON Schema with [json schema validate](/util/json_schema_validate/).
 - Converting TOML test fixtures to JSON for tools that only understand JSON.
+- Converting from the command line: the [subelt](https://www.npmjs.com/package/subelt) CLI runs the same utility, `subelt -i Cargo.toml toml_to_json`, in a script or a CI step with no browser.
 
 ## Tips and pitfalls
 

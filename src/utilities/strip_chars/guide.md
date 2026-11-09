@@ -1,6 +1,6 @@
 ---
 title: Strip Characters Online: Remove Punctuation or Emoji
-description: Remove punctuation, digits, letters, whitespace, emoji, non-ASCII text or a custom character set from text online, in one pass.
+description: Remove characters from a string online: punctuation, special characters, digits, letters, whitespace, emoji, control or non-ASCII characters, or a custom set.
 ---
 ## What does stripping characters do?
 
@@ -75,6 +75,7 @@ Empty input always returns empty output, no matter what the other options are se
 - Stripping emoji from user-generated content for plain-text logs or exports.
 - Extracting only the digits from a phone number, ID or price string using invert mode.
 - Removing non-printable or non-ASCII characters that snuck in from a bad copy-paste or a mismatched encoding.
+- Removing special characters from a string before it becomes a file name, a slug or an ID, with the non-alphanumeric category or a custom set.
 
 ## Tips and pitfalls
 

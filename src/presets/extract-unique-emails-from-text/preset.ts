@@ -12,6 +12,7 @@ const preset: Preset = {
   category: 'Data & Spreadsheets',
   primaryQuery: 'extract unique email addresses from text',
   published: '2026-10-09',
+  updated: '2026-11-06',
   related: ['hash-email-list-for-customer-match', 'extract-domains-from-urls'],
   steps: [
     step('lower', 'case', { mode: 'lower' },

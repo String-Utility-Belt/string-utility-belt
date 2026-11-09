@@ -20,6 +20,7 @@ const preset: Preset = {
   category: 'Web & APIs',
   primaryQuery: 'decode flask session cookie',
   published: '2026-10-07',
+  updated: '2026-11-06',
   related: ['decode-saml-request', 'unescape-stringified-json'],
   steps: [
     step('extract', 'sed', { script: extractPayload, perLine: false },

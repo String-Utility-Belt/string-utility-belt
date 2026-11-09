@@ -1,6 +1,6 @@
 ---
 title: Brotli Decompress Online: Decode .br Data to Text
-description: Decompress a Brotli (.br) stream in your browser to readable text or raw bytes, with worked examples covering Unicode and empty input.
+description: Brotli decode online: decompress a .br stream in your browser to readable text or raw bytes, with worked examples covering Unicode and empty input.
 ---
 ## What is Brotli?
 
@@ -75,6 +75,8 @@ when you plan to inspect the raw bytes with [hex dump](/util/hex_dump/).
   script.
 - Chaining after [hex decode](/util/hex_decode/), or [base64url decode](/util/base64url_decode/) with
   output set to `bytes`, when the compressed bytes were transported as text.
+- Decompressing a `.br` file: open it through the editor's file input, which keeps the bytes intact,
+  and set output to bytes when the content is not text.
 
 ## Tips and pitfalls
 

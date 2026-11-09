@@ -11,6 +11,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { MANIFEST } from '../src/utilities/_generated/manifest'
 import { LOADERS } from '../src/utilities/_generated/loaders'
+import { PRESET_INDEX } from '../src/presets/_generated/index'
 import { checkGuide } from '../src/utilities/guideCheck'
 
 /** DOM-dependent utilities (see `env: ['dom']`) get the same jsdom the test suite runs them under. */
@@ -29,6 +30,7 @@ async function installDom() {
 async function main() {
   const ids = process.argv.slice(2).filter(a => a !== '--')
   const known = new Set(MANIFEST.map(m => m.id))
+  const presets = new Set(PRESET_INDEX.map(p => p.slug))
   const unknown = ids.filter(id => !known.has(id))
   if (unknown.length) {
     console.error(`[check-guides] unknown utility id(s): ${unknown.join(', ')}`)
@@ -42,7 +44,7 @@ async function main() {
     const file = path.join(process.cwd(), 'src', 'utilities', id, 'guide.md')
     const source = existsSync(file) ? readFileSync(file, 'utf8') : null
     const util = (await LOADERS[id]()).default
-    const problems = await checkGuide(util, source, known)
+    const problems = await checkGuide(util, source, known, presets)
     if (problems.length === 0) {
       console.log(`✓ ${id}`)
     } else {

@@ -1,6 +1,6 @@
 ---
 title: Curl to PowerShell Converter: Invoke-RestMethod Command
-description: Paste a curl command and get the same request as PowerShell Invoke-RestMethod, with headers, JSON body, auth and flags converted and quoted.
+description: Paste a curl command and get the same request as PowerShell Invoke-RestMethod or Invoke-WebRequest, with headers, JSON body, auth and flags converted.
 ---
 
 ## Why a pasted curl command fails in PowerShell
@@ -13,7 +13,7 @@ Fixing those by hand means un-quoting the command the way bash would and then re
 
 The first step, [curl command to json](/util/curl_parse/), tokenizes the command like a POSIX shell: single and double quotes, `$'…'` strings from Chrome, backslash escapes and line continuations. It then works out the request curl would send. `-d` without `-X` means POST, `-G` turns the data into a query string, `-u` is a user and password, and `-b` with a `name=value` pair is a Cookie header. The result is plain JSON you can read in the step's output.
 
-The second step, [json to powershell request](/util/powershell_request_build/), writes that JSON as a splatted `Invoke-RestMethod` call: one `$params` hashtable with a line per parameter, then `Invoke-RestMethod @params`. Every value is single-quoted, so nothing in it is expanded, and an apostrophe is written twice. `Content-Type` and `User-Agent` move to `-ContentType` and `-UserAgent`. Credentials from `-u` become a Basic `Authorization` header sent on the first request, as curl sends them. Data without a content type gets `application/x-www-form-urlencoded`, curl's default for `-d`, written out so that every PowerShell version sends the same header.
+The second step, [json to powershell request](/util/powershell_request_build/), writes that JSON as a splatted `Invoke-RestMethod` call: one `$params` hashtable with a line per parameter, then `Invoke-RestMethod @params`. Every value is single-quoted, so nothing in it is expanded, and an apostrophe is written twice. `Content-Type` and `User-Agent` move to `-ContentType` and `-UserAgent`. Credentials from `-u` become a Basic `Authorization` header sent on the first request, as curl sends them. Data without a content type gets `application/x-www-form-urlencoded`, curl's default for `-d`, written out so that every PowerShell version sends the same header. Its cmdlet option writes the same request as an `Invoke-WebRequest` call instead, with `-UseBasicParsing` added so that Windows PowerShell does not try to parse the response as a web page.
 
 The order is fixed: the builder only understands the parsed request, never the raw command. Between the two steps you can edit the JSON, for example to swap a test token for a variable, and the PowerShell output follows.
 
