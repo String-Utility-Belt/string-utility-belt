@@ -21,6 +21,19 @@ describe('SitePage', () => {
     expect(document.title).toBe('String Utility Belt')
   })
 
+  it('says what the AI pipeline builder sends, to whom and what is kept, where the describe dialog links', () => {
+    const { container } = render(<SitePage slug="privacy" />)
+    expect(container.querySelector('#features-that-contact-our-server')?.tagName).toBe('H2')
+    const item = screen.getAllByRole('listitem').find(li => li.textContent?.startsWith('AI pipeline builder.'))!
+    expect(item).toHaveTextContent('only the description you typed')
+    expect(item).toHaveTextContent('Your input, output and current pipeline are not sent')
+    expect(item).toHaveTextContent('Anthropic')
+    expect(item).toHaveTextContent('up to 30 days')
+    expect(item).toHaveTextContent('deleted after 2 days')
+    expect(within(item).getByRole('link', { name: 'its privacy policy' })).toHaveAttribute('href', 'https://www.anthropic.com/legal/privacy')
+    expect(container.textContent).toMatch(/held briefly in memory and is not written to storage; the AI pipeline builder's daily limit keeps only the hash/)
+  })
+
   it('lists the sections beside the page, by in-page links, with one of our own tools under them', () => {
     const { container } = render(<SitePage slug="privacy" />)
     const toc = screen.getByRole('navigation', { name: 'On this page' })

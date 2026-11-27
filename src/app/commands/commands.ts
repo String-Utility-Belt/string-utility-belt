@@ -21,6 +21,8 @@ export const EVENT_MAGIC = 'sub:magic'
 export const EVENT_OPEN_SHARE = 'sub:open-share'
 export const EVENT_OPEN_LIBRARY = 'sub:open-library'
 export const EVENT_OPEN_PRESETS = 'sub:open-presets'
+/** Opens the describe dialog (the AI pipeline builder, `src/app/generate/`). */
+export const EVENT_OPEN_GENERATE = 'sub:open-generate'
 export const EVENT_TOGGLE_THEME = 'sub:toggle-theme'
 export const EVENT_OPEN_SHORTCUTS = 'sub:open-shortcuts'
 export const EVENT_OPEN_PALETTE = 'sub:open-palette'
@@ -142,6 +144,7 @@ export const commands: Command[] = [
   { id: 'share', title: 'Share', group: 'Pipeline', keywords: ['share', 'link', 'url'], run: fireInTool(EVENT_OPEN_SHARE) },
   { id: 'library', title: 'Library', group: 'Pipeline', keywords: ['library', 'save', 'load', 'pipelines'], run: fireInTool(EVENT_OPEN_LIBRARY) },
   { id: 'presets', title: 'Start from a preset', group: 'Pipeline', keywords: ['presets', 'recipes', 'examples', 'templates', 'gallery'], run: fireInTool(EVENT_OPEN_PRESETS) },
+  { id: 'generate', title: 'Describe a pipeline (AI)', group: 'Pipeline', keywords: ['ai', 'describe', 'generate', 'build', 'prompt', 'natural language'], run: fireInTool(EVENT_OPEN_GENERATE) },
   { id: 'toggle-theme', title: 'Toggle theme', group: 'View', keywords: ['theme', 'dark', 'light', 'mode'], run: fire(EVENT_TOGGLE_THEME) },
   { id: 'shortcuts', title: 'Keyboard shortcuts', group: 'Help', keywords: ['shortcuts', 'help', 'keys'], run: fire(EVENT_OPEN_SHORTCUTS) },
   { id: 'goto-tool', title: 'Go to Tool', group: 'Navigate', keywords: ['tool', 'home', 'pipeline'], run: goToTool },

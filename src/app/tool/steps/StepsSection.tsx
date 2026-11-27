@@ -21,6 +21,7 @@ import { seededParams } from '@/app/magic/seed'
 import Select from '@/components/Select'
 import UtilityPicker from '@/components/UtilityPicker'
 import { suggestUtility } from '@/app/feedback/open'
+import GenerateButton from '@/app/generate/GenerateButton'
 import EmptyState from '../EmptyState'
 import PipelineToolbar from '../PipelineToolbar'
 import { StepList } from '../stepListChunk'
@@ -122,6 +123,7 @@ export default function StepsSection() {
                 onClick={() => dispatch({ type: 'ADD_EACH' })}>
                 <Repeat size={14} aria-hidden="true" /> Run on each
               </button>
+              <GenerateButton className={ADD_BUTTON} />
               {next && <SuggestionPill suggestion={next} onPick={pickNext} hint />}
               {!hasSteps && (
                 <button type="button" className="h-[30px] px-1.5 text-[12.5px] text-muted underline underline-offset-[3px] hover:text-fg"
