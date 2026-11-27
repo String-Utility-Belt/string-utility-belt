@@ -8,6 +8,7 @@
  *   GET     /api/fetch?url=        same-origin fetch proxy   (no CORS)
  *   POST    /api/event             count a site event        (same-origin, no CORS)
  *   POST    /api/feedback          email us a visitor's message (same-origin, no CORS)
+ *   POST    /api/generate          build pipeline steps from a description with AI (same-origin, no CORS)
  */
 import { EVENT_PATH } from '../src/lib/countedEvents'
 import { FEEDBACK_PATH } from '../src/lib/feedback'
@@ -18,6 +19,7 @@ import type { ApiEnv, ApiOptions } from './env'
 import { handleEvent } from './events'
 import { handleFeedback } from './feedback'
 import { handleFetchProxy } from './fetch-proxy'
+import { GENERATE_PATH, handleGenerate } from './generate'
 import { CORS_HEADERS, jsonError } from './http'
 import { createRateLimiter, rateLimitKey } from './rate-limit'
 import { handleRun } from './run'
@@ -52,6 +54,8 @@ export function createApi(opts: ApiOptions = {}): Api {
   const eventLimiter = createRateLimiter({ ...(opts.eventRateLimit ?? { limit: 30, windowMs: 60_000 }), now: opts.now })
   // a person sends one or two; more is a script filling our inbox
   const feedbackLimiter = createRateLimiter({ ...(opts.feedbackRateLimit ?? { limit: 5, windowMs: 3_600_000 }), now: opts.now })
+  // bursts only: the daily per-client count in D1 is the real limit
+  const generateLimiter = createRateLimiter({ ...(opts.generateRateLimit ?? { limit: 5, windowMs: 60_000 }), now: opts.now })
 
   async function route(request: Request, url: URL, env: ApiEnv): Promise<Response> {
     const path = url.pathname
@@ -97,6 +101,12 @@ export function createApi(opts: ApiOptions = {}): Api {
     if (path === EVENT_PATH) return handleEvent(request, env, { limiter: eventLimiter })
 
     if (path === FEEDBACK_PATH) return handleFeedback(request, env, { limiter: feedbackLimiter })
+
+    if (path === GENERATE_PATH) {
+      return handleGenerate(request, env, {
+        registry, limiter: generateLimiter, now: opts.now ?? Date.now, model: opts.aiModel,
+      })
+    }
 
     return jsonError(404, `no API route for ${method} ${path.slice(0, 200)}`)
   }

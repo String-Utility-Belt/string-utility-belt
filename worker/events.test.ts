@@ -19,6 +19,7 @@ function fakeD1(fail = false) {
           runs.push({ sql, values })
           return {}
         },
+        first: async () => null,
       })
       return statement([])
     },

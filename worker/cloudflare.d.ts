@@ -47,10 +47,16 @@ interface SendEmail {
   send(message: EmailMessageBuilder): Promise<EmailSendResult>
 }
 
-/** The slice of D1 the worker uses: one prepared statement, bound and run. */
+/** What a write reports; `changes` is the number of rows it inserted, updated or deleted. */
+interface D1Result {
+  meta?: { changes?: number }
+}
+
+/** The slice of D1 the worker uses: one prepared statement, bound and run, or read for its first row. */
 interface D1PreparedStatement {
   bind(...values: unknown[]): D1PreparedStatement
-  run(): Promise<unknown>
+  run(): Promise<D1Result>
+  first<T = Record<string, unknown>>(): Promise<T | null>
 }
 
 interface D1Database {

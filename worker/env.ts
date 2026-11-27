@@ -1,5 +1,6 @@
 import type { UtilityMeta } from '../src/core/registry'
 import type { Utility, UtilityExample } from '../src/types/utility'
+import type { AiModel } from './ai-model'
 
 /**
  * Bindings and vars the Worker reads. Declared here rather than merged into the
@@ -24,6 +25,19 @@ export interface ApiEnv {
    * (`wrangler.jsonc`); without it the route answers 503 and the form offers a `mailto:` link.
    */
   FEEDBACK?: SendEmail
+  /**
+   * `on` turns on POST /api/generate, the AI pipeline builder; anything else (or a missing
+   * key, salt or EVENTS_DB) answers 503, so a deploy without the secrets stays safe.
+   */
+  AI_GENERATE?: string
+  /** Secret: the Anthropic API key the pipeline builder calls Claude with. */
+  ANTHROPIC_API_KEY?: string
+  /** Secret: keys the per-client daily count's address hash (worker/ai-budget.ts). */
+  AI_IP_SALT?: string
+  /** What the pipeline builder may spend per UTC day, in US dollars (default 5). */
+  AI_DAILY_BUDGET_USD?: string
+  /** Model calls one client may make per UTC day (default 10). */
+  AI_IP_DAILY_LIMIT?: string
 }
 
 /** The slice of a utility registry the API needs (the static registry in production). */
@@ -64,8 +78,12 @@ export interface ApiOptions {
   eventRateLimit?: { limit: number; windowMs: number }
   /** POST /api/feedback, per client IP. */
   feedbackRateLimit?: { limit: number; windowMs: number }
-  /** Rate-limiter clock. */
+  /** POST /api/generate bursts, per client IP (the daily count is in D1). */
+  generateRateLimit?: { limit: number; windowMs: number }
+  /** Rate-limiter clock; also the pipeline builder's clock for UTC days and cache ages. */
   now?: () => number
+  /** The pipeline builder's model; tests inject a fake so no test calls the real API. */
+  aiModel?: (env: ApiEnv) => AiModel
   /** Defaults to the global `fetch`, looked up per call so tests can stub it. */
   upstreamFetch?: UpstreamFetch
 }

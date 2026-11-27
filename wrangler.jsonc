@@ -71,6 +71,10 @@
 	// "vars": { "MY_VARIABLE": "production_value" }
 	// FETCH_PROXY = "off" disables GET /api/fetch (503) without a redeploy of code:
 	// set it in the dashboard, or here as "vars": { "FETCH_PROXY": "off" }
+	// POST /api/generate (worker/generate.ts) stays off (503) until AI_GENERATE = "on" and the
+	// secrets ANTHROPIC_API_KEY and AI_IP_SALT are set (`wrangler secret put`), with
+	// migrations/0002_ai_generate.sql applied to sub-events. Optional vars: AI_DAILY_BUDGET_USD
+	// (default 5), AI_IP_DAILY_LIMIT (default 10).
 	/**
 	 * Note: Use secrets to store sensitive data.
 	 * https://developers.cloudflare.com/workers/configuration/secrets/
